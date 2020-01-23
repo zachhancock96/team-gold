@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend repo for team-gold soft en",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "", 
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.13.1",
+    "cookie-parser": "^1.3.5",
+    "cors": "^2.8.5",
+    "email-validator": "^2.0.4",
+    "express": "^4.13.0",
+    "moment-timezone": "^0.5.27",
+    "morgan": "^1.6.0",
+    "mysql": "^2.7.0"
+  }
+}

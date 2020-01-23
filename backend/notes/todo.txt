@@ -1,0 +1,9 @@
+SQL table design
+only two tables perhaps for now
+
+no user concept for now just games
+
+REST api design
+
+add game route, get games route
+
