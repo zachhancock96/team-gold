@@ -12,6 +12,7 @@
 <body>
 	<header>
 		<h1>Add Game</h1>
+		
 	</header>
 	
 	<div>
@@ -28,33 +29,37 @@
     </div>
 	
 	<form action="addGame.php" method="post">
-		Home School: 
-		<input type="text" name="HSchool" placeholder="Home School Name">       
+		<a class="align1">Home School:</a> 
+		<a class="align2"><input type="text" name="HSchool" placeholder="Home School Name"></a>       
 		
-		Home Team: 
+		<a class="align3">Home Team:</a> 
+		<a class="align4">
 		<select name="HTeam">
 			<option value="Boys Varsity">Boys Varsity</option>
 			<option value="Girls Varsity">Girls Varsity</option>
 			<option value="Boys JV">Boys JV</option>
 			<option value="Girls JV">Girls JV</option>
-		</select><br><br>
+		</select>
+		</a><br><br>
 		
-		Visting School: 
-		<input type="text" name="VSchool" placeholder="Visiting School Name">    
+		<a class="align1">Visting School:</a> 
+		<a class="align2"><input type="text" name="VSchool" placeholder="Visiting School Name"></a>    
 		
-		Visiting Team: 
+		<a class="align3">Visiting Team:</a> 
+		<a class="align4">
 		<select name="VTeam">
 			<option value="Boys Varsity">Boys Varsity</option>
 			<option value="Girls Varsity">Girls Varsity</option>
 			<option value="Boys JV">Boys JV</option>
 			<option value="Girls JV">Girls JV</option>
-		</select><br><br>
+		</select>
+		</a><br><br>
 		
-		Date: 
-		<input type="date" name="date"><br><br>
+		<a class="align1">Date:</a> 
+		<a class="align2"><input type="date" name="date"></a><br><br>
 		
-		Location: 
-		<input type="text" name="location" placeholder="Location"><br><br>
+		<a class="align1">Location:</a> 
+		<a class="align2"><input type="text" name="location" placeholder="Location"></a><br><br>
 		
 		<input type="submit" value="Submit Game">
 	</form>

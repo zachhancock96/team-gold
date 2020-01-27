@@ -38,3 +38,23 @@ td{
 td:hover{
     background: #4e5a85
 }
+
+/* Add Page alignment */
+.align1{
+	position: absolute;
+}
+
+.align2{
+	position: absolute;
+	padding-left: 120px;
+}
+
+.align3{
+	position: absolute;
+	padding-left: 280px;
+}
+
+.align4{
+	position: absolute;
+	padding-left: 400px;
+}
