@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="/css/style.css">
 	<title>Add Game Confirmation</title>
 	<script src="jquery-3.4.1.min.js"></script>
 </head>

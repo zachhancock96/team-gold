@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="/css/style.css">
 	<title>Add Game</title>
 	<script src="jquery-3.4.1.min.js"></script>
-	
 </head>
 
 <body>
@@ -13,7 +12,7 @@
 	</header>
 	<form action="addGame.php" method="post">
 		Home School: 
-		<input type="text" id="Home School Name" name="HSchool"><br>
+		<input type="text" name="HSchool" placeholder="Home School Name">       
 		
 		Home Team: 
 		<select name="HTeam">
@@ -21,10 +20,10 @@
 			<option value="Girls Varsity">Girls Varsity</option>
 			<option value="Boys JV">Boys JV</option>
 			<option value="Girls JV">Girls JV</option>
-		</select><br>
+		</select><br><br>
 		
 		Visting School: 
-		<input type="text" id="Visiting School Name" name="VSchool"><br>
+		<input type="text" name="VSchool" placeholder="Visiting School Name">    
 		
 		Visiting Team: 
 		<select name="VTeam">
@@ -32,13 +31,13 @@
 			<option value="Girls Varsity">Girls Varsity</option>
 			<option value="Boys JV">Boys JV</option>
 			<option value="Girls JV">Girls JV</option>
-		</select><br>
+		</select><br><br>
 		
 		Date: 
-		<input type="text" id="mm/dd/yyyy" name="date"><br>
+		<input type="date" name="date"><br><br>
 		
 		Location: 
-		<input type="text" id="Location" name="location"><br>
+		<input type="text" name="location" placeholder="Location"><br><br>
 		
 		<input type="submit" value="Submit Game">
 	</form>
