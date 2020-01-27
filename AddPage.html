@@ -1,19 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Add Game</title>
-<script src="jquery-3.4.1.min.js"></script>
+	<link rel="stylesheet" href="style.css">
+	<title>Add Game</title>
+	<script src="jquery-3.4.1.min.js"></script>
+	
 </head>
 
 <body>
-<form action="/database.php">
-	Home School: <input type="text" name="HSchool"><br>
-	Home Team: <input type="text" name="HTeam"><br>
-	Visting School: <input type="text" name="VSchool"><br>
-	Visiting Team: <input type="text" name="VTeam"><br>
-	Date: <input type="text" name="Date"><br>
-	Location: <input type="text" name"Location"><br>
-	<input type="submit" value="Submit">
-</form>
+	<header>
+		<h1>Add Game</h1>
+	</header>
+	<form action="addGame.php" method="post">
+		Home School: 
+		<input type="text" id="Home School Name" name="HSchool"><br>
+		
+		Home Team: 
+		<select name="HTeam">
+			<option value="Boys Varsity">Boys Varsity</option>
+			<option value="Girls Varsity">Girls Varsity</option>
+			<option value="Boys JV">Boys JV</option>
+			<option value="Girls JV">Girls JV</option>
+		</select><br>
+		
+		Visting School: 
+		<input type="text" id="Visiting School Name" name="VSchool"><br>
+		
+		Visiting Team: 
+		<select name="VTeam">
+			<option value="Boys Varsity">Boys Varsity</option>
+			<option value="Girls Varsity">Girls Varsity</option>
+			<option value="Boys JV">Boys JV</option>
+			<option value="Girls JV">Girls JV</option>
+		</select><br>
+		
+		Date: 
+		<input type="text" id="mm/dd/yyyy" name="date"><br>
+		
+		Location: 
+		<input type="text" id="Location" name="location"><br>
+		
+		<input type="submit" value="Submit Game">
+	</form>
 </body>
 </html>
