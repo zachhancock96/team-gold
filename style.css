@@ -1,9 +1,44 @@
-header{
-background: #2c3051;
-color: #fff;
-padding: 20px;
-text-align: center;
-border: 8px #b68d1c solid;
-margin-bottom: 10px;
+html{
+    background: rgb(60, 17, 100)
+}
 
+header{
+    background: #2c3051;
+    color: #fff;
+    padding: 40px;
+    text-align: center;
+    border: 8px #b68d1c solid;
+    margin-bottom: 10px;
+    font-family: arial;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+body{
+    color: #ffffff
+}
+
+
+table{
+    background: #2c3051;
+    color: #fff;
+    padding: 10px;
+    border-bottom: 4px #b68d1c solid;
+    border-left: 4px #b68d1c solid;
+    border-right: 4px #b68d1c solid;
+    margin-bottom: 10px;
+    font-family: arial;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 18px;
+}
+td{
+    background: #2c3051;
+    color: #fff;
+    width: 440px;
+    text-align: center;
+}
+
+td:hover{
+    background: #4e5a85
 }
