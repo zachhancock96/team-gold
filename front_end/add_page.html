@@ -166,9 +166,11 @@
 			//TODO: add game
 			api.addGame(game)
 				.then(result => {
+                                        alert('success!');
 					console.log(result);
 				})
 				.catch(error => {
+                  		        alert('Oops!');
 					console.log(error);
 				})
 		}
