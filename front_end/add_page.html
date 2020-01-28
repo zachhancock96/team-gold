@@ -9,29 +9,73 @@
 	<header>
 		<h1>Add Game</h1>
 	</header>
-	<form id="form">
-		Home Team: 
-		<select id="select_home_team">
-			<option value="">Select Team</option>
-		</select><br><br>
-		
-		Visiting Team: 
-		<select id="select_visiting_team">
-			<option value="">Select Team</option>
-		</select><br><br>
-		
-		Start: 
-		<input id="start" type="date" ><br><br>
-		
-		End: 
-		<input id="end" type="date" ><br><br>
-
-
-		Location: 
-		<input id="location" type="text" name="location" placeholder="Location"><br><br>
-		
-		<input id="btn_submit" type="submit" >
-	</form>
+	
+	<table id='banner'>
+        <tr>
+        <td><a href='./game_view.html'>+ View Games +</a></td>
+        <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_page.html'>Add Manually</a><hr />Upload File</div></td>
+        <td>+ Verify Games +</td>
+        <td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./user_profile.html'>User Profile</a> <hr /> <a href='./school_profile.html'>School Profile</a></div></td>  
+        </tr>
+	</table>
+	
+	<table id='addGameTable'>
+		<form id="form">
+			<tr>
+			<td>Home Team:</td>
+			<td><select id="select_home_team"><option value="">Select Team</option></select></td>
+			
+			<!--
+			<td>Home Team:</td> 
+			<td>
+			<select name="HTeam">
+				<option value="Boys Varsity">Boys Varsity</option>
+				<option value="Girls Varsity">Girls Varsity</option>
+				<option value="Boys JV">Boys JV</option>
+				<option value="Girls JV">Girls JV</option>
+			</select>
+			</td>
+			-->
+			</tr>
+			
+			<tr>
+			<td>Visting Team:</td> 
+			<td><select id="select_visiting_team">
+			<option value="">Select Team</option></select></td>    
+			
+			<!--
+			<td>Visiting Team:</td> 
+			<td>
+			<select name="VTeam">
+				<option value="Boys Varsity">Boys Varsity</option>
+				<option value="Girls Varsity">Girls Varsity</option>
+				<option value="Boys JV">Boys JV</option>
+				<option value="Girls JV">Girls JV</option>
+			</select>
+			</td>
+			-->
+			</tr>
+			
+			<tr>
+			<td>Start:</td> 
+			<td><input id="start" type="date" ></td>
+			</tr>
+			
+			<tr>
+			<td>End:</td> 
+			<td><input id="start" type="date" ></td>
+			</tr>
+			
+			<tr>
+			<td>Location:</td> 
+			<td><input id="location" type="text" name="location" placeholder="Location"></td>
+			</tr>
+			
+			<tr>
+			<td colspan="4"><input id="btn_submit" type="submit" ></td>
+			</tr>
+		</form>
+	</table>
 </body>
 
 <script type='text/JavaScript' src="js/jquery.js"></script>
