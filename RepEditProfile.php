@@ -27,8 +27,9 @@
 
     </div>
 	
-	
-	<table>
+	<form action="RepEdit" method="post">
+		
+		<table>
 		<tr>
 		<td>Name:</td>
 		<td>John Doe</td>
@@ -41,16 +42,20 @@
 		
 		<tr>
 		<td>Phone:</td>
-		<td>111-111-1111</td>
+		<td><input type="tel" name="phoneNo" pattern="[0-9] {3} - [0-9] {3} - [0-9] {3}" placeholder="123-456-7890"></td>
 		</tr>
 		
 		<tr>
 		<td>Email:</td>
-		<td>john.doe@school.edu</td>
+		<td><input type="text" name="email"></td>
 		</tr>
-	</table>
-	<form action="repEditProfile.php" method="post">
-	<input type="submit" value="Edit Profile">
+		
+		<tr>
+		<td>Save Changes?</td>
+		<td><input type="submit" value="Save"></td>
+		</tr>
+		</table>
 	</form>
+
 </body>
 </html>
