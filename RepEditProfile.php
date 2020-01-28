@@ -16,13 +16,14 @@
 	
 	<div>
 
-    <table>
+    <table id='banner'>
         <tr>
-        <td><a href="index.html">+ Add Games +</a></td>
+        <td>+ View Games +</td>
+        <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./index.html'>Add Manually</a><hr />Upload File</div></td>
         <td>+ Verify Games +</td>
-        <td><a href="repProfile.php">+ Profile +</a></td> 
+        <td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./repProfile.php'>User Profile</a> <hr /> <a href='./schoolProfile.php'>School Profile</a></div></td>  
         </tr>
-    </table>
+	</table>
     
 
     </div>
