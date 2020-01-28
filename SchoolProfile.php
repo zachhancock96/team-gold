@@ -27,18 +27,53 @@
 
     </div>
 	
+<table>	
+	<tr>
+	<td>School Name:</td>
+	<td>West Monroe High School</td>
+	</tr>
 	
-School Name:	West Monroe High School<br>
-LHSAA Names:	West Monroe High School VB<br>
-				West Monroe High School VG<br>
-				West Monroe High School<br>
-Address:    	123 School Rd<br>
-				West Monroe, LA 71291<br>
-Phone:			111-111-1111<br>
-email:			WMHS@school.edu<br>
-School colors:	Red<br>
-				Blue<br>
-School Logo:	<br>
+	<tr>
+	<td>LHSAA Names:</td>
+	<td>West Monroe High School VB<br>
+	West Monroe High School VG<br>
+	West Monroe High School<br></td>
+	</tr>
+	
+	<tr>
+	<td>Address:</td>
+	<td>123 School Rd<br>
+	West Monroe, LA 71291</td>
+	</tr>
+	
+	<tr>
+	<td>Phone:</td>
+	<td>111-111-1111</td>
+	</tr>
+	
+	<tr>
+	<td>email:</td>
+	<td>WMHS@school.edu</td>
+	</tr>
+	
+	
+	<tr>
+	<td>School colors:</td>
+	<td>Red<br>
+	Blue</td>
+	</tr>
+	
+	<tr>
+	<td>School Logo:</td>
+	<td></td>
+	</tr>
+	
+	<tr>
+	<td colspan="2"><form action="schoolEditProfile.php" method="post">
+	<input type="submit" value="Edit Profile">
+	</form></td>
+	</tr>
+</table>
 
 </body>
 </html>
