@@ -14,19 +14,35 @@
 </head>
 
 <body>
-    <header>
+    <header style='margin-bottom: 0px'>
         Game View
     </header>
+    
+    <div>
 
+        <!--
+            Need to set links for File Upload;
+                                  Verify Games;
+        -->
+
+    <table id='banner'>
+            <tr>
+            <td> <a href='./gameView.html'>+ View Games +</a></td>
+            <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./index.html'>Add Manually</a><hr />Upload File</div></td>
+            <td>+ Verify Games +</td>
+            <td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./refProfile.php'>User Profile</a> <hr /> <a href='./schoolProfile.php'>School Profile</a></div></td>  
+            </tr>
+    </table>
+    
+
+    </div>
     <div id = 'records'></div>
 
-        <span><input type='button' id='getGame' value='Fetch Game' /></span>
+        <button id='getGames'>Fetch Games</button>
 
     <script type='text/JavaScript'>
-        
-        $(function){
 
-            $('#getGame').on('click',function(){
+            $('#getGames').on('click',function(){
                 
 
                         // get function +++++++++++++++++++++++++++++++++++++++++++++++++
@@ -34,7 +50,7 @@
 
                 var result = $.parseJSON(data);
 
-                var string='<table width="100%"><tr> <th>Home Team</th><th>Away Team</th> <th>Start</th> <th>End</th> <th>Location</th> </tr>';
+                var string='<table width="100%"><tr> <th>Home School</th> <th>Home Team</th> <th>Away School</th>  <th>Away Team</th> <th>Start</th> <th>End</th> <th>Location</th> </tr>';
 
                 $.each( result, function( key, value ){
 
@@ -50,7 +66,6 @@
 
                 });
             });
-        };
     </script>
     
 </body>
