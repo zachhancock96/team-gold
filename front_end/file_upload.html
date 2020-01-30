@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>File Upload</title>
+    <link rel='stylesheet' href='css/style.css' />
+</head>
+
+
+<body>
+    <header>
+        File Upload
+    </header>
+
+    <div>
+
+        <table id='banner'>
+            <tr>
+            <td><a href='./game_view.html'>+ View Games +</a></td>
+            <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_page.html'>Add Manually</a><hr /><a href='./file_upload.html'>Upload File</a></div></td>
+            <td>+ Verify Games +</td>
+            <td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./user_profile.html'>User Profile</a> <hr /> <a href='./school_profile.html'>School Profile</a></div></td>  
+            </tr>
+        </table>
+        
+    </div>
+
+    <div>
+
+        <input type="file" id="excelFile" />  
+        <input type="button" id="viewFile" value="Upload" onclick="ExportToTable()" />  
+           <br />  
+           <br />  
+        <table id="exceltable">  
+     </table>
+
+     
+     </div> 
+
+</body>
+
+
+
+</html>
