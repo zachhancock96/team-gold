@@ -10,16 +10,23 @@
 		Add Game
 	</header>
 	
+	<!--
+		Drop down browser banner
+		View Games - shows list of games
+		Add Manually - shows add games individually
+		User Profile - shows user's individual profile
+		School Profile - shows user's school profile
+	-->
 	<table id='banner'>
         <tr>
         <td><a href='./game_view.html'>+ View Games +</a></td>
-        <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_page.html'>Add Manually</a><hr /><a href='./file_upload.html'>Upload File</a></div></td>
+        <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_single_game.html'>Add Manually</a><hr /><a href='./file_upload.html'>Upload File</a></div></td>
         <td>+ Verify Games +</td>
         <td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./user_profile.html'>User Profile</a> <hr /> <a href='./school_profile.html'>School Profile</a></div></td>  
         </tr>
     </table>
 	
-	<table id='addGameTable'>
+	<table id='add__single_game_table'>
 		<form id="form">
 			<tr>
 			<td>Home Team:</td>
@@ -63,7 +70,7 @@
 			
 			<tr>
 			<td>End:</td> 
-			<td><input id="start" type="date" ></td>
+			<td><input id="end" type="date" ></td>
 			</tr>
 			
 			<tr>
@@ -166,9 +173,11 @@
 			//TODO: add game
 			api.addGame(game)
 				.then(result => {
+                                        alert('success!');
 					console.log(result);
 				})
 				.catch(error => {
+                  		        alert('Oops!');
 					console.log(error);
 				})
 		}

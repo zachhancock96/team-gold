@@ -16,44 +16,73 @@
 	
 	<div>
 
-		<table id='banner'>
-			<tr>
-			<td><a href='./game_view.html'>+ View Games +</a></td>
-			<td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_page.html'>Add Manually</a><hr /><a href='./file_upload.html'>Upload File</a></div></td>
-			<td>+ Verify Games +</td>
-			<td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./user_profile.html'>User Profile</a> <hr /> <a href='./school_profile.html'>School Profile</a></div></td>  
-			</tr>
-	    </table>
+    <!--
+		Drop down browser banner
+		View Games - shows list of games
+		Add Manually - shows add games individually
+		User Profile - shows user's individual profile
+		School Profile - shows user's school profile
+	-->
+	<table id='banner'>
+        <tr>
+        <td><a href='./game_view.html'>+ View Games +</a></td>
+        <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_single_game.html'>Add Manually</a><hr /><a href='./file_upload.html'>Upload File</a></div></td>
+        <td>+ Verify Games +</td>
+        <td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./user_profile.html'>User Profile</a> <hr /> <a href='./school_profile.html'>School Profile</a></div></td>  
+        </tr>
+    </table>
     
 
-    </div>
+	</div>
+	
+	<!--
+	Show User profile
+	Name - show the user's Name(cannot be updated by user)
+	School - show school user belongs with(cannot be updated by user)
+	Login - show user's login ID(cannot be updated by user)
+	Password - user can update their password
+	Confirm Password - user must confirm their password
+	Phone - user's contact phone #
+	email - user's email address that should get notifications of games
+	Save Changes? - button to allow the user to save any changes
+	-->
 	
 	<form action="RepEdit.html" method="post">
 		
-		<table>
+		<table id='user_edit_profile_table'>
 		<tr>
-		<td>Name:</td>
-		<td>John Doe</td>
+			<td>Name:</td>
+			<td>John Doe</td>
 		</tr>
 		
 		<tr>
-		<td>School:</td>
-		<td>West Monroe High School</td>
+			<td>School:</td>
+			<td>West Monroe High School</td>
+		</tr>
+
+		<tr>
+			<td>Login:</td>
+			<td>JohnD</td>
+		</tr>
+
+		<tr>
+			<td>Password:</td>
+			<td>******</td>
 		</tr>
 		
 		<tr>
-		<td>Phone:</td>
-		<td><input type="tel" name="phoneNo" pattern="[0-9] {3} - [0-9] {3} - [0-9] {3}" placeholder="123-456-7890"></td>
+			<td>Phone:</td>
+			<td><input type="tel" name="phoneNo" pattern="[0-9] {3} - [0-9] {3} - [0-9] {3}" placeholder="123-456-7890"></td>
 		</tr>
 		
 		<tr>
-		<td>Email:</td>
-		<td><input type="text" name="email"></td>
+			<td>Email:</td>
+			<td><input type="text" name="email"></td>
 		</tr>
 		
 		<tr>
-		<td>Save Changes?</td>
-		<td><input type="submit" value="Save"></td>
+			<td>Save Changes?</td>
+			<td><input type="submit" value="Save"></td>
 		</tr>
 		</table>
 	</form>

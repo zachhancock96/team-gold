@@ -16,19 +16,37 @@
 	
 	<div>
 
-		<table id='banner'>
-			<tr>
-			<td><a href='./game_view.html'>+ View Games +</a></td>
-			<td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_page.html'>Add Manually</a><hr /><a href='./file_upload.html'>Upload File</a></div></td>
-			<td>+ Verify Games +</td>
-			<td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./user_profile.html'>User Profile</a> <hr /> <a href='./school_profile.html'>School Profile</a></div></td>  
-			</tr>
-	    </table>
+    <!--
+		Drop down browser banner
+		View Games - shows list of games
+		Add Manually - shows add games individually
+		User Profile - shows user's individual profile
+		School Profile - shows user's school profile
+	-->
+	<table id='banner'>
+        <tr>
+        <td><a href='./game_view.html'>+ View Games +</a></td>
+        <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_single_game.html'>Add Manually</a><hr /><a href='./file_upload.html'>Upload File</a></div></td>
+        <td>+ Verify Games +</td>
+        <td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./user_profile.html'>User Profile</a> <hr /> <a href='./school_profile.html'>School Profile</a></div></td>  
+        </tr>
+    </table>
     
 
     </div>
-	
-<table>	
+<!--
+	Show School profile
+	School Name - show school user belongs with(cannot be updated by user)
+	LHSAA Names - shows all LHSAA Names that belong to this school(cannot be updated by user)
+	Address - shows the school's address(updated by user)
+	Phone - is the school's phone #(updated by user)
+	email - is the school's email address(es) that should get notifications of games(updated by user)
+	School Colors - is the school's primary 2 colors that will be used to personalize the school user's experience(updated by user)
+	School Logo - picture of the school's logo that will be used to personalize the school user's experience(updated by user)
+	Edit Profile - button to allow the user to change parts of their school's profile
+-->
+		
+<table id='school_profile_table'>	
 	<tr>
 	<td>School Name:</td>
 	<td>West Monroe High School</td>

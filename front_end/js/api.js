@@ -16,7 +16,7 @@
 */
 
 const api = (function() {
-    const BASE_URL = "http://18.219.186.34:4000/api/";
+    const BASE_URL = "http://18.219.186.34/api/";
 
     const API_URLS = {
         GET_GAMES: BASE_URL + "games",

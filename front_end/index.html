@@ -14,15 +14,26 @@
         Game View
     </header>
 	
+	<!--
+		Drop down browser banner
+		View Games - shows list of games
+		Add Manually - shows add games individually
+		User Profile - shows user's individual profile
+		School Profile - shows user's school profile
+	-->
 	<table id='banner'>
         <tr>
         <td><a href='./game_view.html'>+ View Games +</a></td>
-        <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_page.html'>Add Manually</a><hr /><a href='./file_upload.html'>Upload File</a></div></td>
+        <td class='dropdown'>+ Add Games +<div class='dropdown-content'><a href='./add_single_game.html'>Add Manually</a><hr /><a href='./file_upload.html'>Upload File</a></div></td>
         <td>+ Verify Games +</td>
         <td class='dropdown'>+ Profile +<div class='dropdown-content'><a href='./user_profile.html'>User Profile</a> <hr /> <a href='./school_profile.html'>School Profile</a></div></td>  
         </tr>
     </table>
 
+    <!--
+        Show the list of games that have been added
+    -->
+    
     <div id = 'records'></div>
 
     <script type='text/JavaScript' src="js/jquery.js"></script>
