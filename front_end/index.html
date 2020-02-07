@@ -36,7 +36,27 @@
             editable: true,
             navLinks: true, // can click day/week names to navigate views
             eventLimit: true, // allow "more" link when too many events
-            events: {
+            events: 
+            [
+        {
+          title: 'WOHS VS WMHS',
+          start: '2020-02-01T11:00:00',
+          end: '2020-02-01T12:30:00'
+        },
+        {
+          title: 'OHS VS NHS',
+          start: '2020-02-01T13:00:00',
+          end: '2020-02-01T14:30:00'
+        },
+        {
+            title: 'OCS VS NBS',
+          start: '2020-02-04T10:30:00',
+          end: '2020-02-04T12:00:00'
+        },
+        
+        
+      ]
+      /*{
                 url: 'get-events.php',
                 failure: function() {
                 document.getElementById('script-warning').style.display = 'block'
@@ -45,7 +65,7 @@
             loading: function(bool) {
                 document.getElementById('loading').style.display =
                     bool ? 'block' : 'none';
-            }
+            }*/
             });
   
           calendar.render();
