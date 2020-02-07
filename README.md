@@ -1,6 +1,1 @@
 # team-gold
-
-
-
-
-joopla
