@@ -24,7 +24,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
           var calendarEl = document.getElementById('calendar');
-  
+          var todayDate = new Date();
           var calendar = new FullCalendar.Calendar(calendarEl, {
             plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
             header: {
@@ -32,12 +32,12 @@
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             },
-            defaultDate: '2019-08-12',
+            defaultDate: todayDate,
             editable: true,
             navLinks: true, // can click day/week names to navigate views
             eventLimit: true, // allow "more" link when too many events
             events: {
-                url: 'php/get-events.php',
+                url: 'get-events.php',
                 failure: function() {
                 document.getElementById('script-warning').style.display = 'block'
                 }
@@ -80,7 +80,7 @@
     -->
 
     <div id='script-warning'>
-        <code>php/get-events.php</code> must be running.
+        <code>get-events.php</code> must be running.
       </div>
     
       <div id='loading'>loading...</div>
