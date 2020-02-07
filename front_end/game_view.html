@@ -7,6 +7,51 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Game Viewer</title>
     <link rel='stylesheet' href='css/style.css' />
+    <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='fullcalendar/daygrid/main.css' rel='stylesheet' />
+    <link href='fullcalendar/timegrid/main.css' rel='stylesheet' />
+    <link href='fullcalendar/list/main.css' rel='stylesheet' />
+
+    <script src='fullcalendar/core/main.js'></script>
+    <script src='fullcalendar/interaction/main.js'></script>
+    <script src='fullcalendar/daygrid/main.js'></script>
+    <script src='fullcalendar/timegrid/main.js'></script>
+    <script src='fullcalendar/list/main.js'></script>
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+          var calendarEl = document.getElementById('calendar');
+  
+          var calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+            header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            defaultDate: '2019-08-12',
+            editable: true,
+            navLinks: true, // can click day/week names to navigate views
+            eventLimit: true, // allow "more" link when too many events
+            events: {
+                url: 'php/get-events.php',
+                failure: function() {
+                document.getElementById('script-warning').style.display = 'block'
+                }
+            },
+            loading: function(bool) {
+                document.getElementById('loading').style.display =
+                    bool ? 'block' : 'none';
+            }
+            });
+  
+          calendar.render();
+        });
+  
+      </script>
 </head>
 
 <body>
@@ -31,8 +76,20 @@
     </table>
 
     <!--
-        Show the list of games that have been added
+        Show the calendar of games that have been added
     -->
+
+    <div id='script-warning'>
+        <code>php/get-events.php</code> must be running.
+      </div>
+    
+      <div id='loading'>loading...</div>
+    
+      <div id='calendar'></div>
+
+
+    <!--
+
     
     <div id = 'records'></div>
 
@@ -67,6 +124,7 @@
                     .catch(error => console.log(error));
         });
     </script>
+    -->
     
 </body>
 </html>
