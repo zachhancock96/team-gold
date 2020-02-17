@@ -1,57 +1,161 @@
 const assert = require('assert');
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const app = express();
+const { moment, FORMAT_DATE_TIME, FORMAT_DATE } = require('./moment');
 
 const PORT = 4000;
 
-app.use(bodyParser.json());
+function connectMysql(callback) {
+  const mysqlCtor = require('mysql');
 
-const Repository = require('./repository');
+  const CONN_CONFIG = {
+    host: 'localhost',
+    user: 'root',
+    password: ''
+  };
 
-Repository.connect(function(error, repository) {
+  const mysql = mysqlCtor.createConnection(CONN_CONFIG);
+
+  mysql.connect(function(error) {
+    if (error) return callback(error, null);
+
+    console.log('connected to sql server');
+
+    mysql.query('USE SoccerSchedule');
+
+    callback(null, mysql);
+  });
+}
+
+connectMysql((error, mysql) => {
   if (error) throw error;
+
+  const repository = require('./repository')(mysql);
+  
+  const app = express();
+
+  app.use(bodyParser.json());
 
   /*
   @response {
     ok: true,
     games: [
       {
-        id,
+        id: int,
         homeTeam: {
-          id,
-          teamName
+          id: int,
+          name: string,
+          abbrevName: string
         },
         awayTeam: {
-          id,
-          teamName
+          id: int,
+          name: string,
+          abbrevName: string
         },
-        start,
-        end,
-        location
+        start: DateTime (e.g. "2020-03-17T08:00:00-05:00"),
+        location: string
       }
     ]
   }
   */
-  app.get('/api/games', async function(req, res, next) {
+ app.get('/api/games', async function(req, res, next) {
     try {
-      const games = await repository.getGames();
+      const q = req.query || {};
+      q.start_date = q.start_date || null;
+      q.end_date = q.end_date || null;
+      q.team = q.team || null;
+      q.home_team = q.home_team || null;
+      q.away_team = q.away_team || null;
+      q.school = q.school || null;
+
+      if (q.start_date !== null) {
+        const isValidFormat = moment(q.start_date, FORMAT_DATE, true).isValid();
+        if (!isValidFormat) {
+          return res.send({
+            ok: false,
+            reason: `illegal start_date query parameter`
+          });
+        }
+      }
+
+      if (q.end_date != null) {
+        const isValidFormat = moment(q.end_date, FORMAT_DATE, true).isValid();
+        if (!isValidFormat) {
+          return res.send({
+            ok: false,
+            reason: `illegal end_date query paramter`
+          });
+        }
+      }
+
+      const games = await repository.getGames(q);
     
       res.send({ ok: true, games });
-  
+
     } catch(error) {
       console.log(error);
       res.send({ ok: false, reason: error.message });
     }
-  })
-  
+  });
+
+  /*
+    @response {
+      ok: true,
+      schools: [
+        {
+          id: int,
+          name: string,
+          abbrevName: string
+        }
+      ]
+    }
+  */
+  app.get('/api/teams/names', async function(req, res, next) {
+    try {
+      const match = req.query.match || '';
+
+      const teams = await repository.findTeamsMatchingName(match);
+
+      res.send({ok: true, teams});
+       
+    } catch(error) {
+      console.log(error);
+      res.send({ ok: false, reason: error.message });
+    }
+  });
+
+
+  /*
+    @response {
+      ok: true,
+      schools: [
+        {
+          id: int,
+          name: string,
+          abbrevName: string
+        }
+      ]
+    }  
+  */
+  app.get('/api/schools/names', async function(req, res, next) {
+    try {
+      const match = req.query.match || '';
+
+      const schools = await repository.findSchoolsMatchingName(match);
+
+      res.send({ok: true, schools});
+
+    } catch(error) {
+      console.log(error);
+      res.send({ ok: false, reason: error.message });
+    }
+  });
+
   /*
   @body {
     homeTeamId,
     awayTeamId,
     start,
-    end,
     location
   }
 
@@ -66,22 +170,28 @@ Repository.connect(function(error, repository) {
         homeTeamId: req.body.homeTeamId,
         awayTeamId: req.body.awayTeamId,
         start: req.body.start,
-        end: req.body.end,
         location: req.body.location
       };
-    
+
+      const isValidStart = moment(game.start, FORMAT_DATE_TIME, true).isValid();
+      if (!isValidStart) {
+        return res.send({
+          ok: false,
+          reason: `start should have following format ${FORMAT_DATE_TIME}`
+        });
+      }
+
       const gameId = await repository.addGame(game);
     
       res.send({ ok: true, gameId });
-  
+
     } catch(error) {
       console.log(error);
       res.send({ ok: false, reason: error.message });
     }
-  })
-  
-})
+  });
 
-app.listen(PORT, () => {
-  console.log('Server running in port ' + PORT);
+  app.listen(PORT, () => {
+    console.log('Server running in port ' + PORT);
+  });  
 });

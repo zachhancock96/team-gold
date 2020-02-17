@@ -4,13 +4,28 @@ USE SoccerSchedule;
 
 DROP TABLE IF EXISTS Game;
 DROP TABLE IF EXISTS Team;
+DROP TABLE IF EXISTS School;
+
+CREATE TABLE School (
+  id int NOT NULL AUTO_INCREMENT,
+  name varchar(55) NOT NULL,
+  abbrevName varchar(55) NOT NULL,
+
+  PRIMARY KEY(id),
+  UNIQUE (name),
+  UNIQUE (abbrevName)
+);
 
 CREATE TABLE Team (
   id int NOT NULL AUTO_INCREMENT,
-  teamName varchar(55) NOT NULL,
+  name varchar(55) NOT NULL,
+  abbrevName varchar(55) NOT NULL,
+  schoolId int NOT NULL,
   
   PRIMARY KEY(id),
-  UNIQUE (teamName)
+  FOREIGN KEY(schoolId) REFERENCES School(id),
+  UNIQUE (name),
+  UNIQUE (abbrevName)
 );
 
 CREATE TABLE Game (
@@ -18,7 +33,6 @@ CREATE TABLE Game (
   homeTeamId int,
   awayTeamId int,
   start DateTime NOT NULL,
-  end DateTime NOT NULL,
   location varchar(55),
 
   PRIMARY KEY(id),
