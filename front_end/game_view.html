@@ -19,10 +19,21 @@
     <script src='fullcalendar/daygrid/main.js'></script>
     <script src='fullcalendar/timegrid/main.js'></script>
     <script src='fullcalendar/list/main.js'></script>
-    
+    <script src='js/jquery.js'></script>
+    <script src='js/api.js'></script>
     <script>
 
-        document.addEventListener('DOMContentLoaded', function() {
+        //html is loaded
+      document.addEventListener('DOMContentLoaded', calendarGames);
+      
+      function calendarGames() {
+  
+          //fetch games
+        api.getGames().then(function(games){
+          const gamesF = games.filter(mySchoolFunction);
+          console.log(gamesF);
+          
+          //render calendar
           var calendarEl = document.getElementById('calendar');
           var todayDate = new Date();
           var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -36,39 +47,14 @@
             editable: true,
             navLinks: true, // can click day/week names to navigate views
             eventLimit: true, // allow "more" link when too many events
-            events: 
-            [
-        {
-          title: 'WOHS VS WMHS',
-          start: '2020-02-01T11:00:00',
-          end: '2020-02-01T12:30:00'
-        },
-        {
-          title: 'OHS VS NHS',
-          start: '2020-02-01T13:00:00',
-          end: '2020-02-01T14:30:00'
-        },
-        {
-            title: 'OCS VS NBS',
-          start: '2020-02-04T10:30:00',
-          end: '2020-02-04T12:00:00'
-        }
-        
-      ]
-      /*{
-                url: 'get-events.php',
-                failure: function() {
-                document.getElementById('script-warning').style.display = 'block'
-                }
-            },
-            loading: function(bool) {
-                document.getElementById('loading').style.display =
-                    bool ? 'block' : 'none';
-            }*/
+            events: gamesF
             });
+
+            calendar.render();
+        })
   
-          calendar.render();
-        });
+        }
+
   
       </script>
 </head>
@@ -104,24 +90,32 @@
     Filter games
   -->
 
-  <input type="text" id="schoolName" onkeyup="mySchoolFunction()" placeholder="Search for school..." title="school">
+  <input type="text" id="schoolName" placeholder="Search for school..." title="school">
+  
+  <!--
   <input type="text" id="teamName" onkeyup="myteamFunction()" placeholder="Search for team..." title="team">
   <input type="text" id="genderName" onkeyup="mygenderFunction()" placeholder="Search for boys/girls..." title="gender">
-
+  -->
+  <button id="myBtn">Apply Filter</button>
   <script>
-    function mySchoolFunction() {
-
+    document.getElementById("myBtn").addEventListener("click", calendarGames);
+    
+    function mySchoolFunction(gameN) {
+      var input, filter, txtValue, i, a;
+      input = document.getElementById('schoolName');
+      filter = input.value.toUpperCase();
+      a = gameN.title;
+      txtValue = a.textContent || a.innerText;
+      if(a.toUpperCase().indexOf(filter) > -1){
+        return true;
+      }
     }
   </script>
     <!--
         Show the calendar of games that have been added
     -->
 
-    <div id='script-warning'>
-        <code>get-events.php</code> must be running.
-      </div>
     
-      <div id='loading'>loading...</div>
     
       <div id='calendar'></div>
 
