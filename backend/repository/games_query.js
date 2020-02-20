@@ -176,7 +176,9 @@ module.exports = function(mysql) {
           }
           
           const games = rows.reduce((games, row) => {
-  
+
+            console.log(row.start.toString());
+
             if (games.length <= DOC_LIMIT) {
               games.push({
                 id: row.id,

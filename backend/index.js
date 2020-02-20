@@ -11,7 +11,8 @@ function connectMysql(callback) {
   const CONN_CONFIG = {
     host: 'localhost',
     user: 'root',
-    password: ''
+    password: '',
+    timezone: '+00:00'
   };
 
   const mysql = mysqlCtor.createConnection(CONN_CONFIG);
@@ -166,20 +167,20 @@ connectMysql((error, mysql) => {
   */
   app.post('/api/games', async function(req, res, next) {
     try {
-      const game = {
-        homeTeamId: req.body.homeTeamId,
-        awayTeamId: req.body.awayTeamId,
-        start: req.body.start,
-        location: req.body.location
-      };
-
-      const isValidStart = moment(game.start, FORMAT_DATE_TIME, true).isValid();
-      if (!isValidStart) {
+      const start = moment(req.body.start, FORMAT_DATE_TIME, true);
+      if (!start.isValid()) {
         return res.send({
           ok: false,
           reason: `start should have following format ${FORMAT_DATE_TIME}`
         });
       }
+
+      const game = {
+        homeTeamId: req.body.homeTeamId,
+        awayTeamId: req.body.awayTeamId,
+        start,
+        location: req.body.location
+      };
 
       const gameId = await repository.addGame(game);
     

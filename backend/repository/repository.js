@@ -10,7 +10,7 @@ module.exports = function(mysql) {
   /*@param game:  {
     homeTeamId: int,
     awayTeamId: int,
-    start: moment | Date | Date like string,
+    start: moment | Date,
     locaton: string
   }*/
   function addGame(game) {
@@ -29,41 +29,6 @@ module.exports = function(mysql) {
         if (err) return reject(err);
 
         resolve(result.insertId);
-      });
-    });
-  }
-
-  /*@deprecated*/
-  function getGames_old() {
-
-    const query = `
-      SELECT G.id as id, HTeam.name as hName, ATeam.name as aName, HTeam.abbrevName as hAbbrevName, ATeam.abbrevName as aAbbrevName, homeTeamId, awayTeamId, start, location
-      FROM Game G
-      JOIN Team HTeam ON G.homeTeamId=HTeam.id
-      JOIN Team ATeam ON G.awayTeamId=ATeam.id;`;
-
-    return new Promise(function(resolve, reject) {
-
-      mysql.query(query, function(err, rows) {
-        if (err) return  reject(err);
-
-        const games = rows.map(row => ({
-          id: row.id,
-          start: moment(row.start).format(FORMAT_DATE_TIME),
-          location: row.location,
-          homeTeam: {
-            id: row.homeTeamId,
-            name: row.hName,
-            abbrevName: row.hAbbrevName
-          },
-          awayTeam: {
-            id: row.awayTeamId,
-            name: row.aName,
-            abbrevName: row.aAbbrevName
-          }
-        }));
-
-        resolve(games);
       });
     });
   }
@@ -159,7 +124,6 @@ module.exports = function(mysql) {
 
   return {
     addGame,
-    getGames_old,
     getGames,
     findTeamsMatchingName,
     findSchoolsMatchingName

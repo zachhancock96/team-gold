@@ -12,7 +12,7 @@ function sqlValues(array) {
 
   array = array
     .map(r => r instanceof Date || r instanceof moment
-        ? moment(r).format(FORMAT_DATE_TIME)
+        ? moment(r).toISOString()
         : r)
     .map(r => typeof r === 'string'? `'${r}'`: r)
     .map(r => (r === null || r === undefined)? 'null': r);
@@ -22,7 +22,7 @@ function sqlValues(array) {
   
 function sqlValue(v) {
   if (v instanceof moment || v instanceof Date) {      
-    v = moment(v).format(FORMAT_DATE_TIME);
+    v = moment(v).toISOString();
   }
   if (typeof v === 'string') return `'${v}'`;
   if (v === null || v === undefined) return 'null';
