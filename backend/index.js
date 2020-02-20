@@ -1,4 +1,5 @@
 const assert = require('assert');
+const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { moment, FORMAT_DATE_TIME, FORMAT_DATE } = require('./moment');
@@ -35,6 +36,7 @@ connectMysql((error, mysql) => {
   
   const app = express();
 
+  app.use(cors());
   app.use(bodyParser.json());
 
   /*
