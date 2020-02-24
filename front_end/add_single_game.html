@@ -69,8 +69,13 @@
 			</tr>
 			
 			<tr>
-			<td>Start:</td> 
-			<td><input id="start" type="text" ></td>
+			<td>Start Date:</td> 
+			<td><input id="start date" type="text" placeholder="dd/mm/yyyy"></td>
+			</tr>
+
+			<tr>
+			<td>Start Time:</td> 
+			<td><input id="start time" type="text" placeholder="hh:mm"></td>
 			</tr>
 			
 			<!--<tr>
@@ -92,13 +97,37 @@
 
 <script type='text/JavaScript' src="js/jquery.js"></script>
 <script type='text/JavaScript' src="js/api.js"></script>
+<script src='js/jquery.datetimepicker.js'></script>
+
+<script>
+
+	$.datetimepicker.setLocale('en');
+
+	//date and time picker
+	$('#datetimepicker1').datetimepicker({
+		datepicker:false,
+		format:'H:i',
+		step:5
+	});
+	$('#datetimepicker2').datetimepicker({
+		yearOffset:222,
+		lang:'ch',
+		timepicker:false,
+		format:'d/m/Y',
+		formatDate:'Y/m/d',
+		minDate:'-1970/01/02', // yesterday is minimum date
+		maxDate:'+1970/01/02' // and tommorow is maximum date calendar
+	});	
+	
+</script>
 
 <script type='text/JavaScript'>
+
 	//testing api.addGame
 	const form = (function() {
 		const selectHomeTeamEl = $('#select_home_team');
 		const selectVisitingTeamEl = $('#select_visiting_team');
-		const startEl = $('#start');
+		const startEl = $(concat('#start_date','T','#start_time','-5:00'));
 		const locationEl = $('#location');
 		const btnSubmitEl = $('#btn_submit');
 
