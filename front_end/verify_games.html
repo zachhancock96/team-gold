@@ -7,54 +7,46 @@
 <link href='fullcalendar/list/main.css' rel='stylesheet' />
 <script src='fullcalendar/core/main.js'></script>
 <script src='fullcalendar/list/main.js'></script>
+<script src='js/jquery.js'></script>
+<script src='js/api.js'></script>
 <script>
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var todayDate = new Date();
+  document.addEventListener('DOMContentLoaded', calendarGames);
+  
+  function calendarGames() {
+  
+    //fetch games
+  api.getGames().then(function(games) {
+      var calendarEl = document.getElementById('calendar');
+      var todayDate = new Date();
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      plugins: [ 'list' ],
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: [ 'list' ],
 
-      header: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'listDay,listWeek,dayGridMonth'
-      },
-
-      // customize the button names,
-      // otherwise they'd all just say "list"
-      views: {
-        listDay: { buttonText: 'list day' },
-        listWeek: { buttonText: 'list week' }
-      },
-
-      defaultView: 'listWeek',
-      defaultDate: todayDate,
-      navLinks: true, // can click day/week names to navigate views
-      editable: true,
-      eventLimit: true, // allow "more" link when too many events
-      events: [
-      {
-          title: 'WOHS VS WMHS',
-          start: '2020-02-09T11:00:00',
-          end: '2020-02-09T12:30:00'
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'listDay,listWeek,dayGridMonth'
         },
-        {
-          title: 'OHS VS NHS',
-          start: '2020-02-01T13:00:00',
-          end: '2020-02-01T14:30:00'
-        },
-        {
-            title: 'OCS VS NBS',
-          start: '2020-02-04T10:30:00',
-          end: '2020-02-04T12:00:00'
-        },
-      ]
-    });
 
-    calendar.render();
-  });
+        // customize the button names,
+        // otherwise they'd all just say "list"
+        views: {
+          listDay: { buttonText: 'list day' },
+          listWeek: { buttonText: 'list week' }
+        },
+
+        defaultView: 'listWeek',
+        defaultDate: todayDate,
+        navLinks: true, // can click day/week names to navigate views
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+        events: games
+      });
+
+      calendar.render();
+  })
+};
 
 </script>
 <style>
