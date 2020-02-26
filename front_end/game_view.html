@@ -31,7 +31,6 @@
           //fetch games
         api.getGames().then(function(games){
           const gamesF = games.filter(mySchoolFunction);
-          console.log(gamesF);
           
           //render calendar
           var calendarEl = document.getElementById('calendar');
