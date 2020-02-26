@@ -120,43 +120,7 @@
       <div id='calendar'></div>
 
 
-    <!--
-
     
-    <div id = 'records'></div>
-
-    <script type='text/JavaScript' src="js/jquery.js"></script>
-    <script type='text/JavaScript' src="js/api.js"></script>
-
-    <script type='text/JavaScript'>
-        $(function() {
-            api.getGames()
-                    .then(result => {
-    
-              
-                        let string='<table width="100%"><tr> <th>Home Team</th><th>Away Team</th> <th>Start</th> <th>End</th> <th>Location</th> </tr>';
-    
-                        $.each( result, function( key, value ){
-                            string += `
-                                <tr>
-                                    <td>${value['homeTeam']['teamName']}</td>
-                                    <td>${value['awayTeam']['teamName']}</td>
-                                    <td>${value['start']}</td>
-                                    <td>${value['end']}</td>
-                                    <td>${value['location']}</td>
-                                </tr>
-                            `;
-                        });
-    
-                        string += '</table>';
-    
-                        $('#records').html(string);
-                        
-                    })
-                    .catch(error => console.log(error));
-        });
-    </script>
-    -->
     
 </body>
 </html>
