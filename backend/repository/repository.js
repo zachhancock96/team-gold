@@ -15,12 +15,13 @@ module.exports = function(mysql) {
   }*/
   function addGame(game) {
 
-    const query = `INSERT INTO Game (homeTeamId, awayTeamId, start, location)
+    const query = `INSERT INTO Game (homeTeamId, awayTeamId, start, location, status)
       VALUES ${sqlUtils.sqlValues([
         game.homeTeamId,
         game.awayTeamId,
         game.start,
-        game.location
+        game.location,
+        game.status,
       ])};`;
 
     return new Promise(function(resolve, reject){

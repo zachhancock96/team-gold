@@ -70,6 +70,7 @@ connectMysql((error, mysql) => {
       q.home_team = q.home_team || null;
       q.away_team = q.away_team || null;
       q.school = q.school || null;
+      q.status = q.status || null;
 
       if (q.start_date !== null) {
         const isValidFormat = moment(q.start_date, FORMAT_DATE, true).isValid();
@@ -159,7 +160,8 @@ connectMysql((error, mysql) => {
     homeTeamId,
     awayTeamId,
     start,
-    location
+    location,
+    status
   }
 
   @response {
@@ -181,7 +183,8 @@ connectMysql((error, mysql) => {
         homeTeamId: req.body.homeTeamId,
         awayTeamId: req.body.awayTeamId,
         start,
-        location: req.body.location
+        location: req.body.location,
+        status: req.body.status
       };
 
       const gameId = await repository.addGame(game);

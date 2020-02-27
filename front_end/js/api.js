@@ -92,7 +92,7 @@ const api = (function() {
 
         */
        function getEvents() {
-            return httpGet(API_URLS.GET_GAMES)
+            return httpGet(API_URLS.GET_EVENTS)
                 .then(function(response) {
                     const games = response.games;
 
@@ -100,7 +100,7 @@ const api = (function() {
 
                     for(var i = 0; i < games.length; i++) {
                         const game = games[i];
-                        const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name ' @ ' + location;
+                        const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
                         const start = game.start;
                         const end = start;
                     
@@ -226,6 +226,7 @@ const api = (function() {
 
     return {
         getGames,
+        getEvents,
         getTeams,
         addGame
     };
@@ -267,6 +268,52 @@ function getGames() {
             for(var i = 0; i < games.length; i++) {
                 const game = games[i];
                 const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name;
+                const start = game.start;
+                const end = moment(start).add(1.5, 'hours').format(FORMAT_DATE_TIME);
+            
+                result.push({
+                    title,
+                    start,
+                    end
+                })
+            }
+
+            return result;
+
+        });
+}
+
+
+/*
+[
+    {
+        id: int,
+        homeTeam: {
+          id: int,
+          name: string,
+          abbrevName: string
+        },
+        awayTeam: {
+          id: int,
+          name: string,
+          abbrevName: string
+        },
+        start: DateTime (e.g. "2020-03-17T08:00:00-05:00"),
+        location: string
+    }
+  ]
+
+*/
+function getEvents() {
+    return httpGet(API_URLS.GET_GAMES)
+        .then(function(response) {
+            const games = response.games;
+
+            const result = [];
+
+            for(var i = 0; i < games.length; i++) {
+                const game = games[i];
+                const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
                 const start = game.start;
                 const end = moment(start).add(1.5, 'hours').format(FORMAT_DATE_TIME);
             
