@@ -778,7 +778,7 @@ Lots taken from Flatly (MIT): https://bootswatch.com/4/flatly/bootstrap.css
 .fc-button-group > .fc-button:focus,
 .fc-button-group > .fc-button:active,
 .fc-button-group > .fc-button.fc-button-active {
-  z-index: 1;
+ 
 }
 
 .fc-button-group > .fc-button:not(:first-child) {

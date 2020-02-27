@@ -49,6 +49,7 @@ table{
     font-style: italic;
     font-size: 18px;
     width: 100%;
+    z-index: 2;
 }
 
 td{
