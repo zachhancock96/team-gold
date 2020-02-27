@@ -8,4 +8,4 @@ Here goes another Tuesday...fat Tuesday actually
 
 52 of those and a life is gone
 
-#### (Meanwhile joopla is will be destroyed) Sorry Joopla!!!
+#### (Meanwhile joopla will be destroyed) Sorry Joopla!!!
