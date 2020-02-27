@@ -71,6 +71,50 @@ const api = (function() {
         }
 
         
+        /*
+        [
+            {
+                id: int,
+                homeTeam: {
+                id: int,
+                name: string,
+                abbrevName: string
+                },
+                awayTeam: {
+                id: int,
+                name: string,
+                abbrevName: string
+                },
+                start: DateTime (e.g. "2020-03-17T08:00:00-05:00"),
+                location: string
+            }
+        ]
+
+        */
+       function getEvents() {
+            return httpGet(API_URLS.GET_GAMES)
+                .then(function(response) {
+                    const games = response.games;
+
+                    const result = [];
+
+                    for(var i = 0; i < games.length; i++) {
+                        const game = games[i];
+                        const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name ' @ ' + location;
+                        const start = game.start;
+                        const end = start;
+                    
+                        result.push({
+                            title,
+                            start,
+                            end
+                        })
+                    }
+
+                    return result;
+
+                });
+        }
     
 
     //TODO: REPLACE MOCKS WHEN API IS DONE

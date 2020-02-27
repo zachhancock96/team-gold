@@ -29,7 +29,7 @@
       function calendarGames() {
   
           //fetch games
-        api.getGames().then(function(games){
+        api.getEvents().then(function(games){
           const gamesF = games.filter(mySchoolFunction);
           
           //render calendar
