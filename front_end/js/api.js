@@ -54,7 +54,7 @@ const api = (function() {
 
                     for(var i = 0; i < games.length; i++) {
                         const game = games[i];
-                        const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name;
+                        const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
                         const start = game.start;
                         const end = start;
                     
@@ -69,6 +69,54 @@ const api = (function() {
 
                 });
         }
+
+        /*
+        [
+            {
+                id: int,
+                homeTeam: {
+                id: int,
+                name: string,
+                abbrevName: string
+                },
+                awayTeam: {
+                id: int,
+                name: string,
+                abbrevName: string
+                },
+                start: DateTime (e.g. "2020-03-17T08:00:00-05:00"),
+                location: string
+                status: string
+            }
+        ]
+
+        */
+       function getVerify() {
+        return httpGet(API_URLS.GET_GAMES)
+            .then(function(response) {
+                const games = response.games;
+
+                const result = [];
+
+                for(var i = 0; i < games.length; i++) {
+                    const game = games[i];
+                    if(status = 'pend_team'){
+                        const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
+                        const start = game.start;
+                        const end = start;
+                    
+                        result.push({
+                            title,
+                            start,
+                            end
+                        })
+                    }
+                }
+
+                return result;
+
+            });
+    }
 
         
         /*
