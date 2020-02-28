@@ -376,3 +376,30 @@ function getEvents() {
 
         });
 }
+
+
+function getVerify() {
+    return httpGet(API_URLS.GET_GAMES)
+        .then(function(response) {
+            const games = response.games;
+
+            const result = [];
+
+            for(var i = 0; i < games.length; i++) {
+                const game = games[i];
+                if(status = 'pend_team'){
+                    const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
+                    const start = game.start;
+                    const end = start;
+                
+                    result.push({
+                        title,
+                        start,
+                        end
+                    })
+                }
+            }
+
+            return result;
+
+        });
