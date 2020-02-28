@@ -57,6 +57,7 @@ const api = (function() {
                         const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
                         const start = game.start;
                         const end = start;
+                        const status = game.status;
                     
                         result.push({
                             title,
@@ -95,12 +96,14 @@ const api = (function() {
         return httpGet(API_URLS.GET_GAMES)
             .then(function(response) {
                 const games = response.games;
+                console.log(games);
 
                 const result = [];
 
                 for(var i = 0; i < games.length; i++) {
                     const game = games[i];
-                    if(status = 'pend_team'){
+                    const temp = game.status;
+                    if(game.status == 'pend_team'){
                         const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
                         const start = game.start;
                         const end = start;
@@ -274,6 +277,7 @@ const api = (function() {
 
     return {
         getGames,
+        getVerify,
         getEvents,
         getTeams,
         addGame
@@ -318,6 +322,7 @@ function getGames() {
                 const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name;
                 const start = game.start;
                 const end = moment(start).add(1.5, 'hours').format(FORMAT_DATE_TIME);
+                const status = game.status;
             
                 result.push({
                     title,
@@ -387,7 +392,7 @@ function getVerify() {
 
             for(var i = 0; i < games.length; i++) {
                 const game = games[i];
-                if(status = 'pend_team'){
+                if(game.status = 'pend_team'){
                     const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
                     const start = game.start;
                     const end = start;

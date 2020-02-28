@@ -86,7 +86,7 @@ module.exports = function(mysql) {
         SELECT G.id as id, HT.name as hName, AT.name as aName, 
           HT.abbrevName as hAbbrevName, AT.abbrevName as aAbbrevName,
           HTSchool.name as htSchoolName, ATSchool.name as atSchoolName,
-          homeTeamId, awayTeamId, start, location
+          homeTeamId, awayTeamId, start, location, status
         FROM Game G
         JOIN Team HT ON G.homeTeamId=HT.id
         JOIN Team AT ON G.awayTeamId=AT.id
@@ -193,7 +193,8 @@ module.exports = function(mysql) {
                   id: row.awayTeamId,
                   name: row.aName,
                   abbrevName: row.aAbbrevName
-                }
+                },
+                status: row.status
               });
             }
   

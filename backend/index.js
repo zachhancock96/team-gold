@@ -56,7 +56,8 @@ connectMysql((error, mysql) => {
           abbrevName: string
         },
         start: DateTime (e.g. "2020-03-17T08:00:00-05:00"),
-        location: string
+        location: string,
+        status: status
       }
     ]
   }
