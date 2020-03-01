@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home</title>
+    <link rel='stylesheet' href='../css/style.css' />
+    <link rel='stylesheet' href="../css/mobile.css" />
+    <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='fullcalendar/daygrid/main.css' rel='stylesheet' />
+    <link href='fullcalendar/timegrid/main.css' rel='stylesheet' />
+    <link href='fullcalendar/list/main.css' rel='stylesheet' />
+    <script>
+        var menuState='hidden';
+        function changeNav(){
+
+            if(menuState == 'hidden'){
+                document.getElementById('mySidebar').style.width='250px';
+                menuState='visible';
+            }
+
+            else{
+                document.getElementById('mySidebar').style.width='0';
+                menuState='hidden';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id='mySidebar' class='sidebar'>
+        <a href='./m_game_view.html'>View Games</a>
+        <a href='./m_add_single_game.html'>Add Game Manually</a>
+        <a href='#ccc'>Upload Schedule</a>
+        <a href='./m_verify_games.html'>Verify Games</a>
+        <a href='./m_school_profile.html'>Edit School Profile</a>
+        <a href='./m_user_profile.html'>Edit User Profile</a>
+    </div>
+
+    <div id='sideBtn'>
+        <button class='openbtn' onclick='changeNav()'>&#9776; Menu</button>
+    </div>
+
+    <header>
+		User Profile
+    </header>
+    
+    <!--
+	Show User profile
+	Name - show the user's Name(cannot be updated by user)
+	School - show school user belongs with(cannot be updated by user)
+	Login - show user's login ID(cannot be updated by user)
+	Password - user can update their password
+	Confirm Password - user must confirm their password
+	Phone - user's contact phone #
+	email - user's email address that should get notifications of games
+	Save Changes? - button to allow the user to save any changes
+	-->
+	
+	<form action="RepEdit.html" method="post">
+		
+		<table id='user_edit_profile_table'>
+		<tr>
+			<td>Name:</td>
+			<td>John Doe</td>
+		</tr>
+		
+		<tr>
+			<td>School:</td>
+			<td>West Monroe High School</td>
+		</tr>
+
+		<tr>
+			<td>Login:</td>
+			<td>JohnD</td>
+		</tr>
+
+		<tr>
+			<td>Password:</td>
+			<td>******</td>
+		</tr>
+		
+		<tr>
+			<td>Phone:</td>
+			<td><input type="tel" name="phoneNo" pattern="[0-9] {3} - [0-9] {3} - [0-9] {3}" placeholder="123-456-7890"></td>
+		</tr>
+		
+		<tr>
+			<td>Email:</td>
+			<td><input type="text" name="email"></td>
+		</tr>
+		
+		<tr>
+			<td>Save Changes?</td>
+			<td><input type="submit" value="Save"></td>
+		</tr>
+		</table>
+	</form>
+    
+</body>
+</html>

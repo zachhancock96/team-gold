@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home</title>
+    <link rel='stylesheet' href='../css/style.css' />
+    <link rel='stylesheet' href="../css/mobile.css" />
+    <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='fullcalendar/daygrid/main.css' rel='stylesheet' />
+    <link href='fullcalendar/timegrid/main.css' rel='stylesheet' />
+    <link href='fullcalendar/list/main.css' rel='stylesheet' />
+    <script>
+        var menuState='hidden';
+        function changeNav(){
+
+            if(menuState == 'hidden'){
+                document.getElementById('mySidebar').style.width='250px';
+                menuState='visible';
+            }
+
+            else{
+                document.getElementById('mySidebar').style.width='0';
+                menuState='hidden';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id='mySidebar' class='sidebar'>
+        <a href='./m_game_view.html'>View Games</a>
+        <a href='./m_add_single_game.html'>Add Game Manually</a>
+        <a href='#ccc'>Upload Schedule</a>
+        <a href='./m_verify_games.html'>Verify Games</a>
+        <a href='./m_school_profile.html'>Edit School Profile</a>
+        <a href='./m_user_profile.html'>Edit User Profile</a>
+    </div>
+
+    <div id='sideBtn'>
+        <button class='openbtn' onclick='changeNav()'>&#9776; Menu</button>
+    </div>
+
+    <header>
+		School Profile
+	</header>
+    
+<!--
+    Show Edit School profile
+    School Name - show school user belongs with(cannot be updated by user)
+    LHSAA Names - shows all LHSAA Names that belong to this school(cannot be updated by user)
+    Address - user can update the address in the database
+    Phone - user can update the phone in the database
+    email - user can update the email address(es) for notifications in the database
+    School Colors - user can update the school's primary 2 colors that will be used to personalize the school user's experience
+    School Logo - user can update the picture of the school's logo that will be used to personalize the school user's experience
+    Save Changes? - button to allow the user to save any changes
+-->
+        
+    <form action="SchoolEdit.html" method="post">
+        <table id='school_edit_profile_table'>	
+            <tr>
+            <td>School Name:</td>
+            <td>West Monroe High School</td>
+            </tr>
+            
+            <tr>
+            <td>LHSAA Names:</td>
+            <td>West Monroe High School VB<br>
+            West Monroe High School VG<br>
+            West Monroe High School<br></td>
+            </tr>
+            
+            <tr>
+            <td>Address:</td>
+            <td>123 School Rd<br>
+            West Monroe, LA 71291</td>
+            </tr>
+            
+            <tr>
+            <td>Phone:</td>
+            <td>111-111-1111</td>
+            </tr>
+            
+            <tr>
+            <td>email:</td>
+            <td><input type="text" name="email">(Please put a semicolon(;) between email addresses</td>
+            </tr>
+            
+            <tr>
+            <td colspan="2"><form action="repEditSchool.php" method="post">
+            <input type="submit" value="Edit Profile">
+            </form></td>
+            </tr>
+        </table>
+    </form>
+    
+</body>
+</html>
