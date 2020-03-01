@@ -57,7 +57,6 @@ const api = (function() {
                         const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
                         const start = game.start;
                         const end = start;
-                        const status = game.status;
                     
                         result.push({
                             title,
@@ -96,13 +95,11 @@ const api = (function() {
         return httpGet(API_URLS.GET_GAMES)
             .then(function(response) {
                 const games = response.games;
-                console.log(games);
 
                 const result = [];
 
                 for(var i = 0; i < games.length; i++) {
                     const game = games[i];
-                    const temp = game.status;
                     if(game.status == 'pend_team'){
                         const title = game.homeTeam.name  + ' vs ' + game.awayTeam.name + ' @ ' + game.location;
                         const start = game.start;
@@ -115,7 +112,7 @@ const api = (function() {
                         })
                     }
                 }
-
+                console.log(result);
                 return result;
 
             });
