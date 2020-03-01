@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="../css/style.css">
+	<title>Add Game</title>
+    <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css"/>
+    <link rel='stylesheet' href="../css/mobile.css" />
+    <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
+    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='../fullcalendar/core/main.css' rel='stylesheet' />
+    <link href='../fullcalendar/daygrid/main.css' rel='stylesheet' />
+    <link href='../fullcalendar/timegrid/main.css' rel='stylesheet' />
+    <link href='../fullcalendar/list/main.css' rel='stylesheet' />
+</head>
+
+<body>
+
+    <div id='mySidebar' class='sidebar'>
+        <a href='./m_game_view.html'>View Games</a>
+        <a href='./m_add_single_game.html'>Add Game Manually</a>
+        <a href='#ccc'>Upload Schedule</a>
+        <a href='./m_verify_games.html'>Verify Games</a>
+        <a href='./m_school_profile.html'>Edit School Profile</a>
+        <a href='./m_user_profile.html'>Edit User Profile</a>
+    </div>
+
+    <div id='sideBtn'>
+        <button class='openbtn' onclick='changeNav()'>&#9776; Menu</button>
+    </div>
+
+
+	<header>
+		Add Game
+	</header>
+	
+	<table id='add__single_game_table'>
+		<form id="form">
+			<tr>
+			<td>Home Team:</td>
+			<td><select id="select_home_team"><option value="">Select Team</option></select></td>
+			
+			</tr>
+			
+			<tr>
+			<td>Visting Team:</td> 
+			<td><select id="select_visiting_team">
+			<option value="">Select Team</option></select></td>    
+			
+			</tr>
+			
+			<tr>
+			<td>Start Date:</td> 
+			<td><input id="start_date" type="text" placeholder="dd/mm/yyyy"></td>
+			</tr>
+
+			<tr>
+			<td>Start Time:</td> 
+			<td><input id="start_time" type="text" placeholder="hh:mm"></td>
+			</tr>
+			
+			<tr>
+			<td>Location:</td> 
+			<td><input id="location" type="text" name="location" placeholder="Location"></td>
+			</tr>
+			
+			<tr>
+			<td colspan="4"><input id="btn_submit" type="submit" value="Add Game" ></td>
+			</tr>
+		</form>
+	</table>
+</body>
+
+<script type='text/JavaScript' src="js/jquery.js"></script>
+<script type='text/JavaScript' src="js/api.js"></script>
+<script src='js/jquery.datetimepicker.js'></script>
+<script src='js/jquery.datetimepicker.full.js'></script>
+
+<script>
+    var menuState='hidden';
+    function changeNav(){
+
+        if(menuState == 'hidden'){
+            document.getElementById('mySidebar').style.width='250px';
+            menuState='visible';
+        }
+
+        else{
+            document.getElementById('mySidebar').style.width='0';
+            menuState='hidden';
+        }
+    }
+</script>
+
+<script>
+	jQuery(document).ready(function(){
+		jQuery('#start_date').datetimepicker();
+		jQuery('#start_time').datetimepicker();
+	});
+</script>
+
+
+<script>
+
+	$.datetimepicker.setLocale('en');
+
+	//date and time picker
+	$('#start_time').datetimepicker({
+		datepicker:false,
+		format:'H:i',
+		step:15
+	});
+	$('#start_date').datetimepicker({
+		yearOffset:0,
+		lang:'ch',
+		timepicker:false,
+		format:'d/m/Y',
+		formatDate:'Y/m/d',
+		minDate:'-1970/01/02', // yesterday is minimum date
+		maxDate:'+3000/01/02' // and tommorow is maximum date calendar
+	});	
+	
+</script>
+
+<script type='text/JavaScript'>
+
+	//testing api.addGame
+	const form = (function() {
+		const selectHomeTeamEl = $('#select_home_team');
+		const selectVisitingTeamEl = $('#select_visiting_team');
+		var temp = '#start_date'.concat('T','#start_time','-5:00');
+		const startEl = $(temp);
+		const locationEl = $('#location');
+		const btnSubmitEl = $('#btn_submit');
+		const status = ('pending');
+
+		const formEl = $('#form');
+
+		let submitListener = null;
+
+		/*
+			@param teams: Array<{
+				id,
+				teamName
+			}>
+		*/
+		function setTeams(teams) {
+			let options = teams
+				.map(team => `<option value=${team.id}>${team.teamName}</option>`);
+
+			options.shift('<option value="">Select team</option>')
+			
+			//array to string conversion
+			options = options.join('');
+
+			//clear select element
+			selectHomeTeamEl.empty();
+			selectVisitingTeamEl.empty();
+
+			//fill select element
+			selectHomeTeamEl.append(options);
+			selectVisitingTeamEl.append(options);
+		}
+
+		function setSubmitListener(listener) {
+			submitListener = listener;
+		}
+
+		formEl.on('submit', function(e) {
+			e.preventDefault();
+			//scrape data out of form elements
+			const game = {};
+			
+			game.homeTeamId = selectHomeTeamEl.val() || null;
+			game.awayTeamId = selectVisitingTeamEl.val() || null;
+			game.location = locationEl.val() || null;
+			game.start = startEl.val() || null;
+			game.status = status.val() || null;
+
+			if(game.homeTeamId){
+				game.homeTeamId = parseInt(game.homeTeamId);
+			}
+			if(game.awayTeamId){
+				game.awayTeamId = parseInt(game.awayTeamId);
+			}
+			// notify listener
+			if (submitListener != null) {
+				submitListener(game);
+			}
+		});
+
+		return {
+			setTeams,
+			setSubmitListener,
+		}
+	})();
+
+
+	form.setSubmitListener(game => {
+		if (game == null
+			|| !game.homeTeamId
+			|| !game.awayTeamId
+			|| !game.location
+			|| !game.start
+			|| !game.status) {
+				alert('invalid form data');
+			}
+		else {
+			//TODO: add game
+			api.addGame(game)
+				.then(result => {
+                                        alert('success!');
+					console.log(result);
+				})
+				.catch(error => {
+                  		        alert('Oops!');
+					console.log(error);
+				})
+		}
+	});
+
+
+	api.getTeams()
+		.then(teams => {
+			form.setTeams(teams);
+		});
+
+
+</script>
+</html>
