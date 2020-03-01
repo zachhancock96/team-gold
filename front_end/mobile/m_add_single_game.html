@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="../css/style.css">
 	<title>Add Game</title>
-    <link rel="stylesheet" type="text/css" href="css/jquery.datetimepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/jquery.datetimepicker.css"/>
     <link rel='stylesheet' href="../css/mobile.css" />
     <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
@@ -71,10 +71,10 @@
 	</table>
 </body>
 
-<script type='text/JavaScript' src="js/jquery.js"></script>
-<script type='text/JavaScript' src="js/api.js"></script>
-<script src='js/jquery.datetimepicker.js'></script>
-<script src='js/jquery.datetimepicker.full.js'></script>
+<script type='text/JavaScript' src="../js/jquery.js"></script>
+<script type='text/JavaScript' src="../js/api.js"></script>
+<script src='../js/jquery.datetimepicker.js'></script>
+<script src='../js/jquery.datetimepicker.full.js'></script>
 
 <script>
     var menuState='hidden';
@@ -148,7 +148,7 @@
 			let options = teams
 				.map(team => `<option value=${team.id}>${team.teamName}</option>`);
 
-			options.shift('<option value="">Select team</option>')
+				options = ['<option value="">Select team</option>', ...options];
 			
 			//array to string conversion
 			options = options.join('');

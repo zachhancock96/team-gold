@@ -5,8 +5,8 @@
 <title>Verify Games</title>
 <link rel='stylesheet' href='../css/style.css' />
 <link rel='stylesheet' href="../css/mobile.css" />
-<link href='fullcalendar/core/main.css' rel='stylesheet' />
-<link href='fullcalendar/list/main.css' rel='stylesheet' />
+<link href='../fullcalendar/core/main.css' rel='stylesheet' />
+<link href='../fullcalendar/list/main.css' rel='stylesheet' />
 <link href='https://use.fontawesome.com/releases/v5.0.6/css/all.css' rel='stylesheet'>
 <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' rel='stylesheet' />
 <link href='../fullcalendar/core/main.css' rel='stylesheet' />
@@ -14,10 +14,10 @@
 <link href='../fullcalendar/timegrid/main.css' rel='stylesheet' />
 <link href='../fullcalendar/list/main.css' rel='stylesheet' />
 
-<script src='fullcalendar/core/main.js'></script>
-<script src='fullcalendar/list/main.js'></script>
-<script src='js/jquery.js'></script>
-<script src='js/api.js'></script>
+<script src='../fullcalendar/core/main.js'></script>
+<script src='../fullcalendar/list/main.js'></script>
+<script src='../js/jquery.js'></script>
+<script src='../js/api.js'></script>
 <script>
     var menuState='hidden';
     function changeNav(){
@@ -40,7 +40,7 @@
   function calendarGames() {
   
     //fetch games
-  api.getGames().then(function(games) {
+  api.getVerify().then(function(games) {
       var calendarEl = document.getElementById('calendar');
       var todayDate = new Date();
 
