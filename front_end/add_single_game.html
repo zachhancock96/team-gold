@@ -131,7 +131,8 @@
 			let options = teams
 				.map(team => `<option value=${team.id}>${team.teamName}</option>`);
 
-			options.shift('<option value="">Select team</option>')
+			options = ['<option value="">Select team</option>', ...options];
+			
 			
 			//array to string conversion
 			options = options.join('');
