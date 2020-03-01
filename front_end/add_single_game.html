@@ -71,51 +71,47 @@
 </body>
 
 <script type='text/JavaScript' src="js/jquery.js"></script>
+<script type='text/JavaScript' src="js/jquery2.js"></script>
 <script type='text/JavaScript' src="js/api.js"></script>
 <script src='js/jquery.datetimepicker.js'></script>
 <script src='js/jquery.datetimepicker.full.js'></script>
 
-<script>
-	jQuery(document).ready(function(){
-		jQuery('#start_date').datetimepicker();
-		jQuery('#start_time').datetimepicker();
-	});
-</script>
-
-
-<script>
-
-	$.datetimepicker.setLocale('en');
-
-	//date and time picker
-	$('#start_time').datetimepicker({
-		datepicker:false,
-		format:'H:i',
-		step:15
-	});
-	$('#start_date').datetimepicker({
-		yearOffset:0,
-		lang:'ch',
-		timepicker:false,
-		format:'d/m/Y',
-		formatDate:'Y/m/d',
-		minDate:'-1970/01/02', // yesterday is minimum date
-		maxDate:'+3000/01/02' // and tommorow is maximum date calendar
-	});	
-	
-</script>
-
 <script type='text/JavaScript'>
+
+
+	
+
+
 
 	//testing api.addGame
 	const form = (function() {
 		const selectHomeTeamEl = $('#select_home_team');
-		const selectVisitingTeamEl = $('#select_visiting_team');
-		var temp = '#start_date'.concat('T','#start_time','-5:00');
-		const startEl = $(temp);
+		const selectVisitingTeamEl = $('#select_visiting_team');		
 		const locationEl = $('#location');
 		const btnSubmitEl = $('#btn_submit');
-		const status = ('pending');
+		const startDateEl = $('#start_date');
+		const startTimeEl = $('#start_time');
+
+		//BEGIN: init date time picker
+		$.datetimepicker.setLocale('en');
+
+		startTimeEl.datetimepicker({
+			datepicker:false,
+			format:'H:i',
+			step:15
+		});
+
+		startDateEl.datetimepicker({
+			yearOffset:0,
+			lang:'ch',
+			timepicker:false,
+			format:'m/d/Y',
+			formatDate:'Y/m/d',
+			minDate:'-1970/01/02', // yesterday is minimum date
+			maxDate:'+3000/01/02' // and tommorow is maximum date calendar
+		});	
+		//END: init date time picker
+
 
 		const formEl = $('#form');
 
@@ -158,8 +154,25 @@
 			game.homeTeamId = selectHomeTeamEl.val() || null;
 			game.awayTeamId = selectVisitingTeamEl.val() || null;
 			game.location = locationEl.val() || null;
-			game.start = startEl.val() || null;
-			game.status = status.val() || null;
+			
+
+			const dateVal = new Date(startDateEl.val());
+
+			let monthStr = (function() {
+				const month = dateVal.getMonth() + 1;
+				return month < 10? "0" + month: month + "";
+			})();
+	
+			let dateStr = (function() {
+				const date = dateVal.getDate();
+				return date < 10? "0" + date: date + "";
+			})();
+
+
+			var formatDate = dateVal.getFullYear() + "-" + monthStr + "-" + dateStr + "T" + startTimeEl.val() + ":00-05:00";
+			
+			game.start = formatDate || null;
+			game.status = 'pend_team' || null;
 
 			if(game.homeTeamId){
 				game.homeTeamId = parseInt(game.homeTeamId);
@@ -208,6 +221,8 @@
 		.then(teams => {
 			form.setTeams(teams);
 		});
+
+	
 
 
 </script>
