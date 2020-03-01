@@ -129,4 +129,48 @@ module.exports = function(mysql) {
     findTeamsMatchingName,
     findSchoolsMatchingName
   };
+
+  /*@param q, @see GameEventsQuery*/
+  function getEvents(q) {
+    q = q || {};
+
+    const gamesQuery = new GamesQuery(
+      q.start_date || null,
+      q.end_date || null,
+      q.team || null,
+      q.home_team || null,
+      q.away_team || null,
+      q.school || null);
+
+    return gamesQuery.execute();
+  }
+
+  return {
+    addGame,
+    getGames,
+    findTeamsMatchingName,
+    findSchoolsMatchingName
+  };
+
+  /*@param q, @see GamesVerifyQuery*/
+  function getVerify(q) {
+    q = q || {};
+
+    const gamesQuery = new GamesQuery(
+      q.start_date || null,
+      q.end_date || null,
+      q.team || null,
+      q.home_team || null,
+      q.away_team || null,
+      q.school || null);
+
+    return gamesQuery.execute();
+  }
+
+  return {
+    addGame,
+    getGames,
+    findTeamsMatchingName,
+    findSchoolsMatchingName
+  };
 };
