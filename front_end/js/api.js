@@ -171,15 +171,62 @@ const api = (function() {
                 return [
                     {
                         id: 1, 
-                        teamName: 'Neville High School Jr. Varsity'
+                        teamName: 'Neville High School Var Girls'
                     },
+
                     {
                         id: 2, 
-                        teamName: 'Ginsburg High School Jr. Varsity'
+                        teamName: 'Neville High School JV Girls'
                     },
+
                     {
                         id: 3, 
-                        teamName: 'West Monroe High School Jr. Varsity'
+                        teamName: 'Neville High School Var Boys'
+                    },
+
+                    {
+                        id: 4, 
+                        teamName: 'Neville High School JV Boys'
+                    },
+
+                    {
+                        id: 5, 
+                        teamName: 'Ginsburg High School Var Girls'
+                    },
+
+                    {
+                        id: 6, 
+                        teamName: 'Ginsburg High School JV Girls'
+                    },
+
+                    {
+                        id: 7, 
+                        teamName: 'Ginsburg High School Var Boys'
+                    },
+
+                    {
+                        id: 8, 
+                        teamName: 'Ginsburg High School JV Boys'
+                    },
+                    
+                    {
+                        id: 9, 
+                        teamName: 'West Monroe High School Var Girls'
+                    },
+
+                    {
+                        id: 10, 
+                        teamName: 'West Monroe High School JV Girls'
+                    },
+
+                    {
+                        id: 11, 
+                        teamName: 'West Monroe High School Var Boys'
+                    },
+
+                    {
+                        id: 12, 
+                        teamName: 'West Monroe High School JV Boys'
                     }
                 ];
             })
