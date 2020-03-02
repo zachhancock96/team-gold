@@ -84,7 +84,7 @@ module.exports = function(mysql) {
 
       return `
         SELECT G.id as id, concat(HTSchool.name, ' ', HTClass.abbrevName, ' ', HTGender.name) as hName,
-         concat(HTSchool.name, ' ', HTClass.abbrevName, ' ', HTGender.name) as aName,
+         concat(ATSchool.name, ' ', ATClass.abbrevName, ' ', ATGender.name) as aName,
           HTSchool.name as htSchoolName, ATSchool.name as atSchoolName,
           homeTeamId, awayTeamId, start, location, status
         FROM Game G
@@ -96,6 +96,7 @@ module.exports = function(mysql) {
         JOIN Team_Class ATClass ON ATClass.id-AT.classId
         JOIN Gender HTGender ON HTGender.id=HT.genId
         JOIN Gender ATGender ON ATGender.id=HT.genId
+        
 
         ${startDate && endDate
           ? `WHERE start >= ${sqlUtils.sqlValue(startDate)} AND start <= ${sqlUtils.sqlValue(endDate)}`
