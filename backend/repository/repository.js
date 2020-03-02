@@ -15,7 +15,7 @@ module.exports = function(mysql) {
   }*/
   function addGame(game) {
 
-    const query = `INSERT INTO Game (homeTeamId, awayTeamId, start, location, status)
+    const query = `INSERT INTO GAME (homeTeamId, awayTeamId, start, location, status)
       VALUES ${sqlUtils.sqlValues([
         game.homeTeamId,
         game.awayTeamId,
@@ -43,15 +43,15 @@ module.exports = function(mysql) {
       abbrevName: string
     }>>  
   */
-  function findTeamsMatchingName(str) {
+  function findTeamsMatchingName(num) {
     if (!str) return Promise.resolve([]);
 
     str = `'%${sqlUtils.regexEscapedString(str)}%'`;
 
     const query = `
-      SELECT id, name, abbrevName
-      FROM Team
-      WHERE name like ${str}
+      SELECT id, schoolId, classId, genId
+      FROM TEAM
+      WHERE schoolId like num
       LIMIT ${NAME_QUERY_LIMIT};`;
 
     return new Promise(function(resolve, reject) {
@@ -61,8 +61,9 @@ module.exports = function(mysql) {
 
         const teams = rows.map(row => ({ 
           id: row.id,
-          name: row.name,
-          abbrevName: row.abbrevName
+          schoolId: row.schoolId,
+          classId: row.classId,
+          genId: row.genId
         }));
 
         resolve(teams);
@@ -85,8 +86,8 @@ module.exports = function(mysql) {
     str = `'%${sqlUtils.regexEscapedString(str)}%'`;
 
     const query = `
-      SELECT id, name, abbrevName
-      FROM School
+      SELECT id, name, abbrevName, distId
+      FROM SCHOOL
       WHERE name like ${str}
       LIMIT ${NAME_QUERY_LIMIT};`;
 
@@ -99,6 +100,7 @@ module.exports = function(mysql) {
           id: row.id,
           name: row.name,
           abbrevName: row.abbrevName
+          distId: row.distId
         }));
 
         resolve(schools);
@@ -118,7 +120,8 @@ module.exports = function(mysql) {
       q.team || null,
       q.home_team || null,
       q.away_team || null,
-      q.school || null);
+      q.school || null,
+      q.status || null);
 
     return gamesQuery.execute();
   }
@@ -140,7 +143,8 @@ module.exports = function(mysql) {
       q.team || null,
       q.home_team || null,
       q.away_team || null,
-      q.school || null);
+      q.school || null,
+      q.status || null);
 
     return gamesQuery.execute();
   }
@@ -162,7 +166,8 @@ module.exports = function(mysql) {
       q.team || null,
       q.home_team || null,
       q.away_team || null,
-      q.school || null);
+      q.school || null,
+      q.status || null);
 
     return gamesQuery.execute();
   }

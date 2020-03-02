@@ -83,7 +83,8 @@ module.exports = function(mysql) {
       }
 
       return `
-        SELECT G.id as id, HT.name as hName, AT.name as aName, 
+        SELECT G.id as id, concat(HTSchool.name, ' ', HTClass.abbrevName, ' ', HTGender.name) as hName,
+         concat(HTSchool.name, ' ', HTClass.abbrevName, ' ', HTGender.name) as aName, 
           HT.abbrevName as hAbbrevName, AT.abbrevName as aAbbrevName,
           HTSchool.name as htSchoolName, ATSchool.name as atSchoolName,
           homeTeamId, awayTeamId, start, location, status
@@ -92,6 +93,11 @@ module.exports = function(mysql) {
         JOIN Team AT ON G.awayTeamId=AT.id
         JOIN School HTSchool ON HTSchool.id=HT.schoolId
         JOIN SCHOOL ATSchool ON ATSchool.id=AT.schoolId
+        JOIN Team_Class HTClass ON HTClass.id-HT.classId
+        JOIN Team_Class ATClass ON ATClass.id-AT.classId
+        JOIN Gender HTGender ON HTGender.id=HT.genId
+        JOIN Gender ATGender ON ATGender.id=HT.genId
+
         ${startDate && endDate
           ? `WHERE start >= ${sqlUtils.sqlValue(startDate)} AND start <= ${sqlUtils.sqlValue(endDate)}`
           : (startDate 
