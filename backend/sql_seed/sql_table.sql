@@ -55,7 +55,9 @@ CREATE TABLE GAME (
 CREATE TABLE TEAM_CLASS (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(25) NOT NULL,
-  abbrevName varchar(10) NOT NULL
+  abbrevName varchar(10) NOT NULL,
+
+  PRIMARY KEY(id)
 );
 
 CREATE TABLE GENDER (
@@ -90,7 +92,7 @@ CREATE TABLE REP (
   schoolId int,
 
   PRIMARY KEY(email),
-  FOREIGN KEY(email) REFERENCES USER(email)
+  FOREIGN KEY(email) REFERENCES USER(email),
   FOREIGN KEY(schoolId) REFERENCES SCHOOL(id)
 );
 
@@ -99,7 +101,7 @@ CREATE TABLE SCHOOL_ADMIN (
   schoolId int NOT NULL,
 
   PRIMARY KEY(email),
-  FOREIGN KEY(email) REFERENCES USER(email)
+  FOREIGN KEY(email) REFERENCES USER(email),
   FOREIGN KEY(schoolId) REFERENCES SCHOOL(id)
 );
 
@@ -108,7 +110,7 @@ CREATE TABLE ASSIGNOR (
   districtId int NOT NULL,
 
   PRIMARY KEY(email),
-  FOREIGN KEY(email) REFERENCES USER(email)
+  FOREIGN KEY(email) REFERENCES USER(email),
   FOREIGN KEY(districtId) REFERENCES DISTRICT(id)
 );
 

@@ -53,7 +53,10 @@ INSERT INTO USER (email, lastSignedIn, fName, Lname, role, password) VALUES
   ('systema@test.net', 2020-03-01, 'systema', 'systema', 1, 'systema'),
   ('assignor@test.net', 2020-03-01, 'assignor', 'assignor', 2, 'assignor'),
   ('schoola@test.net', 2020-03-01, 'schoola', 'schoola', 3, 'schoola'),
-  ('rep@test.net', 2020-03-01, 'rep', 'rep', 4, 'rep');
+  ('rep@test.net', 2020-03-01, 'rep', 'rep', 4, 'rep'),
+  ('assignor2@test.net', 2020-03-01, 'assignor', 'assignor', 2, 'assignor'),
+  ('schoola2@test.net', 2020-03-01, 'schoola', 'schoola', 3, 'schoola'),
+  ('rep2@test.net', 2020-03-01, 'rep', 'rep', 4, 'rep');
 
 INSERT INTO REP (email, schoolId) VALUES
   ('rep@test.net', 1),
@@ -67,6 +70,6 @@ INSERT INTO ASSIGNOR (email, districtId) VALUES
   ('assignor@test.net', 1),
   ('assignor2@test.net', 2);
 
-INSERT INTO DISTRICT (id, disName) VALUES
+INSERT INTO DISTRICT (id, name) VALUES
   (1, 'Ouachita'),
   (2, 'Morehouse');
