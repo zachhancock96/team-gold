@@ -39,9 +39,9 @@ INSERT INTO TEAM (id, schoolId, classId, genId) VALUES
   (12, 3, 2, 2);
 
 INSERT INTO GAME (id, homeTeamId, awayTeamId, start, location, status) VALUES
-  (1, 1, 2, '2020-03-15T08:00:00-05:00', 'WOHS', 'pend_team'),
-  (2, 2, 1, '2020-03-16T08:00:00-05:00', 'WMHS', 'pend_team'),
-  (3, 1, 3, '2020-03-17T08:00:00-05:00', 'OPHS', 'pend_team');
+  (1, 1, 2, '2020-03-15T18:00:00-05:00', 'WOHS', 'pend_team'),
+  (2, 2, 1, '2020-03-16T18:00:00-05:00', 'WMHS', 'pend_team'),
+  (3, 1, 3, '2020-03-17T18:00:00-05:00', 'OPHS', 'pend_team');
 
 INSERT INTO ROLES (id, name) VALUES
   (1, 'System Admin'),
