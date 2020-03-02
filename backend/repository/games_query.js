@@ -84,8 +84,7 @@ module.exports = function(mysql) {
 
       return `
         SELECT G.id as id, concat(HTSchool.name, ' ', HTClass.abbrevName, ' ', HTGender.name) as hName,
-         concat(HTSchool.name, ' ', HTClass.abbrevName, ' ', HTGender.name) as aName, 
-          HT.abbrevName as hAbbrevName, AT.abbrevName as aAbbrevName,
+         concat(HTSchool.name, ' ', HTClass.abbrevName, ' ', HTGender.name) as aName,
           HTSchool.name as htSchoolName, ATSchool.name as atSchoolName,
           homeTeamId, awayTeamId, start, location, status
         FROM Game G

@@ -99,7 +99,7 @@ module.exports = function(mysql) {
         const schools = rows.map(row => ({
           id: row.id,
           name: row.name,
-          abbrevName: row.abbrevName
+          abbrevName: row.abbrevName,
           distId: row.distId
         }));
 
