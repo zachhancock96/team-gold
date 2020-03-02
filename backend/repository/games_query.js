@@ -95,7 +95,7 @@ module.exports = function(mysql) {
         JOIN Team_Class HTClass ON HTClass.id-HT.classId
         JOIN Team_Class ATClass ON ATClass.id-AT.classId
         JOIN Gender HTGender ON HTGender.id=HT.genId
-        JOIN Gender ATGender ON ATGender.id=HT.genId
+        JOIN Gender ATGender ON ATGender.id=AT.genId
         
 
         ${startDate && endDate
