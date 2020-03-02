@@ -108,6 +108,35 @@ module.exports = function(mysql) {
     });
   }
 
+  function GetTeams() {
+    if (!str) return Promise.resolve([]);
+
+    str = `'%${sqlUtils.regexEscapedString(str)}%'`;
+
+    const query = `
+      SELECT T.id as id, concat(School.name, ' ', Class.abbrevName, ' ', Gender.name) as name
+      FROM TEAM T
+      JOIN School ON School.id=T.schoolId
+      JOIN Gender ON Gender.id=T.genId
+      JOIN Team_Class Class ON Class.id=T.classId
+      `;
+
+
+    return new Promise(function(resolve, reject) {
+
+      mysql.query(query, function(err, rows) {
+        if (err) return reject(err);
+
+        const teams = rows.map(row => ({
+          id: row.id,
+          name: row.name
+        }));
+
+        resolve(teams);
+      });
+    });
+  }
+
 
 
   /*@param q, @see GamesQuery*/
@@ -178,4 +207,6 @@ module.exports = function(mysql) {
     findTeamsMatchingName,
     findSchoolsMatchingName
   };
+
+  
 };
