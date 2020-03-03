@@ -37,7 +37,7 @@
 		<form id="form">
 			<tr>
 			<td>Home Team:</td>
-			<td><select id="select_home_team"><option value="">Select Team</option></select></td>
+			<td><input type="text" id="select_home_team" onkeyup="teamFunction()" placeholder="Home Team.." title="Home Team name"></td>
 			
 			</tr>
 			
@@ -78,8 +78,20 @@
 
 <script type='text/JavaScript'>
 
-
-	
+	/*
+	function teamFunction() {
+		var input, filter, a, i, txtValue, newTeams;
+		input = document.getElementById("select_home_team");
+		filter = input.value.toUpperCase();
+		for (i = 0; i < teams.length; i++) {
+			a = team[i].teamName;
+			txtValue = a.textContent || a.innerText;
+			if (txtValue.toUpperCase().indexOf(filter) > -1) {
+				newTeams.join(a);
+			}
+		}
+	}
+	*/
 
 
 
