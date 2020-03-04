@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="css/style.css">
+	<link rel='stylesheet' href="css/mobile.css" />
 	<title>User Profile</title>
 	<script src="jquery-3.4.1.min.js"></script>
 </head>
@@ -14,31 +15,30 @@
 		User Profile
 	</header>
 	
-	<div>
+	<div id='pageBanner'>
+		<!--
+			Drop down browser banner
+			View Games - shows list of games
+			Add Manually - shows add games individually
+			User Profile - shows user's individual profile
+			School Profile - shows user's school profile
+		-->
+		<table id='banner'>
+			<tr>
+			<td><a href='./game_view.html'>+ View Games +</a></td>
+			<td class='dropdown'>+ Add Games +<div class='dropdown-content'>
+			<a href='./add_single_game.html'>Add Manually</a><hr />
+			<a href='./file_upload.html'>Upload File</a></div></td>
+			<td><a href='./verify_games.html'>+ Verify Games +</a></td>
+			<td class='dropdown'>+ Profile +<div class='dropdown-content'>
+			<a href='./user_profile.html'>User Profile</a> <hr /> 
+			<a href='./school_profile.html'>School Profile</a> <hr />
+			<a href='./school_permissions.html'>School Permissions</a></div></td>  
+			</tr>
+		</table>
+	
+	</div>
 
-    <!--
-		Drop down browser banner
-		View Games - shows list of games
-		Add Manually - shows add games individually
-		User Profile - shows user's individual profile
-		School Profile - shows user's school profile
-	-->
-	<table id='banner'>
-        <tr>
-        <td><a href='./game_view.html'>+ View Games +</a></td>
-        <td class='dropdown'>+ Add Games +<div class='dropdown-content'>
-          <a href='./add_single_game.html'>Add Manually</a><hr />
-          <a href='./file_upload.html'>Upload File</a></div></td>
-		<td><a href='./verify_games.html'>+ Verify Games +</a></td>
-        <td class='dropdown'>+ Profile +<div class='dropdown-content'>
-          <a href='./user_profile.html'>User Profile</a> <hr /> 
-          <a href='./school_profile.html'>School Profile</a> <hr />
-          <a href='./school_permissions.html'>School Permissions</a></div></td>  
-        </tr>
-  	</table>
-    
-
-    </div>
 	
 	<!--
 	Show User profile
@@ -88,5 +88,6 @@
 		</form></td>
 		</tr>
 	</table>
+
 </body>
 </html>

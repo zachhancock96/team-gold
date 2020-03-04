@@ -200,6 +200,8 @@
 			game.start = formatDate || null;
 			game.status = 'pend_team' || null;
 
+			console.log(game);
+
 			if(game.homeTeamId){
 				game.homeTeamId = parseInt(game.homeTeamId);
 			}
@@ -233,6 +235,7 @@
 			api.addGame(game)
 				.then(result => {
                                         alert('success!');
+					console.log(game);
 					console.log(result);
 				})
 				.catch(error => {

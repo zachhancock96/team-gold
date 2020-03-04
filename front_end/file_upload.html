@@ -36,6 +36,8 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
+    <script type='text/JavaScript' src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/api.js"></script>
     <script type="text/javascript">
         $("body").on("click", "#upload", function () {
             //Reference the FileUpload element.
@@ -101,10 +103,6 @@
             row.append(headerCell);
 
             var headerCell = $("<th />");
-            headerCell.html("Level");
-            row.append(headerCell);
-
-            var headerCell = $("<th />");
             headerCell.html("Home Team");
             row.append(headerCell);
 
@@ -113,11 +111,19 @@
             row.append(headerCell);
 
             var headerCell = $("<th />");
+            headerCell.html("Home Gender");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
             headerCell.html("Away Team");
             row.append(headerCell);
             
             var headerCell = $("<th />");
             headerCell.html("Away Level");
+            row.append(headerCell);
+
+            var headerCell = $("<th />");
+            headerCell.html("Away Gender");
             row.append(headerCell);
 
             //Add the data rows from Excel file.
@@ -135,15 +141,15 @@
                 row.append(cell);
 
                 var cell = $("<td />");
-                cell.html(excelRows[i].Level);
-                row.append(cell);
-
-                var cell = $("<td />");
                 cell.html(excelRows[i].HomeTeam);
                 row.append(cell);
 
                 var cell = $("<td />");
                 cell.html(excelRows[i].HomeLevel);
+                row.append(cell);
+
+                var cell = $("<td />");
+                cell.html(excelRows[i].HomeGender);
                 row.append(cell);
 
                 cell = $("<td />");
@@ -154,6 +160,42 @@
                 cell.html(excelRows[i].AwayLevel);
                 row.append(cell);
 
+                var cell = $("<td />");
+                cell.html(excelRows[i].AwayGender);
+                row.append(cell);
+
+                const game = {};
+                
+                game.homeTeamId = 1 || null;
+                game.awayTeamId = 5 || null;
+                game.location = excelRows[i].HomeTeam || null;
+
+                const dateVal = new Date(excelRows[i].Date);
+
+                let monthStr = (function() {
+                    const month = dateVal.getMonth() + 1;
+                    return month < 10? "0" + month: month + "";
+                })();
+        
+                let dateStr = (function() {
+                    const date = dateVal.getDate();
+                    return date < 10? "0" + date: date + "";
+                })();
+
+                var formatDate = dateVal.getFullYear() + "-" + monthStr + "-" + dateStr + "T" + excelRows[i].Time + ":00-05:00";
+                
+                game.start = formatDate || null;
+                game.status = 'pend_team' || null;
+
+                if(game.homeTeamId){
+				game.homeTeamId = parseInt(game.homeTeamId);
+                }
+                if(game.awayTeamId){
+                    game.awayTeamId = parseInt(game.awayTeamId);
+                }
+                
+                console.log(game);
+                api.addGame(game);
             }
 
             var dvExcel = $("#dvExcel");
