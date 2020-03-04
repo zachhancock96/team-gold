@@ -35,12 +35,22 @@
 	
 	<table id='add__single_game_table'>
 		<form id="form">
+			
 			<tr>
 			<td>Home Team:</td>
 			<td><input type="text" id="select_home_team" onkeyup="teamFunction()" placeholder="Home Team.." title="Home Team name"></td>
 			
 			</tr>
+		
+		<!--	
+			<tr>
+			<td>Home Team:</td> 
+			<td><select id="select_home_team">
+			<option value="">Select Team</option></select></td>    
 			
+			</tr>
+		-->
+
 			<tr>
 			<td>Visting Team:</td> 
 			<td><select id="select_visiting_team">
@@ -78,11 +88,16 @@
 
 <script type='text/JavaScript'>
 
-	/*
+	var options;
+	
 	function teamFunction() {
 		var input, filter, a, i, txtValue, newTeams;
 		input = document.getElementById("select_home_team");
 		filter = input.value.toUpperCase();
+		console.log(options);
+
+		optionsf = "";
+		console.log(optionsf);
 		for (i = 0; i < teams.length; i++) {
 			a = team[i].teamName;
 			txtValue = a.textContent || a.innerText;
@@ -91,7 +106,7 @@
 			}
 		}
 	}
-	*/
+	
 
 
 
@@ -136,15 +151,14 @@
 			}>
 		*/
 		function setTeams(teams) {
-			let options = teams
+			options = teams
 				.map(team => `<option value=${team.id}>${team.teamName}</option>`);
 
 			options = ['<option value="">Select team</option>', ...options];
 			
-			
 			//array to string conversion
 			options = options.join('');
-
+			
 			//clear select element
 			selectHomeTeamEl.empty();
 			selectVisitingTeamEl.empty();
@@ -228,9 +242,10 @@
 		}
 	});
 
-
+	
 	api.getTeams()
 		.then(teams => {
+			
 			form.setTeams(teams);
 		});
 
