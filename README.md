@@ -142,14 +142,14 @@ Voila!
 
 # Some more Joopla adventure:
 
-Mom yells from the window of her kitchen:
+Joopla runs to his room and yells:
 
-&nbsp; &nbsp; &nbsp; &nbsp;Joopla Joopla Joopla Where are you dear, your mom is getting worried.
+&nbsp; &nbsp; &nbsp; &nbsp;I'm going to run away because I don't want to be here!
 
-&nbsp; &nbsp; &nbsp; &nbsp;Pudding is getting cold Joopla, come home now.
+&nbsp; &nbsp; &nbsp; &nbsp;You can't make me stay with this cold pudding.
 
-(Meanwhile a faint giggle is heard from inside a big-ass family jar, by the kitchen, where the mom is standing)
+(Meanwhile a faint noise is heard from the bedroom as a window opens)
 
-O there you are Joopla, you dirty nose picker, you'll get a nice smacking now for having me worried.
+Joopla turns around and yells Bye mom and I love you!
 
-Wyaaaaaaaaaaaaaaaa Joopla cries.
+(Then a thud is heard as he exits out the window)
