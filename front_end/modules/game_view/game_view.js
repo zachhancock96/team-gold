@@ -24,6 +24,17 @@ function calendarGames() {
       center: 'title',
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
       },
+      selectable: true,
+      select: function(arg) {
+        var title = prompt('Event Title:');
+        if (title) {
+          calendar.addEvent({
+            title: title,
+            start: arg.start,
+            end: arg.end,
+            allDay: arg.allDay
+          })
+      }
       defaultDate: todayDate,
       editable: true,
       navLinks: true, // can click day/week names to navigate views
