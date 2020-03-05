@@ -34,6 +34,8 @@ function calendarGames() {
             end: arg.end,
             allDay: arg.allDay
           })
+        }
+        calendar.unselect()
       }
       defaultDate: todayDate,
       editable: true,
