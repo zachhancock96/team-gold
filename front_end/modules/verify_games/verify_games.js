@@ -16,13 +16,12 @@ function calendarGames() {
       header: {
         left: 'prev,next today',
         center: 'title',
-        right: 'listDay,listWeek,dayGridMonth'
+        right: 'listWeek,dayGridMonth'
       },
 
       // customize the button names,
       // otherwise they'd all just say "list"
       views: {
-        listDay: { buttonText: 'list day' },
         listWeek: { buttonText: 'list week' }
       },
 
