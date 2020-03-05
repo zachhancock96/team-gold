@@ -36,7 +36,7 @@ function calendarGames() {
           })
         }
         calendar.unselect()
-      }
+      },
       defaultDate: todayDate,
       editable: true,
       navLinks: true, // can click day/week names to navigate views
