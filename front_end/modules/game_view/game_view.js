@@ -18,11 +18,12 @@ function calendarGames() {
     var calendarEl = document.getElementById('calendar');
     var todayDate = new Date();
     var calendar = new Calendar(calendarEl, {
-      plugins: [ Interaction, DayGrid, TimeGrid, ListView ],
+      //plugins: [ Interaction, DayGrid, TimeGrid, ListView ],
+      plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list'],
       header: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
       },
       selectable: true,
       select: function(arg) {
@@ -41,7 +42,8 @@ function calendarGames() {
       editable: true,
       navLinks: true, // can click day/week names to navigate views
       eventLimit: true, // allow "more" link when too many events
-      events: gamesF
+      events: []
+      //gamesF
     });
 
       calendar.render();
