@@ -42,8 +42,7 @@ function calendarGames() {
       editable: true,
       navLinks: true, // can click day/week names to navigate views
       eventLimit: true, // allow "more" link when too many events
-      events: []
-      //gamesF
+      events: gamesF
     });
 
       calendar.render();
