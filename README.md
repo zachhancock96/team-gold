@@ -153,3 +153,29 @@ Joopla runs to his room and yells:
 Joopla turns around and yells Bye mom and I love you!
 
 (Then a thud is heard as he exits out the window)
+
+
+# Back end:
+
+### Getting started:
+
+Install Node and npm. 
+(Node 10.x and npm 4.6.0 is preffered. If you dont have these versions and you get an error during npm install, installing these versions are guaranteed to work)
+
+#### Development:
+set the working directory of the command line to backend folder
+
+hit `npm install` (Do this after every git pull.)
+
+hit `npm run tsc` (This runs typescript daemon in watch mode)
+
+go to `dist` subfolder
+
+hit `npx nodemon server.js` (This restarts server whenever any change in dist folder. Typescript dumps js files in dist folder, so making changes to `.ts` files in `src` folder would trigger the server to restart too.)
+
+#### Production (Linux):
+set the working directory of the command line to backend folder
+
+hit `npm install` (Do this after every git pull.)
+
+hit `npm start` or `npm start &` to open server as background daemon
