@@ -67,31 +67,31 @@ connectMysql(async (err, mysql) => {
   const W = (reqHandler: (req: Request, res: Response) => Promise<any>) => errorWrapper(authWrapper(reqHandler));
   
   //login controller
-  app.post('/login', errorWrapper(loginController.login));
+  app.post('/api/login', errorWrapper(loginController.login));
 
   //user controller
-  app.get('/users', W(userController.getAllUsers));
-  app.get('/users/:id', W(userController.getUser));
+  app.get('/api/users', W(userController.getAllUsers));
+  app.get('/api/users/:id', W(userController.getUser));
 
   //game controller
-  app.get('/games', W(gameController.getAllGames));
-  app.get('/games/:id', W(gameController.getGame));
-  app.get('/users/:userId/privileges/:privileges/games', W(gameController.getGamesWithPrivilegesForUser));
-  app.post('/games', W(gameController.addGame));
-  app.post('/games/:id/edit', W(gameController.editGame));
-  app.post('/games/:id/accept', W(gameController.acceptGame));
-  app.post('/games/:id/reject', W(gameController.rejectGame));
-  app.post('/games/:id/approve', W(gameController.approveGame));
+  app.get('/api/games', W(gameController.getAllGames));
+  app.get('/api/games/:id', W(gameController.getGame));
+  app.get('/api/users/:userId/privileges/:privileges/games', W(gameController.getGamesWithPrivilegesForUser));
+  app.post('/api/games', W(gameController.addGame));
+  app.post('/api/games/:id/edit', W(gameController.editGame));
+  app.post('/api/games/:id/accept', W(gameController.acceptGame));
+  app.post('/api/games/:id/reject', W(gameController.rejectGame));
+  app.post('/api/games/:id/approve', W(gameController.approveGame));
 
   //team controller
-  app.get('/teams', W(teamController.getAllTeams));
-  app.get('/teams/:id', W(teamController.getTeam));
-  app.get('/users/:userId/privileges/:privileges/teams', W(teamController.getTeamsWithPrivilegesForUser));
+  app.get('/api/teams', W(teamController.getAllTeams));
+  app.get('/api/teams/:id', W(teamController.getTeam));
+  app.get('/api/users/:userId/privileges/:privileges/teams', W(teamController.getTeamsWithPrivilegesForUser));
 
   //school controller
-  app.get('/schools', W(schoolController.getAllSchools));
-  app.get('/schools/:id', W(schoolController.getSchool));
-  app.get('/users/:userId/privileges/:privileges/schools', W(schoolController.getSchoolsWithPrivilegesForUser));
+  app.get('/api/schools', W(schoolController.getAllSchools));
+  app.get('/api/schools/:id', W(schoolController.getSchool));
+  app.get('/api/users/:userId/privileges/:privileges/schools', W(schoolController.getSchoolsWithPrivilegesForUser));
 
   app.listen(PORT, () => {
     console.log(`server listening at port ${PORT}`);
