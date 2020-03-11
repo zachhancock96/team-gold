@@ -1,4 +1,9 @@
 @charset "UTF-8";
+#calendar {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
 .fc {
   direction: ltr;
   text-align: left;
