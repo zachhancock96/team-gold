@@ -249,8 +249,8 @@ export default class Repository {
     `;
 
     const result: InsertQueryResult  = await promisifiedQuery(query);
-    assert.ok(result.insertedId);
-    return result.insertedId!;
+    assert.ok(result.insertId);
+    return result.insertId!;
   }
 
   async editGame(g: {
@@ -288,5 +288,5 @@ function sqlValue(v: string | null | number | undefined) {
 }
 
 type InsertQueryResult = {
-  insertedId?: number
+  insertId?: number
 };

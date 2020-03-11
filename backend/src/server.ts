@@ -112,12 +112,12 @@ function errorWrapper(reqHandler: (req: Request, res: Response) => Promise<any>)
 function authWrapperFactory(repository: Repository) {
   function authWrapper(reqHandler: (req: Request, res: Response) => Promise<any>) {
     return async (req: Request, res: Response) => {
-      if (!req.headers.session_id) {
+      if (!req.headers.sessionid) {
         return res.status(401).send();
       }
       let sessionId: number;
       try {
-        sessionId = parseInt(req.headers.session_id as any);
+        sessionId = parseInt(req.headers.sessionid as any);
         if (Number.isNaN(sessionId)) {
           return res.status(401).send();
         }
