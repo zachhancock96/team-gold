@@ -10,10 +10,10 @@
 <h2>Welcome to Team-Gold Soccer Scheduling System</h2><br>
 <div class="container" id="container">
 	<div class="form-container sign-in-container">
-		<form action="http://18.219.186.34/game_view.html">
+		<form id="form_login" action="">
 			<h1>Sign in</h1>
-			<input type="email" placeholder="Email"/>
-			<input type="password" placeholder="Password"/>
+			<input type="email" id="email" placeholder="Email"/>
+			<input type="password" id="password" placeholder="Password"/>
 			<a href="#">Forgot your password?</a>
 			<button>Login</button> <br>
 			<label class="remember">Remember me
@@ -25,7 +25,7 @@
 	</div>
 		<div class="overlay">
 			<div class="overlay-panel overlay-right">
-				<a href="http://18.219.186.34/game_view.html" target="_blank">
+				<a id="calendar_overlay" href="#" target="_blank">
 				<img class="img" src="../img/gameview.png" alt="List Style Calender goes here">
 				<div class="content">
 					<p class="text">Click to see Full Schedule</p>
@@ -41,4 +41,5 @@
 		<a>team-gold for CSCI 4060</a>
 </footer>
 
+<script src="../out/login.js"></script>
 </html>

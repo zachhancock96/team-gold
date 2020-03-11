@@ -1,4 +1,4 @@
-import * as api from '../shared/api';
+import * as api from '../shared/api_new';
 import { Calendar } from '@fullcalendar/core';
 import Interaction from '@fullcalendar/interaction';
 import DayGrid from '@fullcalendar/daygrid';
@@ -12,14 +12,22 @@ document.addEventListener('DOMContentLoaded', calendarGames);
 function calendarGames() {
   //fetch games
   api.getGames().then(function(games){
+
+    //this {title, start, end} format is specific to calendar
+    //dont change something as general as api.js to adjust to calendar
+    games = games.map(g => ({
+      title: g.homeTeam.name  + ' vs ' + g.awayTeam.name + ' @ ' + g.location,
+      start: g.start,
+      end: g.start
+    }));
+
     const gamesF = games.filter(mySchoolFunction);
     
     //render calendar
     var calendarEl = document.getElementById('calendar');
     var todayDate = new Date();
     var calendar = new Calendar(calendarEl, {
-      //plugins: [ Interaction, DayGrid, TimeGrid, ListView ],
-      plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list'],
+      plugins: [ Interaction, DayGrid, TimeGrid, ListView ],
       header: {
         left: 'prev,next today',
         center: 'title',
