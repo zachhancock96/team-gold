@@ -2,7 +2,7 @@ import $ from 'jquery';
 //this attaches itself to jquery
 //for sideffect purpose
 import 'jquery-datetimepicker';
-import * as api from '../shared/api';
+import * as api from '../shared/api_new';
 
 //testing api.addGame
 const form = (function() {
@@ -92,7 +92,6 @@ const form = (function() {
 		var formatDate = dateVal.getFullYear() + "-" + monthStr + "-" + dateStr + "T" + startTimeEl.val() + ":00-05:00";
 		
 		game.start = formatDate || null;
-		game.status = 'pend_team' || null;
 
 		if(game.homeTeamId){
 			game.homeTeamId = parseInt(game.homeTeamId);
@@ -118,8 +117,7 @@ form.setSubmitListener(game => {
 		|| !game.homeTeamId
 		|| !game.awayTeamId
 		|| !game.location
-		|| !game.start
-		|| !game.status) {
+		|| !game.start) {
 			alert('invalid form data');
 		}
 	else {
@@ -130,14 +128,20 @@ form.setSubmitListener(game => {
 				console.log(result);
 			})
 			.catch(error => {
-														alert('Oops!');
+				alert('Oops!');
 				console.log(error);
 			})
 	}
 });
 
-
 api.getTeams()
 	.then(teams => {
+		teams = teams.map(t => ({
+			id: t.id,
+			teamName: t.name
+		}));
 		form.setTeams(teams);
-	});
+	})
+	.catch(err => {
+		console.log(err);
+	})
