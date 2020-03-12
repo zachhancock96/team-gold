@@ -4,6 +4,10 @@ import Interaction from '@fullcalendar/interaction';
 import DayGrid from '@fullcalendar/daygrid';
 import TimeGrid from '@fullcalendar/timegrid';
 import ListView from '@fullcalendar/list';
+import $ from 'jquery';
+//this attaches itself to jquery
+//for sideffect purpose
+import 'jquery-datetimepicker';
 
 
 //html is loaded
@@ -45,6 +49,23 @@ function calendarGames() {
   })
 }
 
+//Date picker for Jump To Date on calendar
+const jumpDate = $('#jumpDate');
+
+$.datetimepicker.setLocale('en');
+
+jumpDate.datetimepicker({
+  yearOffset:0,
+  lang:'ch',
+  timepicker:false,
+  format:'m/d/Y',
+  formatDate:'Y/m/d',
+  minDate:'-1970/01/02', // yesterday is minimum date
+  maxDate:'+3000/01/02' // and tommorow is maximum date calendar
+});	
+
+//move to new calendar date
+
 document.getElementById("myJumpBtn").addEventListener("click", calendarGames);
 
 function dateFunction(dateN) {
@@ -58,6 +79,8 @@ function dateFunction(dateN) {
     dateX = new Date();
   }
 }
+
+//filter schools based on filter
 
 document.getElementById("myBtn").addEventListener("click", calendarGames);
 
