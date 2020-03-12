@@ -26,7 +26,7 @@ function calendarGames() {
     //render calendar
     var calendarEl = document.getElementById('calendar');
     var todayDate = new Date();
-    var useDate = todayDate.filter(dateFunction);
+    var useDate = todayDate.dateX(dateFunction);
     var calendar = new Calendar(calendarEl, {
       plugins: [ Interaction, DayGrid, TimeGrid, ListView ],
       header: {
@@ -34,7 +34,7 @@ function calendarGames() {
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
       },
-      defaultDate: todayDate,
+      defaultDate: useDate,
       editable: true,
       navLinks: true, // can click day/week names to navigate views
       eventLimit: true, // allow "more" link when too many events
@@ -45,11 +45,21 @@ function calendarGames() {
   })
 }
 
-document.getElementById("myBtn").addEventListener("click", calendarGames);
+document.getElementById("myJumpBtn").addEventListener("click", calendarGames);
 
 function dateFunction(dateN) {
-  input = document.getElementById('jumpDate');
+  var dateX, a;
+  a = document.getElementById('jumpDate');
+  if(a > 0) {
+    dateX = a;
+  }
+
+  else {
+    dateX = new Date();
+  }
 }
+
+document.getElementById("myBtn").addEventListener("click", calendarGames);
 
 function mySchoolFunction(gameN) {
   var input, filter, txtValue, i, a;
