@@ -13,30 +13,17 @@ function calendarGames() {
   //fetch games
   api.getGames().then(function(games){
     const gamesF = games.filter(mySchoolFunction);
-    
+     
     //render calendar
     var calendarEl = document.getElementById('calendar');
     var todayDate = new Date();
+    var useDate = todayDate.filter(dateFunction);
     var calendar = new Calendar(calendarEl, {
-      //plugins: [ Interaction, DayGrid, TimeGrid, ListView ],
-      plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list'],
+      plugins: [ Interaction, DayGrid, TimeGrid, ListView ],
       header: {
         left: 'prev,next today',
         center: 'title',
         right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-      },
-      selectable: true,
-      select: function(arg) {
-        var title = prompt('Event Title:');
-        if (title) {
-          calendar.addEvent({
-            title: title,
-            start: arg.start,
-            end: arg.end,
-            allDay: arg.allDay
-          })
-        }
-        calendar.unselect()
       },
       defaultDate: todayDate,
       editable: true,
@@ -50,6 +37,10 @@ function calendarGames() {
 }
 
 document.getElementById("myBtn").addEventListener("click", calendarGames);
+
+function dateFunction(dateN) {
+  input = document.getElementById('jumpDate');
+}
 
 function mySchoolFunction(gameN) {
   var input, filter, txtValue, i, a;
