@@ -1,13 +1,15 @@
 import $ from 'jquery';
 import moment, {API_DATE_FORMAT} from './moment';
 
-const BASE_URL = "http://18.219.186.34/api";
+//const BASE_URL = "http://18.219.186.34/api";
+const BASE_URL = "http://localhost:4000/api"
 
 const API_URLS = {
   GET_USERS: () => `${BASE_URL}/users`,
   GET_TEAMS: () => `${BASE_URL}/teams`,
   GET_SCHOOLS: () => `${BASE_URL}/schools`,
   GET_GAMES: () => `${BASE_URL}/games`,
+  GET_GAMES_WITH_PRIVILEGES: (userId, privileges) => `${BASE_URL}/users/${userId}/privileges/${privileges}/games`,
   ADD_GAME: () => `${BASE_URL}/games`,
   APPROVE_GAME: gameId => `${BASE_URL}/games/${gameId}/approve`,
   REJECT_GAME: gameId => `${BASE_URL}/games/${gameId}/reject`,
@@ -35,6 +37,22 @@ export function getGames() {
   console.log('doing get games');
   return authGet(API_URLS.GET_GAMES())
     .then(response => response.games);
+}
+
+export function getGamesWithPrivileges(privileges) {
+  //NOTE: hacky userId
+  const userId = parseInt(localStorage.getItem("sessionId"));
+  return authGet(API_URLS.GET_GAMES_WITH_PRIVILEGES(userId, privileges))
+    .then(response => response.games);
+}
+
+export function getMe() {
+  //NOTE: hacky userId
+  const userId = parseInt(localStorage.getItem("sessionId"));
+  return getUsers()
+    .then(users => {
+      return users.find(u => u.id === userId);
+    });
 }
 
 export function addGame(game) {
