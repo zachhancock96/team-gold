@@ -9,7 +9,8 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
-    "rollup": "^1.16.2"
+    "rollup": "^1.16.2",
+    "rollup-plugin-json": "^4.0.0"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +22,7 @@
     "@fullcalendar/timegrid": "^4.4.0",
     "jquery": "^3.4.1",
     "jquery-datetimepicker": "^2.5.21",
+    "moment-timezone": "^0.5.28",
     "xlsx": "^0.15.5"
   }
 }
