@@ -1,0 +1,47 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: antiquewhite;
+  font-family: 'Roboto', sans-serif;
+}
+input {
+  font-family: 'Roboto', sans-serif;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navbar-links {
+  padding: 8px;
+  background-color: lightblue;
+  display: inline-block;
+  margin-left: 2px;
+}
+.navbar-links.active {
+  background-color: rgb(72, 188, 226);
+}
+
+.navbar-links:hover {
+  cursor: pointer;
+  color: blue;
+}
+
+.school-list-item {
+  padding: 16px;
+  cursor: pointer;
+}
+.school-list-item.active {
+  background-color: #0000ffa6;
+  color: white;
+}
