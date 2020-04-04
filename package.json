@@ -1,0 +1,32 @@
+{
+  "name": "mithril-practise",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "rollup": "npx rollup -c -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-transform-react-jsx": "^7.9.4",
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-json": "^4.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "meiosis-tracer": "^3.0.0",
+    "rollup": "^2.3.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-includepaths": "^0.2.3"
+  },
+  "dependencies": {
+    "feather-route-matcher": "^3.1.0",
+    "meiosis-routing": "^2.0.1",
+    "meiosis-setup": "^4.0.2",
+    "mergerino": "^0.4.0",
+    "mithril": "^2.0.4"
+  }
+}
