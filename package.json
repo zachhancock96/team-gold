@@ -23,6 +23,8 @@
     "rollup-plugin-includepaths": "^0.2.3"
   },
   "dependencies": {
+    "@fullcalendar/core": "^4.4.0",
+    "@fullcalendar/daygrid": "^4.4.0",
     "feather-route-matcher": "^3.1.0",
     "meiosis-routing": "^2.0.1",
     "meiosis-setup": "^4.0.2",

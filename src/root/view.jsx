@@ -3,13 +3,15 @@ import { Routing } from 'meiosis-routing/state';
 import { Login } from '../login';
 import { School } from '../school';
 import { Game } from '../game';
+import { Calendar } from '../calendar';
 import { Navbar } from '../navbar';
 import { Loading } from 'shared/view';
 
 const componentMap = {
   Login,
   School,
-  Game
+  Game,
+  Calendar
 };
 
 export const Root = ({ state, actions }) => {

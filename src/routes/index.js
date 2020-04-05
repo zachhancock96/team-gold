@@ -5,13 +5,15 @@ import { service, effect } from './service';
 export const Route = createRouteSegments([
   "Login",
   "School",
-  "Game"
+  "Game",
+  "Calendar"
 ]);
 
 export const routeConfig = {
   Login: "/login",
   School: "/school/:id",
-  Game: "/game"
+  Game: "/game",
+  Calendar: "/calendar",
 };
 
 export const routes = {

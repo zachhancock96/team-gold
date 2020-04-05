@@ -20,6 +20,11 @@ export const Navbar = ({ state, actions }) => {
           class={className('Game')}>
           Game
         </a>
+        <a
+          href={router.toPath(Route.Calendar())}
+          class={className('Calendar')}>
+          Calendar
+        </a>
         <a class='navbar-links'
           style={{ marginLeft: '20px' }}
           onclick={e => {
