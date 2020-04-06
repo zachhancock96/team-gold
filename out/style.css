@@ -45,3 +45,279 @@ input {
   background-color: #0000ffa6;
   color: white;
 }
+
+
+/* LOGIN CSS STARTS*/
+
+.login .image-logo {
+	/* padding-top: 20px; */
+	height: 250px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.login .container {
+	background-color: #fff;
+	border-radius: 10px;
+  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+			0 10px 10px rgba(0,0,0,0.22);
+	position: relative;
+	overflow: hidden;
+	width: 568px;
+	max-width: 100%;
+	min-height: 400px;
+	min-width: 400px;
+	max-height: 500px;
+}
+
+
+.login .form-container {
+  position: absolute;
+	top: 0;
+  height: 100%;
+	transition: all 0.6s ease-in-out;
+}
+
+.login .sign-in-container {
+	left: 0;
+	width: 100%; 
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* .login .overlay {
+	float: right;
+	width: 50%;
+	height: 100%;
+	max-width: 50%;
+	
+} */
+
+/* .login .overlay :hover{
+	opacity: 0.92;
+	transition-delay: 0s;
+	transition-duration: 0.4s;
+}
+
+.login .overlay-panel {
+	position: relative;
+	height: 100%;
+	width: 257px;
+}
+
+.login .overlay-panel:hover .list-text {
+	visibility: visible;
+	opacity: 1;
+}
+
+.login .list-container {
+  position: relative;
+  width: 100%;
+}
+
+.login .list-image {
+  display: block;
+  width: auto;
+  height: auto;
+}
+
+.login .list-overlay {
+  position: absolute;
+  bottom: 100vh;
+  left: 0;
+  right: 0;
+  background-color: #008CBA;
+  overflow: hidden;
+  width: 100%;
+  height: 0;
+  transition: .5s ease;
+}
+
+.login .list-container:hover .list-overlay {
+  bottom: 0vh;
+  height: 100%;
+} */
+
+/* .login .list-text {
+  white-space: nowrap; 
+  font-size: x-large;
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+  font-size: 30px;
+  position: absolute;
+  overflow: hidden;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+} */
+/* 
+.login header {
+  background-color: #222;
+  color: #fff;
+  top: 0;
+  position: fixed;
+  z-index: 999;
+} */
+
+.login footer {
+  background-color: #222;
+  color: #fff;
+  font-size: 14px;
+  bottom: 0;
+  position: fixed;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 999;
+}
+
+.login footer p {
+  margin: 20px 0;
+}
+
+.login footer i {
+  color: red;
+}
+
+.login footer a {
+  color: #ffd700;
+  text-decoration: none;
+}
+
+.login h1 {
+	font-weight: bold;
+	margin: 0;
+	padding-bottom: 40px;
+}
+
+.login h2 {
+	text-align: center;
+}
+
+.login p {
+	font-size: 14px;
+	font-weight: 100;
+	line-height: 20px;
+	letter-spacing: 0.5px;
+	margin: 20px 0 30px;
+}
+
+
+.login a {
+	color: #333;
+	font-size: 14px;
+	text-decoration: none;
+	margin: 15px 0;
+}
+
+.login button {
+	border-radius: 20px;
+	border: 1px solid #00C6FF;
+	background-color: #0078FF;
+	color: #FFFFFF;
+	font-size: 12px;
+	font-weight: bold;
+	padding: 12px 45px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	transition: transform 80ms ease-in;
+}
+
+.login button:active {
+	transform: scale(0.95);
+}
+
+.login button.ghost {
+	background-color: transparent;
+	border-color: #FFFFFF;
+}
+
+.login button:hover {
+  opacity: 0.6;
+}
+
+.login form {
+	background-color: #FFFFFF;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0 50px;
+  height: 100%;
+  width: 80%;
+	text-align: center;
+}
+
+
+.login input {
+	background-color: #eee;
+	border: none;
+	padding: 12px 15px;
+	margin: 8px 0;
+	width: 100%;
+}
+
+.login {
+  background: #e3e2e4;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	font-family: 'Montserrat', sans-serif;
+  height: 100vh;
+}
+
+.login .remember {
+	display: block;
+	position: relative;
+	padding-left: 35px;
+	margin-bottom: 12px;
+	cursor: pointer;
+	font-size: 14px;
+  
+  }
+  
+  .login .remember input {
+	position: absolute;
+	opacity: 0;
+  }
+  
+  .checkmark {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 16px;
+	width: 16px;
+	background-color: #eee;
+  }
+  
+  .login .remember input:checked ~ .checkmark {
+	background-color: #2196F3;
+  }
+  
+  .checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+  }
+  
+  .login .remember input:checked ~ .checkmark:after {
+	display: block;
+  }
+  
+  .login .remember .checkmark:after {
+	left: 5px;
+	top: 2px;
+	width: 4px;
+	height: 8px;
+	border: solid white;
+	border-width: 0 2px 2px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+/* LOGIN CSS ENDS */

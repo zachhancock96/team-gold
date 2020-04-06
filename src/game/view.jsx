@@ -1,9 +1,8 @@
 import m from 'mithril';
 
-export const Game = ({ state, actions, routing }) => [
-  <div>
-    Game
-  </div>
-];
+export const Game = ({ state, actions, routing }) => {
+  
+  return  <div> Hello World </div>
+}
 
 Game.showNavbar = true;
