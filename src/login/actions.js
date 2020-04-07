@@ -2,13 +2,27 @@ import { api } from '../shared';
 import { Route, navigateTo } from '../routes';
 
 export const Actions = update => {
-  const login = async ({name, email}) => {
+  const login = async ({email, password}) => {
     //start loading
     update({loading: true});
 
-    await api.login({ name, email });
-    const user = await api.getMe();
+    try {
+      await api.login({ email, password })
+    } catch(error) {
+      alert(error);
+      update({loading: false});
+      return;
+    }
 
+    let user;
+    try {
+      user = await api.getMe();
+    } catch(error) {
+      alert(error);
+      update({loading: false});
+      return;
+    }
+    
     update([
       navigateTo(Route.School()),
       {

@@ -5,14 +5,36 @@ import { service, effect } from './service';
 export const Route = createRouteSegments([
   "Login",
   "School",
+  "Calendar",
+
   "Game",
-  "Calendar"
+  "AddGame",
+  "ManageGames",
+  "AllGames",
+  "ApprovedGames",
+  "PendingGames",
+  "RejectedGames",
+  "GameDetail"
 ]);
 
 export const routeConfig = {
   Login: "/login",
   School: "/school/:id",
-  Game: "/game",
+  Game: [
+    "/game",
+    {
+      AddGame: "/add",
+      ManageGames: [
+        '',
+        {
+          AllGames: ['/all', { GameDetail: '/:id' } ],
+          ApprovedGames: ["/approved", { GameDetail: '/:id' }],
+          PendingGames: ['/pending', { GameDetail: '/:id' }],
+          RejectedGames: ['/rejected', { GameDetail: '/:id'} ]
+        }
+      ]
+    }
+  ],
   Calendar: "/calendar",
 };
 

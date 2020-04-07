@@ -9,6 +9,26 @@ body {
 input {
   font-family: 'Roboto', sans-serif;
 }
+.btn {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.btn.btn-yellow {
+  background-color: yellow;
+}
+.btn.btn-green {
+  background-color: green;
+}
+.btn.btn-red {
+  background-color: red;
+}
 
 .modal {
   position: fixed;
@@ -213,7 +233,7 @@ input {
 	margin: 15px 0;
 }
 
-.login button {
+.login .submit {
 	border-radius: 20px;
 	border: 1px solid #00C6FF;
 	background-color: #0078FF;
@@ -226,16 +246,16 @@ input {
 	transition: transform 80ms ease-in;
 }
 
-.login button:active {
+.login .submit:active {
 	transform: scale(0.95);
 }
 
-.login button.ghost {
+.login .submit.ghost {
 	background-color: transparent;
 	border-color: #FFFFFF;
 }
 
-.login button:hover {
+.login .submit:hover {
   opacity: 0.6;
 }
 
@@ -251,8 +271,7 @@ input {
 	text-align: center;
 }
 
-
-.login input {
+.login input[type='email'], .login input[type='password'] {
 	background-color: #eee;
 	border: none;
 	padding: 12px 15px;
@@ -285,7 +304,7 @@ input {
 	opacity: 0;
   }
   
-  .checkmark {
+  .login .checkmark {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -298,10 +317,10 @@ input {
 	background-color: #2196F3;
   }
   
-  .checkmark:after {
-	content: "";
-	position: absolute;
-	display: none;
+  .login .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
   }
   
   .login .remember input:checked ~ .checkmark:after {
@@ -321,3 +340,14 @@ input {
 }
 
 /* LOGIN CSS ENDS */
+.game-list-item {
+  display: flex;
+  margin-bottom: 10px;
+  border-bottom: 1px solid grey;
+  cursor: pointer;
+}
+
+.game-list-item.active {
+  background-color: #0000ffa6;
+  color: white;
+}

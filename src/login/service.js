@@ -10,7 +10,7 @@ export const service = ({state, previousState }) => {
       login: {
         form: {
           email: "",
-          name: ""
+          password: ""
         }
       }
     };

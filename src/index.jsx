@@ -7,7 +7,7 @@ import { router } from './router';
 import { viewport } from './viewport';
 import { TracerComponent } from './tracer';
 
-const withTracer = true;
+const withTracer = false;
 
 createApp()
   .then(app => {

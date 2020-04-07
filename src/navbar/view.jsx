@@ -16,7 +16,7 @@ export const Navbar = ({ state, actions }) => {
           School
         </a>
         <a
-          href={router.toPath(Route.Game())}
+          href={router.toPath([Route.Game(), Route.ManageGames(), Route.AllGames()])}
           class={className('Game')}>
           Game
         </a>

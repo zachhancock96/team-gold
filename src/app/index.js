@@ -2,6 +2,7 @@ import { Initial } from './initial';
 import { login } from '../login';
 import { school } from '../school';
 import { calendar } from '../calendar';
+import { game } from '../game';
 import { routes } from '../routes';
 import { Root } from '../root';
 
@@ -15,9 +16,10 @@ export const createApp = async () => {
       routes.Actions(update),
       login.Actions(update),
       school.Actions(update),
+      game.Actions(update),
     ),
-    services: [routes.service, login.service, school.service, calendar.service],
-    effects: [routes.effect, school.effect, calendar.effect],
+    services: [routes.service, login.service, school.service, calendar.service, game.service],
+    effects: [routes.effect, school.effect, calendar.effect, game.effect],
     view: Root
   };
 }
