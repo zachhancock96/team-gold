@@ -1,1 +1,1 @@
-export { Navbar } from './view';
+export { Navbar } from './controller.jsx';

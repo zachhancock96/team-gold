@@ -1,19 +1,18 @@
-import m from 'mithril';
-import { Loading } from 'shared/view';
+import React from 'react';
 
 export const Login = ({ state, actions, routing }) => {
   const form = state.login.form;
 
   return (
-    <div class="login">
-      <img src="./img/team_gold_logo.png" alt="Team logo" class="image-logo" />
+    <div className="login">
+      <img src="./img/team_gold_logo.png" alt="Team logo" className="image-logo" />
       <h2>Welcome to Team-Gold Soccer Scheduling System</h2>
       <br />
-      <div class="container" id="container">
-        {/* <div class="responsive"> */}
-        <div class="form-container sign-in-container">
-          <form 
-            id="form_login" 
+      <div className="container" id="container">
+        {/* <div className="responsive"> */}
+        <div className="form-container sign-in-container">
+          <form
+            id="form_login"
             onsubmit={
               e => {
                 e.preventDefault();
@@ -22,51 +21,51 @@ export const Login = ({ state, actions, routing }) => {
             }>
             <h1>Sign in</h1>
 
-            <input 
-              type="email" 
-              id="email" 
-              placeholder="Email" 
+            <input
+              type="email"
+              id="email"
+              placeholder="Email"
               value={form.email}
               oninput={e => actions.updateLoginForm('email', e.target.value)}
-              />
+            />
 
-            <input 
-              type="password" 
-              id="password" 
+            <input
+              type="password"
+              id="password"
               placeholder="Password"
               type="password"
               value={form.password}
               oninput={e => actions.updateLoginForm('password', e.target.value)} />
 
             <a href="#">Forgot your password?</a>
-            
+
             <input
-              class="submit"
+              className="submit"
               type="submit"
               value="Login" /> <br />
 
-            <label class="remember">Remember me
+            <label className="remember">Remember me
 					  <input type="checkbox" />
-              <span class="checkmark"></span>
+              <span className="checkmark"></span>
             </label>
           </form>
         </div>
         {/* </div> */}
-        {/* <div class="overlay">
-				<div class="overlay-panel overlay-right list-container">
-					<div class="responsive">
+        {/* <div className="overlay">
+				<div className="overlay-panel overlay-right list-container">
+					<div className="responsive">
 					<a id="calendar_overlay" href="#" target="_blank" />
-					<img src="../img/list-view-games.png" alt="List Style Calender goes here" class="list-image" />
-					<div class="list-overlay">
-						<p class="list-text">Full Schedule</p>
+					<img src="../img/list-view-games.png" alt="List Style Calender goes here" className="list-image" />
+					<div className="list-overlay">
+						<p className="list-text">Full Schedule</p>
 					</div>
 					</div>
 				</div>
 			</div> */}
       </div>
-      <footer class="footer">
+      <footer className="footer">
         <p>
-          Created with <i class="fa fa-heart"></i> by
+          Created with <i className="fa fa-heart"></i> by
 				<a> Team-Gold for CSCI 4060</a>
         </p>
       </footer>
@@ -74,38 +73,3 @@ export const Login = ({ state, actions, routing }) => {
   )
 }
 Login.showNavbar = false;
-
-// export const Login = ({ state, actions, routing }) => {
-//   const form = state.login.form;
-
-//   return [
-//     <div>
-//       <form onsubmit={}>
-//         <label>
-//           Email:
-//           <input
-//             typel="email"
-//             value={form.email}
-//             oninput={e => actions.updateLoginForm('email', e.target.value)} />
-//         </label>
-//         <br />
-//         <br />
-//         <br />
-//         <label>
-//           Password:
-//           <input
-//             type="password"
-//             value={form.password}
-//             oninput={e => actions.updateLoginForm('password', e.target.value)} />
-//         </label>
-//         <br />
-//         <br />
-//         <br />
-//         <input
-//           class="btn btn-green"
-//           type="submit"
-//           value="Login" />
-//       </form>
-//     </div>
-//   ];
-// }

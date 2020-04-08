@@ -1,0 +1,121 @@
+<style>
+html, body, header, footer, hgroup, nav, article, section, figure,
+form,figcaption, h1, h2, h3, h4, h5, ul, li, body, div, p, img
+{
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  border: 0;
+}
+ul,li {
+  list-style-type: none;
+}
+
+body, input, textarea {
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  color: #47525E;
+}
+
+a {
+  color: #00BFA5;
+  text-decoration: none;
+}
+a:hover {
+  color: #062938;
+}
+
+img.font-icon {
+  height: 1em;
+}
+
+.container-outer {
+  width: 100%;
+  overflow: hidden;
+}
+
+.container-inner {
+  width: 1000px;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+@media only screen and (max-width: 1000px) {
+  .container-inner{
+      width: 100%!important;
+      margin: 0 auto;
+      overflow: auto;
+      box-sizing: border-box;
+  }
+
+  body, input, textarea{
+    font-size: 16px;
+  }
+}
+
+
+/*************/
+/*************/
+/*************/
+/**  MENU  **/
+/*************/
+/*************/
+/*************/
+/**menu is used in every page, so i might as well, put it here.**/
+section.menu {
+  padding: 1.25em 0;
+  background-color: #2b2017;
+  color: #FFFFFF;
+}
+section.menu h1 {
+  float: left;
+}
+
+section.menu nav {
+  float: right;
+}
+
+section.menu a {
+  color: #ffffff;
+}
+section.menu a:hover {
+  color: #ffffff;
+}
+
+section.menu nav li {
+  display: inline-block;
+  margin-left: .5em;
+  margin-right: .5em;
+  color: #FFFFFF;
+}
+
+section.menu {
+  margin-top: 0em !important;
+}
+
+@media only screen and (max-width: 1000px) {
+  section.menu h1, section.menu nav {
+    float: none;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+
+</style>
+<body>
+  <section class="menu container-outer">
+    <div class="container-inner">
+        <h1><a href="about.html">ABHAYA UPRETY</a></h1>
+        <nav>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="resume.html">Resume</a></li>
+            <li><a href="howToJavascript.html">How to Javascript</a></li>
+          </ul>
+        </nav>
+    </div>
+    </section>
+</body>

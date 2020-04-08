@@ -1,6 +1,8 @@
-const prettyDate = s => 'Sunday 04/20';
-const prettyDateAndTime = s => 'Sunday 04/20, 03:320';
+//TODO: leave this as it is for now, once we have date library we shall edit this
+export const prettyDate = s => 'Sunday 04/20';
+export const prettyDateAndTime = s => 'Sunday 04/20, 03:320';
 
+//@deprecated
 const statusMap = {
   pending_home: { name: 'Pending Home Team', color: 'yellow' },
   pending_away: { name: 'Pending Away Team', color: 'yellow' },
@@ -9,7 +11,8 @@ const statusMap = {
   rejected: { name: 'Rejected', color: 'red' }
 }
 
-export const gameToView = g => ({
+//@deprecated
+const gameToView = g => ({
   id: g.id,
   title: `${g.homeTeam.school.name} ${g.homeTeam.teamKind} vs ${g.awayTeam.school.name} ${g.awayTeam.teamKind}`,
   start: prettyDateAndTime(g.start),
@@ -21,7 +24,8 @@ export const gameToView = g => ({
   raw: g
 });
 
-export const gameDetailToView = ({ game, actions, history }) => {
+//@deprecated
+const gameDetailToView = ({ game, actions, history }) => {
   const g = gameToView(game);    
   
   g.actions = actions;

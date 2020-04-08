@@ -1,4 +1,4 @@
-import m from 'mithril';
+import React from 'react';
 import { Routing } from 'meiosis-routing/state';
 import { Login } from '../login';
 import { School } from '../school';
@@ -8,7 +8,7 @@ import { Navbar } from '../navbar';
 import { Loading } from 'shared/view';
 
 const componentMap = {
-  Login,
+  //Login,
   School,
   Game,
   Calendar
@@ -18,43 +18,48 @@ export const Root = ({ state, actions }) => {
   const routing = Routing(state.route);
   const Component = componentMap[routing.localSegment.id];
 
-  const navbar = Component.showNavbar ? Navbar({ state, actions }) : null;
-  const component = Component({ state, actions, routing });
-  const loading = state.loading ? Loading() : null;
+  const navbar = Component.showNavbar ? <Navbar state={state} actions={actions} routing={routing}/> : null;
+  const component = <Component state={state} actions={actions} routing={routing} />
+  const loading = state.loading ? <Loading /> : null;
 
   if (!navbar) {
-    return [
-      <div style={{
-        height: '100vh'
-      }}>
-        {component}
-      </div>,
-      loading
-    ];
+    return (
+      <React.Fragment>
+        {loading}
+        <div style={{
+          height: '100vh'
+        }}>
+          <Component state={state} actions={actions} routing={routing} />
+        </div>
+      </React.Fragment>
+    );
   }
 
-  return [
-    loading,
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh'
-    }}>
-      {
-        state.device === 'desktop'
-        ? (
-          [
-            <div>{navbar}</div>,
-            <div style={{ flex: 1 }}>{component}</div>
-          ]
-        ): (
-          [
-            <div style={{ flex: 1 }}>{component}</div>,
-            <div>{navbar}</div>
-          ]
-        )
-      }
-    </div>
-  ]
-      
+  return (
+    <React.Fragment>
+      {loading}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh'        
+      }}>
+        <div>{navbar}</div>,
+        <div style={{ flex: 1 }}>{component}</div>
+      </div>
+    </React.Fragment>
+  );      
 }
+// export const Root = ({ state, actions }) => {
+//   //const routing = Routing(state.route);
+//   //const Component = componentMap[routing.localSegment.id];
+
+//   // return (
+//   //   <div style={{height: '100vh'}}>
+//   //     <Login state={state} actions={actions} routing={routing} />
+//   //   </div>
+//   // );
+
+//   return (
+//     <Navbar state={state} actions={actions} />
+//   )
+// }

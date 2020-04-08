@@ -1,11 +1,14 @@
-import m from 'mithril';
+//import m from 'mithril';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 import meiosis from "meiosis-setup/mergerino"
 import stream from "meiosis-setup/simple-stream"
 import merge from "mergerino"
 import { createApp } from './app';
 import { router } from './router';
 import { viewport } from './viewport';
-import { TracerComponent } from './tracer';
+// import { TracerComponent } from './tracer';
 
 const withTracer = false;
 
@@ -20,7 +23,7 @@ createApp()
 
     states.map(state => {
       const View = withTracer? ViewWithTracer_: ViewWithoutTracer;
-      m.render(root, View({app, state, actions}));
+      ReactDOM.render(View({app, state, actions}), root);
 
       //`state.route` to browser address bar
       router.locationBarSync(state.route);
@@ -33,21 +36,25 @@ createApp()
     viewport.watchDeviceChange({ update, states });
   });
 
+// const ViewWithTracer = states => ({app, state, actions}) => {
+//   return [
+//     <div style={{
+//       display: 'flex',
+//       flexDirection: 'row',
+//       justifyContent: 'space-between'
+//     }}>
+//       <div style={{flex: 1}}>
+//         { app.view({state, actions}) }
+//       </div>
+//       <div>
+//         <TracerComponent states={states} /> 
+//       </div>
+//     </div>
+//   ];
+// }
+
 const ViewWithTracer = states => ({app, state, actions}) => {
-  return [
-    <div style={{
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'space-between'
-    }}>
-      <div style={{flex: 1}}>
-        { app.view({state, actions}) }
-      </div>
-      <div>
-        <TracerComponent states={states} /> 
-      </div>
-    </div>
-  ];
+  return <div>View with Tracer (dont worry about this)</div>;
 }
 
 const ViewWithoutTracer = ({app, state, actions}) => app.view({state, actions});

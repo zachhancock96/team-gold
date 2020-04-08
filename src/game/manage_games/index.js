@@ -1,0 +1,1 @@
+export { ManageGames  } from './controller';
