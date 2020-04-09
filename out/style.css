@@ -351,3 +351,19 @@ input {
   background-color: #0000ffa6;
   color: white;
 }
+
+
+/*Game Detail Starts*/
+
+#gamedetail-heading {
+  font-weight: bold;
+  font-size: large;
+}
+
+#timestamp {
+  font-size: small;
+  font-style: italic;
+  font: grey;
+}
+
+/*Game Detail Ends*/
