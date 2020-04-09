@@ -66,6 +66,41 @@ input {
   color: white;
 }
 
+/* NAVBAR CSS STARTS*/
+
+.navbar{
+  background-color: rgb(65, 43, 25);
+  font-size: large;
+  color: white;
+  padding: 20px;
+}
+
+a.left-active{
+  color: red;
+  padding: 15px;
+}
+
+a.left{
+  color: white;
+  float: left, center;
+  padding: 15px;
+}
+
+a.right{
+  color: white;
+  float: right;
+}
+
+.nav1{
+  padding: 10px;
+  font-size: small;
+}
+
+.nav2{
+  padding: 10px;
+  font-size: small;
+}
+
 
 /* LOGIN CSS STARTS*/
 
