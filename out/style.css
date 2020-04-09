@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;1,100;1,200;1,300;1,400;1,500&display=swap');
+
+
 * {
   box-sizing: border-box;
 }
@@ -351,3 +354,97 @@ input {
   background-color: #0000ffa6;
   color: white;
 }
+
+
+/* LIST-VIEW CSS STARTS HERE */
+
+.contents {
+  /* display: -webkit-box; */
+  justify-content: start;
+  width: 100%;
+  height: auto;
+  padding: 15px;
+  align-items: flex-start;
+  border-collapse: collapse;
+  box-shadow: 0px 5px 10px grey;
+  background-color: rgb(232, 235, 236);
+  border-radius: 7.5px;
+
+}
+
+.time  {
+  font-weight: 300;
+  font-size: 18px;
+  padding: 0px;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+p {
+  font-family: 'Poppins', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.status {
+  font-size: 15px;
+  font-weight: 300;
+}
+
+
+.field {
+  padding-left: -50px;
+  font-size: 18px;
+  color: black;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.font-before {
+  font-weight: 500;
+  font-style: normal;
+  font-size: 15px;
+}
+
+.contents .school-type{
+  font-weight: 300;
+  font-size: 15px;
+  padding: 0px;
+  margin: 0;
+  margin-bottom: 5px;
+  margin-top: 5px;
+
+}
+.game-box {
+  display: flex;
+  flex-direction: row;
+  font-family: 'Poppins', sans-serif;
+}
+/* 
+ul:hover {
+  opacity: 2;
+} */
+
+.contents:hover {
+  transform: scale(1.07);
+  z-index: 100;
+  background-color: rgb(59, 196, 235);
+  box-shadow: 0 5px 25px rgba(54, 121, 247, 0.2);
+  color: #000;
+  border-radius: 10px;
+}
+
+/* .color {
+  display: flex;
+  flex-direction: row;
+  border: solid;
+  border-color: red;
+  background-color: red;
+  width: 3%;
+  border-radius: 10px;
+  height: initial;
+  z-index: 101;
+} */
+
+
+/* LIST-VIEW CSS ENDS HERE */
