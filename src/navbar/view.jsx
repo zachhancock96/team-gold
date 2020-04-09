@@ -24,27 +24,27 @@ export const NavbarView = ({ links, activeLinkId, onLinkClick }) => {
   //specify the css in the style.css file in out folder
 
   const linkClass = link => {
-    let className = link.align === 'left'
-      ? 'navbar-link-left'
-      : 'navbar-link-right';
+    let className = link.align;
+  
 
     if (link.id === activeLinkId) {
-      return className + ' active';
+      return className + '-active';
     }
+
+    else
+      return className;
+
   }
 
   const linkItems = links.map(link => {
     return <a 
       key={link.id}
       href="#" className={linkClass(link)} 
-      onClick={e => { e.preventDefault(); onLinkClick(link.id); }}>{link.name}</a>
+      onClick={e => { e.preventDefault(); onLinkClick(link.id); }}>{link.name} </a>
   });
-  
+
   return (
-    <nav style={{
-      padding: '20px',
-      backgroundColor: 'brown'
-    }}>
+    <nav className='navbar'>
       {linkItems}
     </nav>
   );
