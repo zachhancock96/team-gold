@@ -67,12 +67,20 @@ export default class Game {
       homeTeam: {
         id: ht.id,
         name: ht.name,
-        teamKind: ht.teamKind
+        teamKind: ht.teamKind,
+        school: {
+          id: ht.school.id,
+          name: ht.school.name
+        }
       },
       awayTeam: {
         id: at.id,
         name: at.name,
-        teamKind: at.teamKind
+        teamKind: at.teamKind,
+        school: {
+          id: at.school.id,
+          name: at.school.name
+        }
       },
       start: startToApi(this.start),
       location: this.location,

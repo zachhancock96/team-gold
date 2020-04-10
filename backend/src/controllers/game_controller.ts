@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import Game, {GAME_START_FROM_API_FORMAT} from '../game';
+import User from '../user';
 import Repository from '../repository';
 import PrivilegeAccess from '../privilege_access';
-import { Privileges as P, GameStatus, Roles } from '../enums';
+import { Privileges as P, GameStatus, Roles, GameAction } from '../enums';
 import moment from '../moment';
 
 /*
@@ -17,6 +18,95 @@ import moment from '../moment';
   }
 
 */
+
+const getMyTeams = async (repository: Repository, user: User) => {
+  const teams = await repository.getTeams();
+  if (user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN) {
+    //TODO: assuming one assignor does everything for now
+    return teams;
+  }
+
+  //school admin or school rep here
+  return user.role === Roles.SCHOOL_REP
+    ? teams.filter(t => !!t.schoolReps.find(rep => rep.id === user.id))
+    : teams.filter(t => t.school.schoolAdmin && t.school.schoolAdmin.id === user.id);
+}
+
+const getMyGames = async (repository: Repository, user: User) => {
+  if (user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN) {
+    //TODO: assuming one assignor does everything for now
+    const games = await repository.getGames();
+    return games;
+
+  } else {
+    //school admin or school rep here
+
+    const games = await repository.getGames();
+    const myTeams = await getMyTeams(repository, user);
+    const myTeamIds = myTeams.map(t => t.id);
+
+    const myGames = games.filter(g => myTeamIds.indexOf(g.homeTeam.id) >= 0 || 
+      myTeamIds.indexOf(g.awayTeam.id) >= 0);
+
+    return myGames;
+  }
+}
+
+const getGameActions = async (repository: Repository, user: User, gameId: number) => {
+  const games = await getMyGames(repository, user);
+  const g = games.find(g => g.id === gameId);
+  if (!g) {
+    return [];
+  }
+
+  const { EDIT, REJECT, ACCEPT } = GameAction;
+
+  //rejected, cant do nothing
+  if (g.status === GameStatus.REJECTED) {
+    return [];
+  }
+
+  //assignor and admin may reject/edit a game that has been accepted
+  if (g.status.toString() == GameStatus.ACCEPTED.toString()) {
+    return (user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN)
+      ? [EDIT, REJECT]
+      : [];
+  }
+
+  //game status pending from here
+  
+  if (user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN) {
+    return [EDIT, REJECT, ACCEPT];
+  }
+
+  //only reps and school admins from here
+
+  if (g.status === GameStatus.PENDING_ASSIGNOR) {
+    return [];
+  }
+
+  const myTeams = await getMyTeams(repository, user);
+  const myTeamIds = myTeams.map(t => t.id);
+
+  const doesRepresentHome = myTeamIds.indexOf(g.homeTeam.id) >= 0;
+
+  if (doesRepresentHome) {
+    if (g.status === GameStatus.PENDING_HOME_TEAM) {
+      return [EDIT, REJECT, ACCEPT];
+    } else {
+      return [EDIT, REJECT];
+    }
+  } else {
+    //user represents away team
+
+    if (g.status === GameStatus.PENDING_AWAY_TEAM) {
+      return [EDIT, REJECT, ACCEPT];
+    } else {
+      return [EDIT, REJECT]; 
+    }
+  }
+}
+
 export default class GameController {
 
   private repository: Repository;
@@ -39,41 +129,98 @@ export default class GameController {
     res.send({ok: true, game: game? game.toApi(): null });
   }
 
-  getGamesWithPrivilegesForUser = async (req: Request, res: Response) => {
-    const userId = parseInt(req.params.userId);
-    const users = await this.repository.getUsers();
-    const user = users.find(u => u.id === userId);
-    if (!user) {
-      res.send({ok: false, reason: 'User not found'});
-      return;
+  getMyGames = async (req: Request, res: Response) => {
+    const user = req.user!;
+    const games = await getMyGames(this.repository, user);
+    res.send({ ok: true, games: games.map(g => g.toApi()) });
+  }
+
+  getGameActions = async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const user = req.user!;
+
+    const actions = await getGameActions(this.repository, user, id);
+    res.send({ ok: true, actions });
+  }
+
+  acceptGame = async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const user = req.user!;
+
+    const actions = await getGameActions(this.repository, user, id);
+    const canAccept = actions.indexOf(GameAction.ACCEPT) >= 0;
+
+    if (!canAccept) {
+      return res.send({ok: false, reason: 'Cannot accept the game'});
     }
-    const rawPrivileges = req.params.privileges.split(';');
-    console.log(rawPrivileges);
-    
-    //null if invalid
-    //invalid if unrecognized privilege value or duplicate privilege values
-    const privileges = rawPrivileges.reduce((privileges: P.GamePrivilege[] | null, rawPrivilege) => {
-      if (privileges == null) return null;
 
-      //bad value
-      if (!isGamePrivilege(rawPrivilege)) return null;
-      
-      const privilege = rawPrivilege as P.GamePrivilege;
+    const game = await (async () => {
+      const games = await this.repository.getGames();
+      return games.find(g => g.id === id);
+    })();
 
-      //dup entry
-      if (privileges.indexOf(privilege) >= 0) return null;
+    const status = user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN
+      ? GameStatus.ACCEPTED
+      : GameStatus.PENDING_ASSIGNOR;
 
-      privileges.push(privilege);
-      return privileges;
-    }, []);
+    await this.repository.editGame({
+      id: game!.id,
+      start: game!.start,
+      location: game!.location,
+      status
+    });
 
-    if (!privileges || !privileges.length) {
-      res.send({ok: false, reason: 'Bad privilege parameter'});
-      return;
+    await this.repository.addGameHistory({
+      gameId: game!.id,
+      start: game!.start,
+      location: game!.location,
+      status,
+      timestamp: moment(),
+      updateType: 'accept',
+      updaterType: 'assignor',//TODO: change this later
+      updaterId: user.id
+    });
+
+    res.send({ ok: true})
+  }
+
+  rejectGame = async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const user = req.user!;
+
+    const actions = await getGameActions(this.repository, user, id);
+    const canReject = actions.indexOf(GameAction.REJECT) >= 0;
+
+    if (!canReject) {
+      return res.send({ok: false, reason: 'Cannot reject the game'});
     }
-    
-    const games = await this.privilegeAccess.getGamesWithPrivilege(user, privileges);
-    res.send({ok: true, games: games.map(g => g.toApi())});
+
+    const game = await (async () => {
+      const games = await this.repository.getGames();
+      return games.find(g => g.id === id);
+    })();
+
+    const status = GameStatus.REJECTED;
+
+    await this.repository.editGame({
+      id: game!.id,
+      start: game!.start,
+      location: game!.location,
+      status
+    });
+
+    await this.repository.addGameHistory({
+      gameId: game!.id,
+      start: game!.start,
+      location: game!.location,
+      status,
+      timestamp: moment(),
+      updateType: 'reject',
+      updaterType: 'assignor',//TODO: change this later
+      updaterId: user.id
+    });
+
+    res.send({ ok: true})
   }
 
   addGame = async (req: Request, res: Response) => {
@@ -113,8 +260,13 @@ export default class GameController {
       return;
     }
 
-    const hasPrivilegeOverHome = await this.privilegeAccess.hasTeamPrivilege(user, homeTeam, [P.TeamPrivilege.MANAGE_GAME]);
-    const hasPrivilegeOverAway = await this.privilegeAccess.hasTeamPrivilege(user, awayTeam, [P.TeamPrivilege.MANAGE_GAME]);
+    const isMyTeam = async team => {
+      const myTeams = await getMyTeams(repo, user);
+      return !!myTeams.find(t => t.id === team.id);
+    }
+
+    const hasPrivilegeOverHome = await isMyTeam(homeTeam);
+    const hasPrivilegeOverAway = await isMyTeam(awayTeam);
 
     if (!hasPrivilegeOverHome && !hasPrivilegeOverAway) {
       res.send({ok: false, reason: 'Has no privelege over either home or away team'});
@@ -124,204 +276,113 @@ export default class GameController {
       res.send({ok: false, reason: 'Game should be matched between  same kind of team'});
     }
 
-    //TODO: sometime user may privilege over both home and away team
-    //if the user were assignor or admin. What should be the status in that case
-
     //TODO: there may still be conflict in time/location
+
+    const status = user.role === Roles.ASSIGNOR || Roles.ADMIN
+      ? GameStatus.ACCEPTED
+      : hasPrivilegeOverHome
+      ? GameStatus.PENDING_AWAY_TEAM
+      : GameStatus.PENDING_HOME_TEAM;
 
     const insertedId = await repo.addGame({
       homeTeamId: body.homeTeamId,
       awayTeamId: body.awayTeamId,
       start: body.start,
       location: body.location,
-      status: hasPrivilegeOverHome
-        ? GameStatus.PENDING_AWAY_TEAM
-        : GameStatus.PENDING_HOME_TEAM
+      status
+    });
+
+    await repo.addGameHistory({
+      gameId: insertedId,
+      start: body.start,
+      location: body.location,
+      status,
+      timestamp: moment(),
+      updateType: 'create',
+      updaterType: 'assignor',//TODO: change this later
+      updaterId: user.id
     });
 
     res.send({ok: true, gameId: insertedId});
   }
 
-  editGame = async (req: Request, res: Response) => {
-    const repo = this.repository;
+  getGameHistory = async (req: Request, res: Response) => {
+    const id = parseInt(req.params.id);
+    const history = await this.repository.getGameHistory(id);
+    res.send({ok: true, history: history})
+  }
+}
 
-    const gameId = parseInt(req.params.id);
-    const body = req.body as ApiSchema.Game_EDIT;
+  // editGame = async (req: Request, res: Response) => {
+  //   const repo = this.repository;
 
-    const isValidStart = moment(body.start, GAME_START_FROM_API_FORMAT, true).isValid();
-    if (!isValidStart) {
-      res.send({ok: false, reason: 'bad start format'});
-      return;
-    }
-    if (!body.location) {
-      res.send({ok: false, reason: 'bad location'});
-      return;
-    }
+  //   const gameId = parseInt(req.params.id);
+  //   const body = req.body as ApiSchema.Game_EDIT;
 
-    const games = await this.repository.getGames();
-    const game = games.find(g => g.id === gameId) || null;
-    if (!game) {
-      res.send({ok: false, reason: 'Game not found'});
-      return;
-    }
+  //   const isValidStart = moment(body.start, GAME_START_FROM_API_FORMAT, true).isValid();
+  //   if (!isValidStart) {
+  //     res.send({ok: false, reason: 'bad start format'});
+  //     return;
+  //   }
+  //   if (!body.location) {
+  //     res.send({ok: false, reason: 'bad location'});
+  //     return;
+  //   }
 
-    if (game.status === GameStatus.REJECTED) {
-      res.send({ok: false, reason: 'Game was rejected'});
-      return;
-    }
-    if (game.status === GameStatus.APPROVED_LOCKED) {
-      res.send({ok: false, reason: 'No further changes are allowed in this game.'});
-      return;
-    }
+  //   const games = await this.repository.getGames();
+  //   const game = games.find(g => g.id === gameId) || null;
+  //   if (!game) {
+  //     res.send({ok: false, reason: 'Game not found'});
+  //     return;
+  //   }
 
-    const user = req.user!;
+  //   if (game.status === GameStatus.REJECTED) {
+  //     res.send({ok: false, reason: 'Game was rejected'});
+  //     return;
+  //   }
+  //   if (game.status === GameStatus.APPROVED_LOCKED) {
+  //     res.send({ok: false, reason: 'No further changes are allowed in this game.'});
+  //     return;
+  //   }
 
-    const hasUserPrivilegeOverGame = await this.privilegeAccess.hasGamePrivilege(user, game, [P.GamePrivilege.UPDATE_GAME]);
-    if (!hasUserPrivilegeOverGame) {
-      return res.send({ok: false, reason: 'Not enough privilege.'});
-    }
+  //   const user = req.user!;
 
-    //TODO: how will status change when game is edited by admin/assignor
-    //for now there is no change
-    if (user.role === Roles.ADMIN || user.role === Roles.ASSIGNOR) {
-      await repo.editGame({
-        id: gameId,
-        start: body.start,
-        location: body.location,
-        status: game.status
-      });
+  //   const hasUserPrivilegeOverGame = await this.privilegeAccess.hasGamePrivilege(user, game, [P.GamePrivilege.UPDATE_GAME]);
+  //   if (!hasUserPrivilegeOverGame) {
+  //     return res.send({ok: false, reason: 'Not enough privilege.'});
+  //   }
+
+  //   //TODO: how will status change when game is edited by admin/assignor
+  //   //for now there is no change
+  //   if (user.role === Roles.ADMIN || user.role === Roles.ASSIGNOR) {
+  //     await repo.editGame({
+  //       id: gameId,
+  //       start: body.start,
+  //       location: body.location,
+  //       status: game.status
+  //     });
       
-      return res.send({ok: true});
-    }
+  //     return res.send({ok: true});
+  //   }
 
-    const isEditedByHomeTeam = (function() {
-      const schoolAdmin = game.homeTeam.school.schoolAdmin;
-      const reps = game.homeTeam.school.schoolReps;
+  //   const isEditedByHomeTeam = (function() {
+  //     const schoolAdmin = game.homeTeam.school.schoolAdmin;
+  //     const reps = game.homeTeam.school.schoolReps;
 
-      const isRep = !!reps.find(rep => rep.equals(user));
-      const isSchoolAdmin = schoolAdmin && schoolAdmin.equals(user);
+  //     const isRep = !!reps.find(rep => rep.equals(user));
+  //     const isSchoolAdmin = schoolAdmin && schoolAdmin.equals(user);
 
-      return isRep || isSchoolAdmin;
-    })();
+  //     return isRep || isSchoolAdmin;
+  //   })();
     
-    await repo.editGame({
-      id: gameId,
-      start: body.start,
-      location: body.location,
-      status: isEditedByHomeTeam
-        ? GameStatus.PENDING_AWAY_TEAM
-        : GameStatus.PENDING_HOME_TEAM
-    });
+  //   await repo.editGame({
+  //     id: gameId,
+  //     start: body.start,
+  //     location: body.location,
+  //     status: isEditedByHomeTeam
+  //       ? GameStatus.PENDING_AWAY_TEAM
+  //       : GameStatus.PENDING_HOME_TEAM
+  //   });
 
-    res.send({ok: true});
-  }
-
-  acceptGame = async (req: Request, res: Response) => {
-    const repo = this.repository;
-    const gameId = parseInt(req.params.id);
-    const user = req.user!; 
-
-    if (user.role !== Roles.SCHOOL_ADMIN && user.role !== Roles.SCHOOL_REP) {
-      return res.send({ok: false, reason: 'Operation permitted to only school admins and school reps'});
-    }
-
-    const games = await repo.getGames();
-    const game = games.find(g => g.id === gameId) || null;
-
-    if (!game) {
-      return res.send({ok: false, reason: 'Game not found'});
-    }
-
-    if (game.status !== GameStatus.PENDING_AWAY_TEAM && game.status !== GameStatus.PENDING_HOME_TEAM) {
-      return res.send({ok: false, reason: `Current game status is: ${game.status}`})
-    }
-        
-    const hasPrivilege = await this.privilegeAccess.hasTeamPrivilege(user, 
-      GameStatus.PENDING_HOME_TEAM? game.homeTeam: game.awayTeam, 
-      [P.TeamPrivilege.MANAGE_GAME]);
-    
-    if (!hasPrivilege) {
-      return res.send({ok: false, reason: 'Not enough privilege'});
-    }
-
-    await repo.editGame({
-      id: game.id,
-      start: game.start,
-      location: game.location,
-      status: GameStatus.PENDING_ASSIGNOR
-    });
-
-    res.send({ok: true});
-  }
-
-  rejectGame = async (req: Request, res: Response) => {
-    const repo = this.repository;
-    const gameId = parseInt(req.params.id);
-    const user = req.user!;
-    const rejectionNote = (req.body as ApiSchema.Game_REJECT).rejectionNote || null;
-    
-    const games = await this.repository.getGames();
-    const game = games.find(g => g.id === gameId) || null;
-    if (!game) {
-      return res.send({ok: false, reason: 'Game not found'});
-    }
-
-    if (game.status === GameStatus.REJECTED || 
-        game.status === GameStatus.APPROVED_LOCKED) {
-      return res.send({ok: false, reason: `Current game status is: ${game.status}`});
-    }
-
-    //NOTE: any one with update privilege is able to reject game
-    const hasPrivilegeOverGame = await this.privilegeAccess.hasGamePrivilege(user, game, [P.GamePrivilege.UPDATE_GAME]);
-    if (!hasPrivilegeOverGame) {
-      return res.send({ok: false, reason: 'Not enough privilege'});
-    }
-
-    await repo.editGame({
-      id: game.id,
-      start: game.start,
-      location: game.location,
-      status: GameStatus.REJECTED,
-      rejectionNote
-    });
-
-    res.send({ok: true});
-  }
-
-  approveGame = async (req: Request, res: Response) => {
-    const repo = this.repository;
-    const gameId = parseInt(req.params.id);
-    const user = req.user!;
-
-    const games = await this.repository.getGames();
-    const game = games.find(g => g.id === gameId) || null;
-    if (!game) {
-      return res.send({ok: false, reason: 'Game not found'});
-    }
-
-    //NOTE: only games with pending_assignor status could be approved by assignor
-    if (game.status !== GameStatus.PENDING_ASSIGNOR) {
-      return res.send({ok: false, reason: `Current game status is: ${game.status}`});
-    }
-
-    const hasApprovePrivilege = await this.privilegeAccess.hasGamePrivilege(user, game, [P.GamePrivilege.APPROVE_GAME]);
-    if (!hasApprovePrivilege) {
-      return res.send({ok: false, reason: 'Not enough privilege'});
-    }
-
-    await repo.editGame({
-      id: game.id,
-      start: game.start,
-      location: game.location,
-      status: GameStatus.APPROVED_UNLOCKED
-    });
-
-    res.send({ok: true});
-  }
-}
-
-function isGamePrivilege(s: string) {
-  return s &&
-    (s === P.GamePrivilege.APPROVE_GAME
-      || s === P.GamePrivilege.UPDATE_GAME);
-}
+  //   res.send({ok: true});
+  // }

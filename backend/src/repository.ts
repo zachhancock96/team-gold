@@ -26,6 +26,7 @@ const Q_ALL_TEAM = 'SELECT * FROM TEAM;';
 const Q_ALL_SCHOOL_REP = 'SELECT * FROM SCHOOL_REP;';
 const Q_ALL_SCHOOL_REP_TEAM_ASSN = 'SELECT * FROM SCHOOL_REP_TEAM_ASSN;';
 const Q_ALL_GAME = 'SELECT * FROM GAME;';
+const Q_GAME_HISTORY_OF_GAME = (gameId: number) => `SELECT * FROM GAME_HISTORY WHERE gameId=${gameId} ORDER BY timestamp DESC;`;
 
 export default class Repository {
   private users: User[] = []
@@ -233,6 +234,56 @@ export default class Repository {
     });
 
     return games;
+  }
+
+  async getGameHistory(gameId: number) {
+    const query = Q_GAME_HISTORY_OF_GAME(gameId);
+    const historyR = await promisifiedQuery(query);
+    const users = await this.getUsers();
+
+    return historyR.map(row => {
+
+      const history: {[key: string]: any} = {
+        id: row.id, 
+        gameId: row.gameId, 
+        start: row.start, 
+        location: row.location, 
+        status: row.status, 
+        timestamp: row.timestamp, 
+        updateType: row.updateType, 
+        updaterType: row.updaterType,
+      };
+
+      const updaterId = row.updaterId;
+      const updater = users.find(u => u.id === updaterId);
+      
+      history.updater = {
+        id: updater!.id,
+        name: updater!.name
+      };
+
+      return history;
+    });
+  }
+
+  async addGameHistory(g: {
+    gameId: number, 
+    start: string | moment.Moment;
+    location: string, 
+    status: GameStatus, 
+    timestamp: string | moment.Moment;
+    updateType: GameHistoryUpdateType, 
+    updaterId: number, 
+    updaterType: GameHistoryUpdaterType
+  }) {
+    const start = moment(g.start).format(GAME_START_TO_DB_FORMAT);
+    const timestamp = moment(g.timestamp).format(GAME_START_TO_DB_FORMAT);
+
+    const query = `INSERT INTO GAME_HISTORY (gameId, start, location, status, timestamp, updateType, updaterId, updaterType) VALUES
+      ${sqlValues([g.gameId, start, g.location, g.status, timestamp, g.updateType, g.updaterId, g.updaterType])}`;
+
+    const result: InsertQueryResult = await promisifiedQuery(query); assert.ok(result.insertId);
+    return result.insertId!;
   }
 
   async addGame(g: {

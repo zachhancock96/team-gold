@@ -71,21 +71,27 @@ connectMysql(async (err, mysql) => {
 
   //user controller
   app.get('/api/users', W(userController.getAllUsers));
+  app.get('/api/users/me', W(userController.getMe));
   app.get('/api/users/:id', W(userController.getUser));
 
   //game controller
   app.get('/api/games', W(gameController.getAllGames));
+  app.get('/api/games/me', W(gameController.getMyGames));
   app.get('/api/games/:id', W(gameController.getGame));
-  app.get('/api/users/:userId/privileges/:privileges/games', W(gameController.getGamesWithPrivilegesForUser));
-  app.post('/api/games', W(gameController.addGame));
-  app.post('/api/games/:id/edit', W(gameController.editGame));
+  app.get('/api/games/:id/actions', W(gameController.getGameActions));
+  app.get('/api/games/:id/history', W(gameController.getGameHistory));
   app.post('/api/games/:id/accept', W(gameController.acceptGame));
   app.post('/api/games/:id/reject', W(gameController.rejectGame));
-  app.post('/api/games/:id/approve', W(gameController.approveGame));
+  app.post('/api/games', W(gameController.addGame));
+  //app.get('/api/users/:userId/privileges/:privileges/games', W(gameController.getGamesWithPrivilegesForUser));
+  //app.post('/api/games/:id/edit', W(gameController.editGame));
+  //app.post('/api/games/:id/approve', W(gameController.approveGame));
 
   //team controller
-  app.get('/api/teams', W(teamController.getAllTeams));
+  app.get('/api/teams', W(teamController.getTeams));
   app.get('/api/teams/:id', W(teamController.getTeam));
+
+  //@deprecated ?
   app.get('/api/users/:userId/privileges/:privileges/teams', W(teamController.getTeamsWithPrivilegesForUser));
 
   //school controller

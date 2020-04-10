@@ -15,6 +15,7 @@ export default class LoginController {
     const password = req.body.password;
 
     const users = await this.repository.getUsers();
+    
     const user = users.find(u => u.email === email);
     if (!user || user.password !== password) {
       return res.send({ok: false, reason: 'Email or Password did not match'});

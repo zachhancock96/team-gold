@@ -13,8 +13,22 @@ export default class TeamController {
     this.privilegeAccess = privilegeAccess;
   }
 
-  getAllTeams = async (req: Request, res: Response) => {
-    const teams = await this.repository.getTeams();
+  getTeams = async (req: Request, res: Response) => {
+    const teams_ = await this.repository.getTeams();
+    let teams;
+    if (req.query.schoolAdmin) {
+      const schoolAdminId = parseInt(req.query.schoolAdmin);
+      teams = teams_.filter(t => t.school.schoolAdmin && t.school.schoolAdmin.id === schoolAdminId);
+    }
+    if (req.query.schoolRep) {
+      const schoolRepId = parseInt(req.query.schoolRep);
+      teams = teams_.filter(t => t.schoolReps.find(rep => rep.id === schoolRepId));
+    }
+    if (req.query.assignor) {
+      const assignorId = parseInt(req.query.assignor);
+      teams = teams_.filter(t => t.school.district && t.school.district.assignor && t.school.district.assignor.id === assignorId);
+    }
+    teams = teams || teams_;
     res.send({ok: true, teams: teams.map(s => s.toApi())});
   }
 

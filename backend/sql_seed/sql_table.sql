@@ -2,6 +2,7 @@ CREATE Database IF NOT EXISTS SoccerSchedule;
 
 USE SoccerSchedule;
 
+DROP TABLE IF EXISTS GAME_HISTORY;
 DROP TABLE IF EXISTS GAME;
 DROP TABLE IF EXISTS SCHOOL_REP_TEAM_ASSN;
 DROP TABLE IF EXISTS SCHOOL_REP;
@@ -78,11 +79,29 @@ CREATE TABLE GAME (
   homeTeamId int NOT NULL,
   awayTeamId int NOT NULL,
   start DateTime NOT NULL,
-  location varchar(55),
-  status varchar(55),
+  location varchar(55) NOT NULL,
+  status varchar(55) NOT NULL,
   rejectionNote varchar(255) NULL,
 
   PRIMARY KEY(id),
   FOREIGN KEY(homeTeamId) REFERENCES TEAM(id),
   FOREIGN KEY(awayTeamId) REFERENCES TEAM(id)
+);
+
+-- updateType: 'create'|  'update'| 'accept'| 'reject'
+-- updaterType: 'home' | 'away' | 'assignor' | 'admin' (home and away are computed; deduced from school rep and school admin role)
+CREATE TABLE GAME_HISTORY (
+  id int NOT NULL AUTO_INCREMENT,
+  gameId int NOT NULL,
+  start DateTime NOT NULL,
+  location varchar(55) NOT NULL,
+  status varchar(55) NOT NULL,
+  timestamp DateTime NOT NULL,
+  updateType varchar(55) NOT NULL,
+  updaterId int NOT NULL,
+  updaterType varchar(55) NOT NULL,
+
+  PRIMARY KEY(id),
+  FOREIGN KEY(gameId) REFERENCES GAME(id),
+  FOREIGN KEY(updaterId) REFERENCES USER(id)
 );

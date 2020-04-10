@@ -20,4 +20,11 @@ export default class UserController {
     const user = users.find(u => u.id === userId);
     res.send({ok: true, user: user? user.toApi(): null});
   }
+
+  getMe = async (req: Request, res: Response) => {
+    const userId = req.user!.id;
+    const users = await this.repository.getUsers();
+    const user = users.find(u => u.id === userId);
+    res.send({ok: true, user: user? user.toApi(): null});
+  };  
 }

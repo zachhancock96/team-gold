@@ -2,6 +2,9 @@ import { Privileges as P, Roles, GameStatus, TeamKind } from '../enums';
 import User from '../user';
 
 declare global {
+  type GameHistoryUpdaterType = 'home'| 'away'| 'assignor'| 'admin';
+  type GameHistoryUpdateType = 'create'|  'update'| 'accept'| 'reject';
+
   namespace ApiSchema {
     interface Team {
       id: number;
@@ -56,15 +59,41 @@ declare global {
         id: number;
         name: string;
         teamKind: TeamKind;
+        school: {
+          id: number;
+          name: string;
+        };
       };
       awayTeam: {
         id: number;
         name: string;
         teamKind: TeamKind;
+        school: {
+          id: number;
+          name: string;
+        };
       };
       start: string;
       location: string;
       status: GameStatus;
+    }
+
+    interface GameHistory {
+      id: number,
+      start: string,
+      location: string,
+      status: GameStatus,
+      gameId: number,
+    
+      //timestamp of when the update was made
+      timestamp: string,
+      
+      updateType: 'create'|  'update'| 'accept'| 'reject',
+      updater: {
+        id: number,
+        name: string
+      },
+      updaterType: 'home'| 'away'| 'assignor'| 'admin'
     }
   
     interface District {
@@ -181,6 +210,7 @@ declare global {
     }
 
     //GET /teams
+    //query: {schoolAdmin: number}  | {schoolRep: number} | {assignor: number} | nothing
     interface Teams_GET_RES {
       ok: true;
       teams: Team[];

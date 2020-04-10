@@ -99,8 +99,7 @@ export enum GameStatus {
   PENDING_HOME_TEAM = 'pending_home_team',
   PENDING_AWAY_TEAM = 'pending_away_team',
   PENDING_ASSIGNOR = 'pending_assignor',
-  APPROVED_UNLOCKED = 'approved_unlocked',
-  APPROVED_LOCKED = 'approved_locked',
+  ACCEPTED = 'accepted',
   REJECTED = 'rejected'
 };
 
@@ -109,4 +108,10 @@ export enum TeamKind {
   VG = 'vg',
   JVB  = 'jvb',
   JVG = 'jvg'
+};
+
+export enum GameAction {
+  ACCEPT = 'accept',
+  REJECT = 'reject',
+  EDIT = 'edit'
 };
