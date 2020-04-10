@@ -1,3 +1,19 @@
+### Getting Started
+
+1. `npm install`
+
+2. `npm start`
+
+3. should be served in localhost:3000
+
+### If you find the infamous gateway error
+1. putty into amazon web service virtual computer
+
+2. type `sudo node /var/www/backend/team-gold/backend/dist/server.js &`
+
+
+### !!We are not using mithril anymore!!
+
 ### What is Mithril and what the hell is virtual DOM?
 
 Mithril is a framework very very similar to react, and like react, it has a concept of "virtual dom".

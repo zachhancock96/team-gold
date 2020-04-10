@@ -1,6 +1,9 @@
 import React from 'react';
-import { prettyDate, prettyDateAndTime } from '../utils';
 
+const headerStyle = {
+  fontWeight: 'bold',
+  fontSize: 'large'
+};
 /*
   @param showLoading: boolean, show spinner instead of item in this case (do this later)
   @param gameDetail: GameDetail
@@ -14,41 +17,30 @@ import { prettyDate, prettyDateAndTime } from '../utils';
 export const GameDetail = ({ gameDetail, onEdit, onReject, onAccept }) => {
   if (!gameDetail) return null;
 
-  console.log(gameDetail.history[0]);
-
-  const tempGameDetail =
-    gameDetail.game.homeTeam.school.name + ' ' + gameDetail.game.homeTeam.teamKind + ' vs '
-    + gameDetail.game.awayTeam.school.name + ' ' + gameDetail.game.awayTeam.teamKind;
-
-  const tempHistDetail =
-    gameDetail.game.homeTeam.school.name + ' ' + gameDetail.game.homeTeam.teamKind + ' vs '
-    + gameDetail.game.awayTeam.school.name + ' ' + gameDetail.game.awayTeam.teamKind;
-
+  const history = prettyHistory(gameDetail);
 
   return (
-    <div><div id='detailGame'><div id='gamedetail-heading'>Game</div>
-      <div>{tempGameDetail}</div>
-      <div>{prettyDateAndTime(gameDetail.game.start)}</div>
-      <div>{gameDetail.game.location}</div>
-    </div>
-      <div id='detailHistory'><div id='gamedetail-heading'>Game History</div>
-        <div id='timestamp'>{gameDetail.history[0].timestamp}</div>
-        <div>{tempHistDetail}</div>
-        <div>{prettyDateAndTime(gameDetail.history[0].start)}</div>
-        <div>{gameDetail.history[0].location}</div>
+    <div>
+      <div>
+        <p style={headerStyle}>Game</p>
+        <div>{title(gameDetail.game)}</div>
+        <div>{gameDetail.game.start}</div>
+        <div>{gameDetail.game.location}</div>
       </div>
-      <div id='detailStatus'><div id='gamedetail-heading'>Status</div>
-        <div>{gameDetail.game.status}</div>
+      <div>
+        <p style={headerStyle}>Game History</p>
+        <pre>{JSON.stringify(history, null, 2)}</pre>
+      </div>
+      <div>
+        <p style={headerStyle}>Status</p>
+        <p>{gameDetail.game.status}</p>
       </div>
     </div>
   );
 }
 
-//use this to pretty history
-//@param history: Array<History>
-//@return Array<{timestamp: string, body: Array[string]}
-//console.log this value if not clear
-const prettyHistory = (history) => {
+const prettyHistory = gameDetail => {
+  const { history, game } = gameDetail;
 
   return history.map(h => {
     const by = h.updaterType === 'home'
@@ -60,7 +52,7 @@ const prettyHistory = (history) => {
           : 'Admin';
 
     const ret = body => ({
-      timestamp: prettyDateAndTime(g.timestamp),
+      timestamp: h.timestamp,
       body
     });
 
@@ -71,8 +63,8 @@ const prettyHistory = (history) => {
 
       return ret([
         `${k} by ${by} as: `,
-        `${g.title}`,//game title is always the same
-        `${prettyDateAndTime(h.start)}`,
+        `${title(game)}`,//game title is always the same
+        `${h.start}`,
         `At ${h.location}`
       ]);
     } else if (h.updateType === 'accept') {
@@ -85,4 +77,9 @@ const prettyHistory = (history) => {
       return ret([`Rejected by ${by}`]);
     }
   });
+}
+
+const title = game => {
+  return game.homeTeam.school.name + ' ' + game.homeTeam.teamKind + ' vs '
+    + game.awayTeam.school.name + ' ' + game.awayTeam.teamKind;
 }

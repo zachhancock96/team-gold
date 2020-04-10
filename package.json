@@ -2,37 +2,40 @@
   "name": "mithril-practise",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "rollup": "npx rollup -c -w"
+    "start": "react-scripts start",
+    "build": "react-scripts build"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/preset-react": "^7.9.4",
-    "@rollup/plugin-commonjs": "^11.0.2",
-    "@rollup/plugin-json": "^4.0.2",
-    "@rollup/plugin-node-resolve": "^7.1.1",
-    "@rollup/plugin-replace": "^2.3.1",
-    "meiosis-tracer": "^3.0.0",
-    "rollup": "^2.3.1",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-includepaths": "^0.2.3"
-  },
   "dependencies": {
     "@fullcalendar/core": "^4.4.0",
     "@fullcalendar/daygrid": "^4.4.0",
     "feather-route-matcher": "^3.1.0",
+    "jquery": "^3.5.0",
     "meiosis-routing": "^2.0.1",
     "meiosis-setup": "^4.0.2",
     "mergerino": "^0.4.0",
     "mithril": "^2.0.4",
+    "moment-timezone": "^0.5.28",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

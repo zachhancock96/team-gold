@@ -1,6 +1,6 @@
 import { Actions, createRouteSegments } from 'meiosis-routing/state';
-export { navigateTo } from "meiosis-routing/state"
 import { service, effect } from './service';
+export { navigateTo } from "meiosis-routing/state"
 
 export const Route = createRouteSegments([
   "Login",

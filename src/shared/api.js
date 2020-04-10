@@ -1,115 +1,52 @@
-import m from 'mithril';
+import $ from 'jquery';
+import moment, {API_DATE_FORMAT} from './moment';
 
-// const createSchoolData = function(id, schoolName, schoolAdminName) {
-//     return {
-//       id,
-//       name: schoolName,
-//       schoolReps: [
-//         {
-//           id: 1,
-//           name: 'Hari Bansha Acharya'
-//         }, {
-//           id: 2,
-//           name: 'Madan Krishna Shrestha'
-//         }
-//       ],
-//       teams: [
-//         {
-//           id: 1,
-//           name: 'Varsity Boys (VB)',
-//           teamKind: 'vb'
-//         }, 
-//         {
-//           id: 2,
-//           name: 'Junior Varsity Boys (VB)',
-//           teamKind: 'jvb'
-//         }, 
-//         {
-//           id: 3,
-//           name: 'Varsity Girls (VG)',
-//           teamKind: 'vg'
-//         }, 
-//       ],
-//       schoolAdmin: {
-//         id: 3,
-//         name: schoolAdminName
-//       },
-//       assignor: {
-//         id: 4,
-//         name: 'John Quincy Adams'
-//       }
-//   };
-// };
+const BASE_URL = "http://18.219.186.34/api";
 
-// export const getSchools = () => {
-//   timeout(100)
-//     .then(() => {
-//       return [
-//         createSchoolData(1, 'Compton High School', 'Abhaya Uprety'),
-//         createSchoolData(2, 'Dakota Sisters High School', 'Pacho Herera'),
-//         createSchoolData(3, 'Mason Dixon High School', 'John Baptiste'),
-//         createSchoolData(4, 'Monroe High School', 'Ed Sullivan')
-//       ];
-//     });
-// }
+const API_URLS = {
+  GET_USERS: () => `${BASE_URL}/users`,
+  GET_ME: () => `${BASE_URL}/users/me`,
+  
+  GET_TEAMS: () => `${BASE_URL}/teams`,
+  GET_SCHOOLS: () => `${BASE_URL}/schools`,
 
+  GET_GAMES: () => `${BASE_URL}/games`,
+  GET_MY_GAMES: () => `${BASE_URL}/games/me`,
+  GET_GAME: (id) => `${BASE_URL}/games/${id}`,
+  GET_GAME_ACTIONS: (id) => `${BASE_URL}/games/${id}/actions`,
+  GET_GAME_HISTORY: (id) => `${BASE_URL}/games/${id}/history`,
+  ADD_GAME: () => `${BASE_URL}/games`,
+  REJECT_GAME: gameId => `${BASE_URL}/games/${gameId}/reject`,
+  ACCEPT_GAME: gameId => `${BASE_URL}/games/${gameId}/accept`,
+  EDIT_GAME: gameId => `${BASE_URL}/games/${gameId}/accept`,
+  
+  LOGIN: () => `${BASE_URL}/login`
+};
 
-
-/*
-  query: {schoolAdmin: number}  | {schoolRep: number} | {assignor: number} | nothing
-*/
-export const getSchools = query => {
-  return timeout(100)
-    .then(() => {
-      return [
-        { id: 1, name: 'Compton High School' },
-        { id: 2, name: 'Dakota Sisters High School' },
-        { id: 3, name: 'Mason Dixon High School' },
-        { id: 4, name: 'Monroe High School' }
-      ];
-  });
+export function getUsers() {
+  return authGet(API_URLS.GET_USERS())
+    .then(response => response.users);
 }
 
-/*
-  query: {schoolIds: []} | nothing
-*/
-export const getGames = (() => {
-  const mock = [
-    'pending_home',
-    'pending_away',
-    'pending_assignor',
-    'accepted',
-    'rejected'
-  ].map((status, index) => ({
-      id: index + 1,
-      homeTeam: {
-        id: 1,
-        teamKind: 'JVB',
-        school: {
-          id: 1,
-          name: 'Compton High School'
-        }
-      },
-      awayTeam: {
-        id: 1,
-        teamKind: 'JVB',
-        school: {
-          id: 2,
-          name: 'Dakota Sisters High School'
-        }
-      },
-      start: '2019-01-02T07:00:00-06:00',
-      location: 'Denver, Colorado',
-      status
-    }));
-  
-  return query => {
-    return timeout(100)
-      .then(() => {
-        return mock;
-      })
-  }
-})();
+export function getMe() {
+  return authGet(API_URLS.GET_ME())
+    .then(response => response.user);
+}
+
+export function getTeams() {
+  return authGet(API_URLS.GET_TEAMS())
+    .then(response => response.teams);
+}
+
+export function getSchools() {
+  return authGet(API_URLS.GET_SCHOOLS())
+    .then(response => response.schools);
+}
+
+export function getGames() {
+  return authGet(API_URLS.GET_MY_GAMES())
+    .then(response => response.games);
+}
 
 /*
   GET  /games/id
@@ -118,186 +55,248 @@ export const getGames = (() => {
 */
 export const loadGameAndActionAndHistory = async (gameId) => {
   gameId = parseInt(gameId);
-  const games = await getGames();
-  const game = games.find(g => g.id === gameId);
 
+  const game = await authGet(API_URLS.GET_GAME(gameId))
+    .then(o => o.game);
+  const actions = await authGet(API_URLS.GET_GAME_ACTIONS(gameId))
+    .then(o => o.actions);
+  const history = await authGet(API_URLS.GET_GAME_HISTORY(gameId))
+    .then(o => o.history);
+  
   return {
     game,
-    actions: ['accept', 'reject', 'edit'],
-    history: [
-      {
-        start: '2019-01-02T07:00:00-06:00',
-        location: 'Denver, Colorado',
-        status: 'pending_away',
-        timestamp: '2019-01-02T07:00:00-06:00',
-        updateType: 'create',
-        updater: {
-          id: 1,
-          name: 'Abhaya Uprety'
-        },
-        updaterType: 'home'
-      },
-      {
-        start: '2019-01-02T07:00:00-06:00',
-        location: 'Springs, Colorado',
-        status: 'pending_away',
-        timestamp: '2019-01-02T07:00:00-06:00',
-        updateType: 'update',
-        updater: {
-          id: 1,
-          name: 'Abhaya Uprety'
-        },
-        updaterType: 'away'
-      },
-      {
-        start: '2019-01-02T07:00:00-06:00',
-        location: 'Springs, Colorado',
-        status: 'pending_away',
-        timestamp: '2019-01-02T07:00:00-06:00',
-        updateType: 'accept',
-        updater: {
-          id: 1,
-          name: 'Abhaya Uprety'
-        },
-        updaterType: 'assignor'
-      },
-    ]
-  };  
-}
-
-/*
-  POST /games/:id/accept
-  body: {nothing  }
-*/
-export const acceptGame = async gameId => {
-  await timeout(100);    
-}
-
-/*
-  POST /games/:id/reject
-  body: { nothing }
-*/
-export const rejectGame = async gameId => {
-  await timeout(100);
-}
-
-/*
-  POST /games
-  body: { 
-    homeTeamId: number;
-    awayTeamId: number;
-    start: string;
-    location: string;
+    actions,
+    history
   }
-*/
-export const addGame = async ({homeTeamId, awayTeamId, start, location}) => {
-  await timeout(100);
 }
 
-/*
-  GET /teams
-  query: {schoolAdmin: number}  | {schoolRep: number} | {assignor: number} | nothing
-*/
-export const getTeams = async query => {
-  await timeout(100);
+export function addGame(game) {
+  const o = {
+    homeTeamId: game.homeTeamId,
+    awayTeamId: game.awayTeamId,
+    start: moment(game.start).format(API_DATE_FORMAT),
+    location: game.location
+  };
 
-  return [
-    {
-      id: 1,
-      teamKind: 'JVB',
-      name: 'Compton High School JVB',
-      school: {
-        id: 1,
-        name: 'Compton High School'
-      }
-    },
-    {
-      id: 2,
-      teamKind: 'JVB',
-      name: 'Dakota Sisters High School JVB',
-      school: {
-        id: 1,
-        name: 'Dakota Sisters High School'
-      }
-    },
-  ]
+  return authPost(API_URLS.ADD_GAME(), o)
+    .then(response => response.gameId);
 }
 
-//const BASE_URL = "http://18.219.186.34/api/";
-const BASE_URL = "http://localhost:4000/api/";
+export function rejectGame(gameId) {
+  return authPost(API_URLS.REJECT_GAME(gameId), {});
+}
 
-const API_URLS = {
-  login: () => BASE_URL + 'login',
-  me: () => BASE_URL + 'users/me',
-};
+export function acceptGame(gameId) {
+  return authPost(API_URLS.ACCEPT_GAME(gameId), {});
+}
 
-const req = options => {
+export function editGame(gameId, edit) {
+  const o = {
+    start: moment(edit.start).format(API_DATE_FORMAT),
+    location: edit.location
+  };
 
-  //adding auth header if possible
-  const headers = getToken()
-    ? { sessionid: getToken() }
-    : {};
-  options.headers = options.headers? {...options.headers, ...headers}: headers;
+  return authPost(API_URLS.EDIT_GAME(gameId), o);
+}
 
-  //make request
-  return m.request(options)
-    .then(res => {
-      if (!res.ok) throw new Error(res.reason);
-      return res;
+export function login(credentials) {
+  const o = {
+    email: credentials.email,
+    password: credentials.password
+  }
+  return httpPost(API_URLS.LOGIN(o), o)
+    .then(response => {
+      const sessionId = response.sessionId;
+      setToken(sessionId);
     })
 }
 
-/*
-  POST /login
-  body {
-    email: string;
-    password: string;
+const [httpGet, httpPost] = (function() {
+
+  function httpGet(url, queryObject) {
+    queryObject = queryObject || {};
+  
+    return new Promise(function (resolve, reject) {
+      $.ajax({
+        url,
+  
+        //request data type
+        contentType: "application/json",
+  
+        //server response data type
+        dataType: "json",
+  
+        method: "GET",
+  
+        data: queryObject,
+  
+        error: function(jqXhr, textStatus, errorThrown) {
+          const status = jqXhr.status;
+          if (status === 401) {
+            reject('Requires login');
+            return;
+          } else {
+            reject(errorThrown);
+          }
+        },
+  
+        success: function(data, textStatus, jqXhr) {
+          if (data.ok) {
+            resolve(data);
+          } else {
+            reject(data.reason);
+          }
+        }
+      });
+    });
   }
-*/
-export const login = async ({ email, password }) => {
-  const { sessionId } = await req({
-    method: "POST",
-    url: API_URLS.login(),
-    body: { email, password }
-  });
-  setToken(sessionId);
-}
 
-/*
-  GET /users/me
-*/
-export const getMe = async () => {
-  const { user } = await req({
-    method: "GET",
-    url: API_URLS.me(),
-  });
-  return user;
-}
+  function httpPost(url, body) {
+    body = body || {};
+    body = JSON.stringify(body);
+  
+    return new Promise(function (resolve, reject) {
+      $.ajax({
+        url,
+  
+        //request data type
+        contentType: "application/json",
+  
+        //server response data type
+        dataType: "json",
+  
+        method: "POST",
+  
+        data: body,
+  
+        processData: false,
+  
+        error: function (jqXhr, textStatus, errorThrown) {
+          const status = jqXhr.status;
+          if (status === 401) {
+            reject('Requires login');
+            return;
+          } else {
+            reject(errorThrown);
+          }
+        },
+  
+        success: function (data, textStatus, jqXhr) {
+          if (data.ok) {
+            resolve(data);
+          } else {
+            reject(data.reason);
+          }
+        }
+      });
+    });
+  }
 
+  return [httpGet, httpPost];
+})();
+
+const [authGet, authPost] = (function() {
+
+  function authGet(url, queryObject) {
+    queryObject = queryObject || {};
+    const sessionId = getToken();
+    console.log(`calling authGet with sessionid header: ${sessionId}`)
+  
+    return new Promise(function (resolve, reject) {
+      $.ajax({
+        url,
+  
+        //request data type
+        contentType: "application/json",
+  
+        //server response data type
+        dataType: "json",
+
+        headers: {
+          sessionid: sessionId
+        },
+  
+        method: "GET",
+  
+        data: queryObject,
+  
+        error: function(jqXhr, textStatus, errorThrown) {
+          const status = jqXhr.status;
+          if (status === 401) {
+            reject('Requires login');
+            return;
+          } else {
+            reject(errorThrown);
+          }
+        },
+  
+        success: function(data, textStatus, jqXhr) {
+          if (data.ok) {
+            resolve(data);
+          } else {
+            reject(data.reason);
+          }
+        }
+      });
+    });
+  }
+
+  function authPost(url, body) {
+    body = body || {};
+    body = JSON.stringify(body);
+    const sessionId = localStorage.getItem('sessionId');
+  
+    return new Promise(function (resolve, reject) {
+      $.ajax({
+        url,
+  
+        //request data type
+        contentType: "application/json",
+  
+        //server response data type
+        dataType: "json",
+
+        headers: {
+          sessionid: sessionId
+        },
+  
+        method: "POST",
+  
+        data: body,
+  
+        processData: false,
+  
+        error: function(jqXhr, textStatus, errorThrown) {
+          const status = jqXhr.status;
+          if (status === 401) {
+            reject('Requires login');
+            return;
+          } else {
+            reject(errorThrown);
+          }
+        },
+  
+        success: function(data, textStatus, jqXhr) {
+          if (data.ok) {
+            resolve(data);
+          } else {
+            reject(data.reason);
+          }
+        }
+      });
+    });
+  }
+
+  return [authGet, authPost];
+})();
 
 /*
   no route yet, just delte token
 */
 export const logout = () => {
   clearToken();
-  clearUser();
-
-  return timeout(100);
 }
 
-function timeout(n) {
-  return new Promise(resolve => {
-    setTimeout(resolve, n);
-  });
-}
-
-const getUser = () => {
-  const u = window.localStorage.getItem('user');
-  return u? JSON.parse(u): null;
-};
-const setUser = user => window.localStorage.setItem('user', JSON.stringify(user));
-const clearUser = () => window.localStorage.removeItem('user');
-
-const getToken = () => window.localStorage.getItem('authtoken');
-const setToken = token => window.localStorage.setItem('authtoken', token);
-const clearToken = () => window.localStorage.removeItem('authtoken');
+const getToken = () => window.localStorage.getItem('sessionid') || 2;
+const setToken = token => window.localStorage.setItem('sessionid', token);
+const clearToken = () => window.localStorage.removeItem('sessionid');

@@ -11,8 +11,8 @@ import React from 'react';
 export const NavView = ({links, activeLinkId, onLinkClick}) => {
   //TODO: add style this, with classNames and paddings and spaces and what have you
   const linkItems = links.map(link => {
-    return <span><a 
-      key={link.id}
+    return <span key={link.id}>
+      <a 
       href="#"
       onClick={e => { e.preventDefault(); onLinkClick(link.id); }}>{link.name}</a> / </span>
   });
