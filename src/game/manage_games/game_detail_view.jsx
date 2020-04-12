@@ -1,9 +1,10 @@
 import React from 'react';
 
-const headerStyle = {
-  fontWeight: 'bold',
-  fontSize: 'large'
-};
+/////// TODO - add functionality to edit button ///////
+///////      - change buttons to universal style ///////
+///////      - check if multiple edits in history display and are spaced correctly ///////
+///////      - format game date/time?? ///////
+
 /*
   @param gameDetail: GameDetail
   @param onEdit: Call this, when user edits and hits done
@@ -14,29 +15,37 @@ const headerStyle = {
   once you are done, message me
 */
 export const GameDetail = ({ gameDetail, onEdit, onReject, onAccept }) => {
-  if (!gameDetail) return null;
+  if (!gameDetail) return <div className='game-detail-empty'>Click on a game for more details</div>;
 
   const history = prettyHistory(gameDetail);
 
+  const gameHistory = displayHistory(history);
+
   return (
-    <div>
+    <div className='game-detail'>
+      <button className='game-edit-button'>Edit</button>
       <div>
-        <p style={headerStyle}>Game</p>
-        <div>{title(gameDetail.game)}</div>
-        <div>{gameDetail.game.start}</div>
-        <div>{gameDetail.game.location}</div>
+        <p className='game-detail-header'>Game</p>
+        <p>{title(gameDetail.game)}</p>
+        <p>{gameDetail.game.start}</p>
+        <p>{gameDetail.game.location}</p>
       </div>
       <div>
-        <p style={headerStyle}>Game History</p>
-        <pre>{JSON.stringify(history, null, 2)}</pre>
+        <p className='game-detail-header'>Game History</p>
+        <div>{gameHistory}</div>
       </div>
       <div>
-        <p style={headerStyle}>Status</p>
-        <p>{gameDetail.game.status}</p>
+        <p className='game-detail-header'>Status</p>
+        <p style={{paddingBottom: '10px'}}>{gameDetail.game.status}</p>
+      </div>
+      <div>
+        <button className='game-accept-button' onClick={e => {e.preventDefault(); onAccept(gameDetail.game.id)}}>Accept</button>
+        <button className='game-reject-button' onClick={e => {e.preventDefault(); onReject(gameDetail.game.id)}}>Reject</button>
       </div>
       <button onClick={e => onEdit(gameDetail.game.id)}>Edit</button>
     </div>
   );
+  
 }
 
 const prettyHistory = gameDetail => {
@@ -83,3 +92,23 @@ const title = game => {
   return game.homeTeam.school.name + ' ' + game.homeTeam.teamKind + ' vs '
     + game.awayTeam.school.name + ' ' + game.awayTeam.teamKind;
 }
+
+const displayHistory = history => { 
+  let historyList = history.map(e => {
+
+    let bodyList = e.body.map(attribute =>{
+      return <p>
+        {attribute}
+      </p>
+    });
+
+    return <div className='game-history-block'>
+      <p className='game-display-timestamp'>{e.timestamp}</p>
+      <div className='game-display-body'>{bodyList}</div>
+    </div>
+  });
+
+  return historyList;
+}
+
+// JSON.stringify(history, null, 2)
