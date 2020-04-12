@@ -30,7 +30,8 @@ export const routeConfig = {
           AllGames: ['/all', { GameDetail: '/:id' } ],
           ApprovedGames: ["/approved", { GameDetail: '/:id' }],
           PendingGames: ['/pending', { GameDetail: '/:id' }],
-          RejectedGames: ['/rejected', { GameDetail: '/:id'} ]
+          RejectedGames: ['/rejected', { GameDetail: '/:id'} ],
+          EditGame: '/edit/:id'
         }
       ]
     }

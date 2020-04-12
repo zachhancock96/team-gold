@@ -2,7 +2,9 @@ import React from 'react';
 import { ListView } from './list_view';
 import { Nav } from './nav_controller';
 import { GameDetail } from './game_detail_view';
+import { EditGame } from '../edit_game';
 import { api } from 'shared';
+import { Route } from '../../routes';
 
 const loadGames = () => {
   return api.getGames();
@@ -18,18 +20,24 @@ const getGameDetailId = routing => {
   return id = id? parseInt(id): null;
 }
 
+/*
+  TODO: refactor needed for mobile view; ugly code already
+
+  routing
+  localSegment ManageGames
+  childSegment AllGames, ApprovedGames, PendingGames, RejectedGames, EditGame
+*/
 export class ManageGames extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //show spinner on listView if this is true
-      isListViewLoading: true,
-
-      isDetailViewLoading: false,
-
       gameDetail: null,
 
-      games: []
+      games: [],
+      
+      isEditing: false,
+
+      editGameId: null
     }
   }
 
@@ -39,8 +47,7 @@ export class ManageGames extends React.Component {
     loadGames()
       .then(games => {
         this.setState({
-          games,
-          isListViewLoading: false
+          games
         }, () => {
           const gameId = getGameDetailId(m.routing);
 
@@ -55,7 +62,6 @@ export class ManageGames extends React.Component {
   loadGameDetail = (gameId, cb = () => {}) => {
 
     this.setState({
-      isDetailViewLoading: true,
       gameDetail: null
     }, () => {
 
@@ -63,7 +69,6 @@ export class ManageGames extends React.Component {
         .then(gameDetail => {
 
           this.setState({
-            isDetailViewLoading: false,
             gameDetail
           }, cb);
         });
@@ -75,8 +80,25 @@ export class ManageGames extends React.Component {
     this.loadGameDetail(gameId);
   }
 
-  handleEdit = ({ gameId, start, location }) => {
-    alert(`editing game: ${JSON.stringify({gameId, start, location})}`);
+  handleEdit = gameId => {
+    this.setState({
+      isEditing: true,
+      editGameId: gameId
+    });
+  }
+
+  handleEditCancel = () => {
+    this.setState({
+      isEditing: false,
+      editGameId: null
+    });
+  }
+
+  handleEditSuccess = () => {
+    this.setState({
+      isEditing: false,
+      editGameId: null
+    })
   }
 
   handleReject = gameId => {
@@ -89,7 +111,7 @@ export class ManageGames extends React.Component {
 
   render() {
     const m = this.props;
-    const { isListViewLoading, isDetailViewLoading, gameDetail, games: unFilteredGames } = this.state;
+    const { gameDetail, games: unFilteredGames, isEditing, editGameId } = this.state;
 
     const filterFn = (() => {
       const s = m.routing.childSegment.id;
@@ -106,6 +128,8 @@ export class ManageGames extends React.Component {
     })();
 
     const games = unFilteredGames.filter(filterFn);
+
+    const gameToEdit = (isEditing && unFilteredGames.find(g => g.id === editGameId)) || null;
 
     return (
       <div style={{
@@ -126,7 +150,6 @@ export class ManageGames extends React.Component {
           }}>
             {/*TODO: pass in activeGameId */}
             <ListView
-              showLoading={isListViewLoading}
               games={games}
               activeGameId={gameDetail? gameDetail.id: null}
               onGameClick={this.handleGameClick} />
@@ -137,12 +160,22 @@ export class ManageGames extends React.Component {
             backgroundColor: 'white',
             overflowY: 'scroll'
           }}>
-            <GameDetail 
-              showLoading={isDetailViewLoading}
-              gameDetail={gameDetail}
-              onEdit={this.handleEdit}
-              onReject={this.handleReject}
-              onAccept={this.handleAccept} />
+            {
+              gameToEdit?
+              (
+                <EditGame
+                  game={gameToEdit}
+                  onCancel={this.handleEditCancel}
+                  onSuccess={this.handleEditSuccess} />
+              )
+              : (
+                <GameDetail 
+                  gameDetail={gameDetail}
+                  onEdit={this.handleEdit}
+                  onReject={this.handleReject}
+                  onAccept={this.handleAccept} />
+              )
+            }
           </div>
         </div>
       </div>);

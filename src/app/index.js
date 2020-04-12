@@ -5,6 +5,7 @@ import { login } from '../login';
 import { school } from '../school';
 import { calendar } from '../calendar';
 import { routes } from '../routes';
+import { loading } from '../loading';
 import { Root } from '../root';
 
 // export const createApp = async () => {
@@ -32,7 +33,8 @@ export const createApp = async () => {
     initial,
     Actions: update => Object.assign(
       {},
-      routes.Actions(update)
+      routes.Actions(update),
+      loading.Actions(update)
     ),
     services: [routes.service],
     effects: [routes.effect],

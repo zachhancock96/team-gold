@@ -1,4 +1,4 @@
-import { api } from '../shared';
+import { api } from 'shared';
 import { router } from '../router';
 import { viewport } from '../viewport';
 

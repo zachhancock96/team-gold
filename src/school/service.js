@@ -27,10 +27,10 @@ export const service = ({state}) => {
 //prefills school
 export const effect = async ({state, update}) => {
   if (state.routeTransition.arrive.School) {
-    update({ loading: true });
+    update({ loading: { school: true } });
 
     const schools = await api.getSchools();
 
-    update({ loading: false, school: { schools } });
+    update({ loading: { school: false }, school: { schools } });
   }
 }

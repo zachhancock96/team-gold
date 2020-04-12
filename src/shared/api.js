@@ -38,6 +38,11 @@ export function getTeams() {
     .then(response => response.teams);
 }
 
+//TODO: change this later
+export function getMyTeams() {
+  return getTeams();
+}
+
 export function getSchools() {
   return authGet(API_URLS.GET_SCHOOLS())
     .then(response => response.schools);
@@ -244,7 +249,7 @@ const [authGet, authPost] = (function() {
   function authPost(url, body) {
     body = body || {};
     body = JSON.stringify(body);
-    const sessionId = localStorage.getItem('sessionId');
+    const sessionId = getToken();
   
     return new Promise(function (resolve, reject) {
       $.ajax({

@@ -5,7 +5,6 @@ const headerStyle = {
   fontSize: 'large'
 };
 /*
-  @param showLoading: boolean, show spinner instead of item in this case (do this later)
   @param gameDetail: GameDetail
   @param onEdit: Call this, when user edits and hits done
   @param onReject: Call this, when user hits reject and accepts confirmation
@@ -35,6 +34,7 @@ export const GameDetail = ({ gameDetail, onEdit, onReject, onAccept }) => {
         <p style={headerStyle}>Status</p>
         <p>{gameDetail.game.status}</p>
       </div>
+      <button onClick={e => onEdit(gameDetail.game.id)}>Edit</button>
     </div>
   );
 }

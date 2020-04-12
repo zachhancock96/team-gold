@@ -44,7 +44,7 @@ export const NavbarView = ({ links, activeLinkId, onLinkClick }) => {
   });
 
   return (
-    <nav className='navbar'>
+    <nav className='m-navbar'>
       {linkItems}
     </nav>
   );

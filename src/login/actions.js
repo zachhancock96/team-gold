@@ -4,13 +4,13 @@ import { Route, navigateTo } from '../routes';
 export const Actions = update => {
   const login = async ({email, password}) => {
     //start loading
-    update({loading: true});
+    update({loading: { login: true }});
 
     try {
       await api.login({ email, password })
     } catch(error) {
       alert(error);
-      update({loading: false});
+      update({loading: { login: false }});
       return;
     }
 
@@ -19,7 +19,7 @@ export const Actions = update => {
       user = await api.getMe();
     } catch(error) {
       alert(error);
-      update({loading: false});
+      update({loading: { login: false }});
       return;
     }
     
@@ -27,7 +27,7 @@ export const Actions = update => {
       navigateTo(Route.School()),
       {
         //done loading
-        loading: false,
+        loading: { login: false },
 
         //set user in state
         user
@@ -42,14 +42,14 @@ export const Actions = update => {
   const logout = async () => {
     //start loading
 
-    update({loading: true});
+    update({loading: { logout: true }});
 
     await api.logout();
 
     update([
       navigateTo(Route.Login()),
       {
-        loading: false,
+        loading: { logout: false },
         
         user: null
       }

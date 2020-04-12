@@ -1,0 +1,1 @@
+export { EditGame } from './controller';
