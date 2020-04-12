@@ -1,0 +1,1 @@
+export const brownBorder = '2px solid rgb(65, 43, 25)';

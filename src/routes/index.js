@@ -14,6 +14,7 @@ export const Route = createRouteSegments([
   "ApprovedGames",
   "PendingGames",
   "RejectedGames",
+  "EditGame",
   "GameDetail"
 ]);
 
@@ -27,11 +28,33 @@ export const routeConfig = {
       ManageGames: [
         '',
         {
-          AllGames: ['/all', { GameDetail: '/:id' } ],
-          ApprovedGames: ["/approved", { GameDetail: '/:id' }],
-          PendingGames: ['/pending', { GameDetail: '/:id' }],
-          RejectedGames: ['/rejected', { GameDetail: '/:id'} ],
-          EditGame: '/edit/:id'
+          AllGames: [
+            '/all', 
+            { 
+              EditGame: '/edit/:id',
+              GameDetail: '/:id' 
+            } 
+        ],
+          ApprovedGames: [
+            "/approved", 
+            { 
+              GameDetail: '/:id',
+              EditGame: '/edit/:id',
+            }
+          ],
+          PendingGames: [
+            '/pending', 
+            { 
+              GameDetail: '/:id',
+              EditGame: '/edit/:id',
+            }
+          ],
+          RejectedGames: [
+            '/rejected',
+            { 
+              GameDetail: '/:id'
+            }
+          ]
         }
       ]
     }

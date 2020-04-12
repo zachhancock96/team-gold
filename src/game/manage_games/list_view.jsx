@@ -7,13 +7,18 @@ import { prettyDate, prettyDateAndTime } from '../utils';
   @param activeGameId: number, if this matches with one of the games in the games array, highlight that game
 */
 export const ListView = ({ games, onGameClick, activeGameId }) => {
+  const getClassName = game => {
+    return game.id === activeGameId
+      ? `game-list-item active`
+      : `game-list-item`;
+  }
 
   const gameItems = games.map(g =>
     <li style={{
       padding: '10px',
       cursor: 'pointer'
     }}
-      className="game-list-item"
+      className={getClassName(g)}
       key={g.id}
       onClick={() => { onGameClick(g.id) }}
     >
@@ -31,7 +36,4 @@ export const ListView = ({ games, onGameClick, activeGameId }) => {
   );
 
   return <ul>{gameItems}</ul>
-
-
 }
-

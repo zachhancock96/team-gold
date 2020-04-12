@@ -1,8 +1,8 @@
 import React from 'react';
+import { Button, ButtonRed, CurvedButton } from 'shared/widgets';
+import { brownBorder } from 'shared/color';
 
-/////// TODO - add functionality to edit button ///////
-///////      - change buttons to universal style ///////
-///////      - check if multiple edits in history display and are spaced correctly ///////
+/////// TODO - check if multiple edits in history display and are spaced correctly ///////
 ///////      - format game date/time?? ///////
 
 /*
@@ -14,7 +14,18 @@ import React from 'react';
   NOTE: thiese onEdit, onReject, onAccept callback do nothing for now (might even throw error)
   once you are done, message me
 */
-export const GameDetail = ({ gameDetail, onEdit, onReject, onAccept }) => {
+
+const Header = ({ children }) => (
+  <h3
+    style={{
+      fontSize: '1.25rem',
+      fontWeight: 'bold',
+    }}>
+    {children}
+  </h3>
+);
+
+export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
   if (!gameDetail) return <div className='game-detail-empty'>Click on a game for more details</div>;
 
   const history = prettyHistory(gameDetail);
@@ -23,29 +34,52 @@ export const GameDetail = ({ gameDetail, onEdit, onReject, onAccept }) => {
 
   return (
     <div className='game-detail'>
-      <button className='game-edit-button'>Edit</button>
-      <div>
-        <p className='game-detail-header'>Game</p>
-        <p>{title(gameDetail.game)}</p>
-        <p>{gameDetail.game.start}</p>
-        <p>{gameDetail.game.location}</p>
+      <div style={{
+        borderBottom: brownBorder,
+        marginBottom: '8px',
+        display: 'flex'
+      }}>
+        <div style={{ flex: 1 }}>
+          <Header>{title(gameDetail.game)}</Header>
+          <Header>{gameDetail.game.start}</Header>
+          <Header>{gameDetail.game.location}</Header>
+        </div>
+        <div>
+          {
+            gameDetail.actions.indexOf('edit') >= 0
+              ? <CurvedButton
+                style={{ paddingLeft: '20px', paddingRight: '20px', margin: '8px' }}
+                onClick={e => onEdit(gameDetail.game.id)}>Edit</CurvedButton>
+              : null
+          }
+        </div>
       </div>
       <div>
+        <p className='game-detail-header'>Status</p>
+        <p style={{ paddingBottom: '10px' }}>{gameDetail.game.status}</p>
+      </div>
+      <div style={{
+        borderBottom: brownBorder,
+        marginBottom: '8px',
+      }}>
         <p className='game-detail-header'>Game History</p>
         <div>{gameHistory}</div>
       </div>
       <div>
-        <p className='game-detail-header'>Status</p>
-        <p style={{paddingBottom: '10px'}}>{gameDetail.game.status}</p>
+        {
+          gameDetail.actions.indexOf('accept') >= 0
+            ? <Button onClick={e => { onAccept(gameDetail.game.id) }}>Accept</Button>
+            : null
+        }{' '}
+        {
+          gameDetail.actions.indexOf('reject') >= 0
+            ? <ButtonRed onClick={e => { onReject(gameDetail.game.id) }}>Reject</ButtonRed>
+            : null
+        }
       </div>
-      <div>
-        <button className='game-accept-button' onClick={e => {e.preventDefault(); onAccept(gameDetail.game.id)}}>Accept</button>
-        <button className='game-reject-button' onClick={e => {e.preventDefault(); onReject(gameDetail.game.id)}}>Reject</button>
-      </div>
-      <button onClick={e => onEdit(gameDetail.game.id)}>Edit</button>
     </div>
   );
-  
+
 }
 
 const prettyHistory = gameDetail => {
@@ -93,10 +127,10 @@ const title = game => {
     + game.awayTeam.school.name + ' ' + game.awayTeam.teamKind;
 }
 
-const displayHistory = history => { 
+const displayHistory = history => {
   let historyList = history.map(e => {
 
-    let bodyList = e.body.map(attribute =>{
+    let bodyList = e.body.map(attribute => {
       return <p>
         {attribute}
       </p>
@@ -110,5 +144,3 @@ const displayHistory = history => {
 
   return historyList;
 }
-
-// JSON.stringify(history, null, 2)

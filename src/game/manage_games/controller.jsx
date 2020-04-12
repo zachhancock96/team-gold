@@ -1,135 +1,104 @@
 import React from 'react';
-import { ListView } from './list_view';
 import { Nav } from './nav_controller';
-import { GameDetail } from './game_detail_view';
-import { EditGame } from '../edit_game';
-import { api } from 'shared';
+//import { EditGame } from '../edit_game';
+import { GameDetail } from '../game_detail';
+import { ListView } from './list_view';
 import { Route } from '../../routes';
-
-const loadGames = () => {
-  return api.getGames();
-}
-
-const loadGameDetail = gameId => {
-  return api.loadGameAndActionAndHistory(gameId);
-}
+import { api } from 'shared';
 
 const getGameDetailId = routing => {
-  const g = routing.next().next();
-  let id = g && g.localSegment.params.id
-  return id = id? parseInt(id): null;
+  if (isEditPage(routing) || isDetailPage(routing)) {
+    return routing.next().childSegment.params.id;
+  }
+  return null;
 }
 
-/*
-  TODO: refactor needed for mobile view; ugly code already
+const isEditPage = routing => {
+  return routing.next() && routing.next().childSegment && routing.next().childSegment.id === 'EditGame';
+}
 
-  routing
-  localSegment ManageGames
-  childSegment AllGames, ApprovedGames, PendingGames, RejectedGames, EditGame
-*/
+const isDetailPage = routing => {
+  return routing.next() && routing.next().childSegment && routing.next().childSegment.id === 'GameDetail';
+}
+
+const filterGamesByRoutingState = (games, routing) => {
+  const s = routing.childSegment.id;
+
+  const filterFn = s === 'AllGames'
+    ? g => g
+    : s === 'ApprovedGames'
+      ? g => g.status === 'accepted'
+      : s === 'PendingGames'
+        ? g => ['pending_home', 'pending_assignor', 'pending_away'].indexOf(g.status) >= 0
+        : g => g.status === 'rejected';
+
+  return games.filter(filterFn);
+}
+
+//TODO: list view is not update right now when game is accepted or rejected
 export class ManageGames extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
-      gameDetail: null,
-
-      games: [],
-      
-      isEditing: false,
-
-      editGameId: null
+      games: []
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const m = this.props;
-
-    loadGames()
+    m.actions.showLoading('ManageGames');
+    api.getGames()
       .then(games => {
-        this.setState({
-          games
-        }, () => {
-          const gameId = getGameDetailId(m.routing);
-
-          if (gameId) {
-            this.loadGameDetail(gameId);
-          }
-        });
+        this.setState({games});
+      })
+      .finally(() => {
+        m.actions.hideLoading('ManageGames');
       })
   }
 
-  //@param gameId, non null, number
-  loadGameDetail = (gameId, cb = () => {}) => {
-
-    this.setState({
-      gameDetail: null
-    }, () => {
-
-      loadGameDetail(gameId)
-        .then(gameDetail => {
-
-          this.setState({
-            gameDetail
-          }, cb);
-        });
-    });
+  //edit button clicked from Detail page
+  handleEditClick = id => {
+    const { actions, routing } = this.props;
+    const r = routing.next().childRoute(Route.EditGame({id}));
+    actions.navigateTo(r);
   }
 
-  //@param gameId, non null, number
-  handleGameClick = gameId => {
-    this.loadGameDetail(gameId);
-  }
-
-  handleEdit = gameId => {
-    this.setState({
-      isEditing: true,
-      editGameId: gameId
-    });
-  }
-
-  handleEditCancel = () => {
-    this.setState({
-      isEditing: false,
-      editGameId: null
-    });
-  }
-
-  handleEditSuccess = () => {
-    this.setState({
-      isEditing: false,
-      editGameId: null
-    })
-  }
-
-  handleReject = gameId => {
-    alert(`rejecting game id ${gameId}`);
-  }
-
-  handleAccept = gameId => {
-    alert(`accepting game id ${gameId}`);
+  //list item click from list view page
+  handleGameClick = id => {
+    const { actions, routing } = this.props;
+    const r = routing.next().childRoute(Route.GameDetail({id}));
+    actions.navigateTo(r);
   }
 
   render() {
     const m = this.props;
-    const { gameDetail, games: unFilteredGames, isEditing, editGameId } = this.state;
+    const games = filterGamesByRoutingState(this.state.games, m.routing);
 
-    const filterFn = (() => {
-      const s = m.routing.childSegment.id;
+    const isEdit = isEditPage(m.routing);
+    const isDetail = isDetailPage(m.routing);
 
-      const fn = s === 'AllGames'
-        ? g => g
-        : s === 'ApprovedGames'
-          ? g => g.status === 'accepted'
-          : s === 'PendingGames'
-            ? g => ['pending_home', 'pending_assignor', 'pending_away'].indexOf(g.status) >= 0
-            : g => g.status === 'rejected';
+    const activeGameId = getGameDetailId(m.routing);
 
-      return fn;
-    })();
+    const list = <ListView
+      games={games}
+      activeGameId={activeGameId}
+      onGameClick={this.handleGameClick} />;
 
-    const games = unFilteredGames.filter(filterFn);
-
-    const gameToEdit = (isEditing && unFilteredGames.find(g => g.id === editGameId)) || null;
+    const detail = isDetail
+      ? (
+        <GameDetail
+          actions={m.actions}
+          gameId={activeGameId}
+          onEdit={this.handleEditClick} />
+      ): isEdit? (
+        // <EditGame
+        //   actions={m.actions}
+        //   gameId={activeGameId}
+        //   onSuccess={this.handleEditSuccess}
+        //   onCancel={this.handleEditCancel} />
+        <div>Edit Game</div>
+      ): null;
 
     return (
       <div style={{
@@ -138,46 +107,71 @@ export class ManageGames extends React.Component {
         height: '100%'
       }}>
         <Nav state={m.state} actions={m.actions} routing={m.routing.next()} />
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'row',
-        }}>
-          <div style={{
-            width: '400px',
-            backgroundColor: 'white',
-            overflowY: 'scroll'
-          }}>
-            {/*TODO: pass in activeGameId */}
-            <ListView
-              games={games}
-              activeGameId={gameDetail? gameDetail.id: null}
-              onGameClick={this.handleGameClick} />
-          </div>
-          <div style={{
-            marginLeft: '20px',
-            flex: 1,
-            backgroundColor: 'white',
-            overflowY: 'scroll'
-          }}>
-            {
-              gameToEdit?
-              (
-                <EditGame
-                  game={gameToEdit}
-                  onCancel={this.handleEditCancel}
-                  onSuccess={this.handleEditSuccess} />
-              )
-              : (
-                <GameDetail 
-                  gameDetail={gameDetail}
-                  onEdit={this.handleEdit}
-                  onReject={this.handleReject}
-                  onAccept={this.handleAccept} />
-              )
-            }
-          </div>
-        </div>
-      </div>);
+        {
+          m.state.device === 'mobile' ?
+            (
+              <MobileLayout>
+                {detail? detail: list}
+              </MobileLayout>
+            ) :
+            (
+              <DesktopLayout>
+                {list}
+                {detail}
+              </DesktopLayout>
+            )
+        }
+      </div>
+    );
   }
 }
+
+const MobileLayout = ({ children }) => {
+  return (
+    <div style={{
+      backgroundColor: 'white',
+      overflowY: 'scroll',
+      overflowX: 'hidden',
+      flex: 1
+    }}>
+      {children}
+    </div>
+  );
+}
+
+/*
+  assumpiton: 2 or less child elements are passed
+  firs child is attached to left,
+  second to right
+*/
+const DesktopLayout = ({ children }) => {
+  const left = children[0] || null;
+  const right = children[1] || null;
+
+  return (
+    <div style={{
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'row'
+    }}>
+      <div style={{
+        width: '400px',
+        backgroundColor: 'white',
+        overflowY: 'scroll',
+        overflowX: 'hidden'
+      }}>
+        {left}
+      </div>
+      <div style={{
+        marginLeft: '20px',
+        flex: 1,
+        backgroundColor: 'white',
+        overflowY: 'scroll'
+      }}>
+        {right}
+      </div>
+    </div>
+  );
+
+}
+

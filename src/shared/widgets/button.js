@@ -10,6 +10,12 @@ const ButtonGrey = props => (
   </BSButton>
 );
 
+const ButtonRed = props => (
+  <BSButton variant='danger' {...props}>
+    {props.children}
+  </BSButton>
+);
+
 const CurvedButton = props => {
   return (
     <Button {...props} className={'sh-button-curve ' + (props.className || '')}>
@@ -58,8 +64,9 @@ const CurvedOutlineButtonRed = props => (
 
 export {
   Button,
-  CurvedButton,
   ButtonGrey,
+  ButtonRed,
+  CurvedButton,
   CurvedButtonGrey,
   OutlineButton,
   CurvedOutlineButton,
