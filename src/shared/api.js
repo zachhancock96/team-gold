@@ -1,14 +1,16 @@
 import $ from 'jquery';
 import moment, {API_DATE_FORMAT} from './moment';
 
-//const BASE_URL = "http://18.219.186.34/api";
-const BASE_URL = "http://localhost:4000/api";
+const BASE_URL = "http://18.219.186.34/api";
+//const BASE_URL = "http://localhost:4000/api";
 
 const API_URLS = {
   GET_USERS: () => `${BASE_URL}/users`,
   GET_ME: () => `${BASE_URL}/users/me`,
   
   GET_TEAMS: () => `${BASE_URL}/teams`,
+  GET_MY_TEAMS: () => `${BASE_URL}/teams/me`,
+
   GET_SCHOOLS: () => `${BASE_URL}/schools`,
 
   GET_GAMES: () => `${BASE_URL}/games`,
@@ -44,9 +46,9 @@ export function getTeams() {
     .then(response => response.teams);
 }
 
-//TODO: change this later
 export function getMyTeams() {
-  return getTeams();
+  return authGet(API_URLS.GET_MY_TEAMS())
+    .then(response => response.teams);
 }
 
 export function getSchools() {
@@ -55,6 +57,11 @@ export function getSchools() {
 }
 
 export function getGames() {
+  return authGet(API_URLS.GET_GAMES())
+    .then(response => response.games);
+}
+
+export function getMyGames() {
   return authGet(API_URLS.GET_MY_GAMES())
     .then(response => response.games);
 }

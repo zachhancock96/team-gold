@@ -4,7 +4,7 @@ import { NavView } from './nav_view';
 
 const links_ = [
   { id: Route.AddGame().id, name: 'Add Game' },
-  { id: Route.ManageGames().id, name: 'Manage Games' }
+  { id: Route.ManageGames().id, name: 'Manage My Games' }
 ];
 
 const idToRouteMap_ = {

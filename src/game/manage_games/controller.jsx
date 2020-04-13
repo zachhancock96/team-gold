@@ -52,7 +52,7 @@ export class ManageGames extends React.Component {
   refreshGames = () => {
     const m = this.props;
     m.actions.showLoading('ManageGames');
-    api.getGames()
+    api.getMyGames()
       .then(games => {
         this.setState({games});
       })

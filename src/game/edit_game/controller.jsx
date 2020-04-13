@@ -47,14 +47,19 @@ export class EditGame extends React.Component {
     //TODO: do api.edit(id, { start, location }) leave this for now
     const s = this.state;
     if (s.canSubmit) {
-      console.log({
-        id: s.id,
-        start: s.start,
-        location: s.location
-      });
 
-      actions.showSuccess('Game Edit succesfull');
-      this.props.onSuccess(this.props.gameId);
+      actions.showLoading('EditGame');
+      api.editGame(s.id, { start: s.start, location: s.location })
+        .then(() => {
+          actions.showSuccess('Game Edit succesfull');
+          this.props.onSuccess(this.props.gameId);
+        })
+        .catch(err => {
+          actions.showError(err.message || err);
+        })
+        .finally(() => {
+          actions.hideLoading('EditGame');
+        });
     }
   }
 
