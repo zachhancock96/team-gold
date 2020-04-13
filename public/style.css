@@ -29,6 +29,9 @@ input {
   left: 0;
   width: 100vw;
   height: 100vh;
+}
+
+.modal-loading {
   background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
