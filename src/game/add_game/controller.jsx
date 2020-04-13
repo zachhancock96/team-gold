@@ -66,9 +66,10 @@ export class AddGame extends React.Component {
     api.addGame(body)
       .then(() => {
         this.reset();
+        actions.showSuccess('Game added sucessfully');
       })
       .catch(err => {
-        console.log(err);
+        actions.showError(err.message || err);
       })
       .finally(() => {
         actions.hideLoading('AddGame');

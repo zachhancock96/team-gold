@@ -12,6 +12,7 @@ export const Initial = async () => {
       email: 'trumpkin@pumpkin.com'
     },
     route: router.initialRoute,
-    device: viewport.getDevice()
+    device: viewport.getDevice(),
+    toasts: []
   };
 }

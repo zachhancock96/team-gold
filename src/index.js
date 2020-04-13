@@ -7,6 +7,7 @@ import merge from "mergerino"
 import { createApp } from './app';
 import { router } from './router';
 import { viewport } from './viewport';
+import { toast } from './toast';
 // import { TracerComponent } from './tracer';
 
 const withTracer = false;
@@ -32,7 +33,10 @@ createApp()
     router.start({ navigateTo: actions.navigateTo });
 
     //updates `device` state whenever viewport width jumps threshold
-    viewport.watchDeviceChange({ update, states });
+    viewport.watchDeviceChange({ update, states, actions });
+
+    //removes `toasts` from array whenever any toast expires
+    toast.watchToastChange({ update, states, actions });
   });
 
 // const ViewWithTracer = states => ({app, state, actions}) => {

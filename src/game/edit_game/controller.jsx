@@ -42,6 +42,8 @@ export class EditGame extends React.Component {
   }
 
   handleSubmit = () => {
+    const { actions } = this.props;
+
     //TODO: do api.edit(id, { start, location }) leave this for now
     const s = this.state;
     if (s.canSubmit) {
@@ -51,6 +53,7 @@ export class EditGame extends React.Component {
         location: s.location
       });
 
+      actions.showSuccess('Game Edit succesfull');
       this.props.onSuccess(this.props.gameId);
     }
   }

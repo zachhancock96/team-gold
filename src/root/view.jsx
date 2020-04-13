@@ -7,6 +7,7 @@ import { Game } from '../game';
 import { Calendar } from '../calendar';
 import { Navbar } from '../navbar';
 import { Loading } from '../loading';
+import { Toast } from '../toast';
 
 const componentMap = {
   //Login,
@@ -25,6 +26,7 @@ export const Root = ({ state, actions }) => {
   return (
     <React.Fragment>
       <Loading state={state} />
+      <Toast state={state} />
       <div className="flex-col-100">
         {navbar}
         <Container className="flex-1">

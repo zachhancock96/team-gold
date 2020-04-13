@@ -50,8 +50,13 @@ export class GameDetail extends Component {
   }
 
   handleReject = async id => {
-    await api.rejectGame(id);
-    this._loadGame(id);
+    const { actions } = this.props;
+    api.rejectGame(id)
+      .then(() => {
+        actions.showSuccess('Game Rejected succesfully');
+        this._loadGame(id);
+      })
+      .catch(err => actions.showError(err.message || err));
   }
 
   render() {
