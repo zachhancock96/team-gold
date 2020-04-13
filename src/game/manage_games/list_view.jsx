@@ -1,5 +1,4 @@
 import React from 'react';
-import { prettyDate, prettyDateAndTime } from '../utils';
 
 /* 
   @param games: Array<Game>

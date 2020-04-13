@@ -3,9 +3,6 @@ import { api } from 'shared';
 
 export const service = ({state}) => {
   if (state.routeTransition.arrive.School) {
-    if (!state.user) {
-      return redirect(Route.Login());
-    }
 
     //initializing state upon entering school
     return {

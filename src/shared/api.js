@@ -1,7 +1,8 @@
 import $ from 'jquery';
 import moment, {API_DATE_FORMAT} from './moment';
 
-const BASE_URL = "http://18.219.186.34/api";
+//const BASE_URL = "http://18.219.186.34/api";
+const BASE_URL = "http://localhost:4000/api";
 
 const API_URLS = {
   GET_USERS: () => `${BASE_URL}/users`,
@@ -18,7 +19,7 @@ const API_URLS = {
   ADD_GAME: () => `${BASE_URL}/games`,
   REJECT_GAME: gameId => `${BASE_URL}/games/${gameId}/reject`,
   ACCEPT_GAME: gameId => `${BASE_URL}/games/${gameId}/accept`,
-  EDIT_GAME: gameId => `${BASE_URL}/games/${gameId}/accept`,
+  EDIT_GAME: gameId => `${BASE_URL}/games/${gameId}/edit`,
   
   LOGIN: () => `${BASE_URL}/login`
 };
@@ -301,12 +302,12 @@ const [authGet, authPost] = (function() {
 })();
 
 /*
-  no route yet, just delte token
+  no route yet, just delete token
 */
 export const logout = () => {
   clearToken();
 }
 
-const getToken = () => window.localStorage.getItem('sessionid') || 2;
+const getToken = () => window.localStorage.getItem('sessionid');
 const setToken = token => window.localStorage.setItem('sessionid', token);
 const clearToken = () => window.localStorage.removeItem('sessionid');

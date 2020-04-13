@@ -36,7 +36,8 @@ export const createApp = async () => {
       {},
       routes.Actions(update),
       loading.Actions(update),
-      toast.Actions(update)
+      toast.Actions(update),
+      login.Actions(update)
     ),
     services: [routes.service],
     effects: [routes.effect],

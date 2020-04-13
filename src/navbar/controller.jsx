@@ -22,7 +22,7 @@ export const Navbar = ({ state, actions, routing }) => {
     links={links}
     onLinkClick={linkId => {
       if (linkId == 'logout') {
-        alert('logging out');
+        actions.logout();
         return;
       }
 

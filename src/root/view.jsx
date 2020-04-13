@@ -10,7 +10,7 @@ import { Loading } from '../loading';
 import { Toast } from '../toast';
 
 const componentMap = {
-  //Login,
+  Login,
   School,
   Game,
   Calendar

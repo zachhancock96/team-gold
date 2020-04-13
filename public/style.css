@@ -302,7 +302,7 @@ a.right{
   left: 0;
   right: 0;
   text-align: center;
-  z-index: 999;
+  z-index: 50;
 }
 
 .login footer p {

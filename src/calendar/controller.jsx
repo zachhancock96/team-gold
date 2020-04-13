@@ -4,8 +4,6 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import '../../node_modules/@fullcalendar/core/main.css';
 import '../../node_modules/@fullcalendar/daygrid/main.css';
 import {api} from 'shared';
-import { calendar } from 'calendar';
-
 
 export class Calendar extends React.Component {
 
