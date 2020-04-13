@@ -1,4 +1,4 @@
-import moment from './moment';
+import moment, { DATETIME_TO_API_FORMAT } from './moment';
 import { GameStatus } from './enums';
 import Team from './team';
 
@@ -89,14 +89,6 @@ export default class Game {
   }
 }
 
-//e.g. 2020-03-17T08:00:00
-export const GAME_START_FROM_API_FORMAT = 'YYYY-MM-DDTHH:mm:ss';
-
-//e.g. 2020-03-17T08:00:00-05:00
-export const GAME_START_TO_DB_FORMAT = 'YYYY-MM-DDTHH:mm:ssZ';
-
-export const GAME_START_TO_API_FORMAT = GAME_START_TO_DB_FORMAT;
-
 function startToApi(start: moment.Moment | string) {
-  return moment(start).format(GAME_START_TO_API_FORMAT);
+  return moment(start).format(DATETIME_TO_API_FORMAT);
 }

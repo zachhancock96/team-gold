@@ -3,6 +3,21 @@ import Repository from '../repository';
 import PrivilegeAccess from '../privilege_access';
 import { Privileges as P,  Roles } from '../enums';
 import Team from '../team';
+import User from '../user';
+
+//TODO: this logic is duplicated in game_controller.ts
+const getMyTeams = async (repo: Repository, user: User) => {
+  const teams = await repo.getTeams();
+  if (user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN) {
+    //TODO: assuming one assignor does everything for now
+    return teams;
+  }
+
+  //school admin or school rep here
+  return user.role === Roles.SCHOOL_REP
+    ? teams.filter(t => !!t.schoolReps.find(rep => rep.id === user.id))
+    : teams.filter(t => t.school.schoolAdmin && t.school.schoolAdmin.id === user.id);
+}
 
 export default class TeamController {
   private repository: Repository;
@@ -14,21 +29,7 @@ export default class TeamController {
   }
 
   getTeams = async (req: Request, res: Response) => {
-    const teams_ = await this.repository.getTeams();
-    let teams;
-    if (req.query.schoolAdmin) {
-      const schoolAdminId = parseInt(req.query.schoolAdmin);
-      teams = teams_.filter(t => t.school.schoolAdmin && t.school.schoolAdmin.id === schoolAdminId);
-    }
-    if (req.query.schoolRep) {
-      const schoolRepId = parseInt(req.query.schoolRep);
-      teams = teams_.filter(t => t.schoolReps.find(rep => rep.id === schoolRepId));
-    }
-    if (req.query.assignor) {
-      const assignorId = parseInt(req.query.assignor);
-      teams = teams_.filter(t => t.school.district && t.school.district.assignor && t.school.district.assignor.id === assignorId);
-    }
-    teams = teams || teams_;
+    const teams = await this.repository.getTeams();
     res.send({ok: true, teams: teams.map(s => s.toApi())});
   }
 
@@ -39,44 +40,9 @@ export default class TeamController {
     res.send({ok: true, team: team? team.toApi(): null});
   }
 
-  getTeamsWithPrivilegesForUser = async (req: Request, res: Response) => {
-    const userId = parseInt(req.params.userId);
-    const users = await this.repository.getUsers();
-    const user = users.find(u => u.id === userId);
-    if (!user) {
-      res.send({ok: false, reason: 'User not found'});
-      return;
-    }
-    const rawPrivileges = req.params.privileges.split(';');
-    
-    //null if invalid
-    //invalid if unrecognized privilege value or duplicate privilege values
-    const privileges = rawPrivileges.reduce((privileges: P.TeamPrivilege[] | null, rawPrivilege) => {
-      if (privileges == null) return null;
-
-      //bad value
-      if (!isTeamPrivilege(rawPrivilege)) return null;
-      
-      const privilege = rawPrivilege as P.TeamPrivilege;
-
-      //dup entry
-      if (privileges.indexOf(privilege) >= 0) return null;
-
-      privileges.push(privilege);
-      return privileges;
-    }, []);
-
-    if (!privileges || !privileges.length) {
-      res.send({ok: false, reason: 'Bad privilege parameter'});
-      return;
-    }
-    
-    const teams = await this.privilegeAccess.getTeamsWithPrivilege(user, privileges);
-    res.send({ok: true, teams: teams.map(g => g.toApi())});
+  getMyTeams = async (req: Request, res: Response) => {
+    const user = req.user!;
+    const teams = await getMyTeams(this.repository, user);
+    res.send({ok: true, teams: teams.map(s => s.toApi())});
   }
-}
-
-function isTeamPrivilege(s: string) {
-  return s &&
-    s === P.TeamPrivilege.MANAGE_GAME;
 }

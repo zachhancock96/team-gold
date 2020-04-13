@@ -83,16 +83,12 @@ connectMysql(async (err, mysql) => {
   app.post('/api/games/:id/accept', W(gameController.acceptGame));
   app.post('/api/games/:id/reject', W(gameController.rejectGame));
   app.post('/api/games', W(gameController.addGame));
-  //app.get('/api/users/:userId/privileges/:privileges/games', W(gameController.getGamesWithPrivilegesForUser));
-  //app.post('/api/games/:id/edit', W(gameController.editGame));
-  //app.post('/api/games/:id/approve', W(gameController.approveGame));
+  app.post('/api/games/:id/edit', W(gameController.editGame));
 
   //team controller
   app.get('/api/teams', W(teamController.getTeams));
+  app.get('/api/teams/me', W(teamController.getMyTeams));
   app.get('/api/teams/:id', W(teamController.getTeam));
-
-  //@deprecated ?
-  app.get('/api/users/:userId/privileges/:privileges/teams', W(teamController.getTeamsWithPrivilegesForUser));
 
   //school controller
   app.get('/api/schools', W(schoolController.getAllSchools));

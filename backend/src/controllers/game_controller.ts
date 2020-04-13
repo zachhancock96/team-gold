@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
-import Game, {GAME_START_FROM_API_FORMAT} from '../game';
+import Game from '../game';
 import User from '../user';
+import Team from '../team';
 import Repository from '../repository';
 import PrivilegeAccess from '../privilege_access';
-import { Privileges as P, GameStatus, Roles, GameAction } from '../enums';
-import moment from '../moment';
+import { GameStatus, Roles, GameAction } from '../enums';
+import moment, { DATETIME_FROM_API_FORMAT } from '../moment';
 
 /*
 
@@ -19,8 +20,25 @@ import moment from '../moment';
 
 */
 
-const getMyTeams = async (repository: Repository, user: User) => {
-  const teams = await repository.getTeams();
+const getUpdaterType = async (repo: Repository, user: User, game: Game) => {
+  const hasPrivilegeOverHome = await isMyTeam(repo, user, game.homeTeam);
+
+  return user.role === Roles.ASSIGNOR
+    ? 'assignor'
+    : user.role === Roles.ADMIN
+    ? 'admin'
+    : hasPrivilegeOverHome
+    ? 'home'
+    : 'away';
+}
+
+const isMyTeam = async (repo: Repository, user: User, team: Team) => {
+  const myTeams = await getMyTeams(repo, user);
+  return !!myTeams.find(t => t.id === team.id);
+}
+
+const getMyTeams = async (repo: Repository, user: User) => {
+  const teams = await repo.getTeams();
   if (user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN) {
     //TODO: assuming one assignor does everything for now
     return teams;
@@ -82,7 +100,7 @@ const getGameActions = async (repository: Repository, user: User, gameId: number
   //only reps and school admins from here
 
   if (g.status === GameStatus.PENDING_ASSIGNOR) {
-    return [];
+    return [EDIT, REJECT];
   }
 
   const myTeams = await getMyTeams(repository, user);
@@ -124,8 +142,7 @@ export default class GameController {
 
   getGame = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    const games = await this.repository.getGames();
-    const game = games.find(g => g.id === id) || null;
+    const game = await this.repository.getGame(id);
     res.send({ok: true, game: game? game.toApi(): null });
   }
 
@@ -154,14 +171,13 @@ export default class GameController {
       return res.send({ok: false, reason: 'Cannot accept the game'});
     }
 
-    const game = await (async () => {
-      const games = await this.repository.getGames();
-      return games.find(g => g.id === id);
-    })();
+    const game = await this.repository.getGame(id);
 
     const status = user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN
       ? GameStatus.ACCEPTED
       : GameStatus.PENDING_ASSIGNOR;
+    
+    const updaterType = await getUpdaterType(this.repository, user, game!);
 
     await this.repository.editGame({
       id: game!.id,
@@ -177,7 +193,7 @@ export default class GameController {
       status,
       timestamp: moment(),
       updateType: 'accept',
-      updaterType: 'assignor',//TODO: change this later
+      updaterType: updaterType,//TODO: change this later
       updaterId: user.id
     });
 
@@ -195,12 +211,11 @@ export default class GameController {
       return res.send({ok: false, reason: 'Cannot reject the game'});
     }
 
-    const game = await (async () => {
-      const games = await this.repository.getGames();
-      return games.find(g => g.id === id);
-    })();
+    const game = await this.repository.getGame(id);
 
     const status = GameStatus.REJECTED;
+
+    const updaterType = await getUpdaterType(this.repository, user, game!);
 
     await this.repository.editGame({
       id: game!.id,
@@ -216,7 +231,7 @@ export default class GameController {
       status,
       timestamp: moment(),
       updateType: 'reject',
-      updaterType: 'assignor',//TODO: change this later
+      updaterType,
       updaterId: user.id
     });
 
@@ -235,7 +250,7 @@ export default class GameController {
     //TODO: only date format is being checked
     //if the value is something ridiculuous like 50 years into the
     //future, what to do in that case.
-    const isValidFormat = moment(body.start, GAME_START_FROM_API_FORMAT, true).isValid();
+    const isValidFormat = moment(body.start, DATETIME_FROM_API_FORMAT, true).isValid();
     if (!isValidFormat) {
       res.send({ok: false, reason: 'bad start format'});
       return;
@@ -260,13 +275,8 @@ export default class GameController {
       return;
     }
 
-    const isMyTeam = async team => {
-      const myTeams = await getMyTeams(repo, user);
-      return !!myTeams.find(t => t.id === team.id);
-    }
-
-    const hasPrivilegeOverHome = await isMyTeam(homeTeam);
-    const hasPrivilegeOverAway = await isMyTeam(awayTeam);
+    const hasPrivilegeOverHome = await isMyTeam(repo, user, homeTeam);
+    const hasPrivilegeOverAway = await isMyTeam(repo, user, awayTeam);
 
     if (!hasPrivilegeOverHome && !hasPrivilegeOverAway) {
       res.send({ok: false, reason: 'Has no privelege over either home or away team'});
@@ -276,13 +286,13 @@ export default class GameController {
       res.send({ok: false, reason: 'Game should be matched between  same kind of team'});
     }
 
-    //TODO: there may still be conflict in time/location
-
-    const status = user.role === Roles.ASSIGNOR || Roles.ADMIN
+    const status = user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN
       ? GameStatus.ACCEPTED
       : hasPrivilegeOverHome
       ? GameStatus.PENDING_AWAY_TEAM
       : GameStatus.PENDING_HOME_TEAM;
+
+      //TODO: there may still be conflict in time/location
 
     const insertedId = await repo.addGame({
       homeTeamId: body.homeTeamId,
@@ -292,6 +302,9 @@ export default class GameController {
       status
     });
 
+    const game = await this.repository.getGame(insertedId);
+    const updaterType = await getUpdaterType(repo, user, game!);
+
     await repo.addGameHistory({
       gameId: insertedId,
       start: body.start,
@@ -299,11 +312,70 @@ export default class GameController {
       status,
       timestamp: moment(),
       updateType: 'create',
-      updaterType: 'assignor',//TODO: change this later
+      updaterType,
       updaterId: user.id
     });
 
     res.send({ok: true, gameId: insertedId});
+  }
+
+  editGame = async (req: Request, res: Response) => {
+    const repo = this.repository;
+    const user = req.user!;
+
+    const gameId = parseInt(req.params.id);
+    const body = req.body as ApiSchema.Game_EDIT;
+
+    const isValidStart = moment(body.start, DATETIME_FROM_API_FORMAT, true).isValid();
+    if (!isValidStart) {
+      res.send({ok: false, reason: 'bad start format'});
+      return;
+    }
+    if (!body.location) {
+      res.send({ok: false, reason: 'bad location'});
+      return;
+    }
+
+    const actions = await getGameActions(this.repository, user, gameId);
+    const canEdit = actions.indexOf(GameAction.EDIT) >= 0;
+
+    if (!canEdit) {
+      return res.send({ok: false, reason: 'Cannot edit the game'});
+    }
+
+    const game = await repo.getGame(gameId);
+
+    const hasPrivilegeOverHome = await isMyTeam(repo, user, game!.homeTeam);
+    
+    const status = user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN
+      ? GameStatus.ACCEPTED
+      : hasPrivilegeOverHome
+      ? GameStatus.PENDING_AWAY_TEAM
+      : GameStatus.PENDING_HOME_TEAM;
+
+    const updaterType = await getUpdaterType(repo, user, game!);
+
+    //TODO: there may still be conflict in time/location
+
+    await this.repository.editGame({
+      id: game!.id,
+      start: body.start,
+      location: body.location,
+      status
+    });
+
+    await this.repository.addGameHistory({
+      gameId: game!.id,
+      start: body.start,
+      location: body.location,
+      status,
+      timestamp: moment(),
+      updateType: 'update',
+      updaterType: updaterType,
+      updaterId: user.id
+    });
+
+    res.send({ ok: true})
   }
 
   getGameHistory = async (req: Request, res: Response) => {
@@ -312,77 +384,3 @@ export default class GameController {
     res.send({ok: true, history: history})
   }
 }
-
-  // editGame = async (req: Request, res: Response) => {
-  //   const repo = this.repository;
-
-  //   const gameId = parseInt(req.params.id);
-  //   const body = req.body as ApiSchema.Game_EDIT;
-
-  //   const isValidStart = moment(body.start, GAME_START_FROM_API_FORMAT, true).isValid();
-  //   if (!isValidStart) {
-  //     res.send({ok: false, reason: 'bad start format'});
-  //     return;
-  //   }
-  //   if (!body.location) {
-  //     res.send({ok: false, reason: 'bad location'});
-  //     return;
-  //   }
-
-  //   const games = await this.repository.getGames();
-  //   const game = games.find(g => g.id === gameId) || null;
-  //   if (!game) {
-  //     res.send({ok: false, reason: 'Game not found'});
-  //     return;
-  //   }
-
-  //   if (game.status === GameStatus.REJECTED) {
-  //     res.send({ok: false, reason: 'Game was rejected'});
-  //     return;
-  //   }
-  //   if (game.status === GameStatus.APPROVED_LOCKED) {
-  //     res.send({ok: false, reason: 'No further changes are allowed in this game.'});
-  //     return;
-  //   }
-
-  //   const user = req.user!;
-
-  //   const hasUserPrivilegeOverGame = await this.privilegeAccess.hasGamePrivilege(user, game, [P.GamePrivilege.UPDATE_GAME]);
-  //   if (!hasUserPrivilegeOverGame) {
-  //     return res.send({ok: false, reason: 'Not enough privilege.'});
-  //   }
-
-  //   //TODO: how will status change when game is edited by admin/assignor
-  //   //for now there is no change
-  //   if (user.role === Roles.ADMIN || user.role === Roles.ASSIGNOR) {
-  //     await repo.editGame({
-  //       id: gameId,
-  //       start: body.start,
-  //       location: body.location,
-  //       status: game.status
-  //     });
-      
-  //     return res.send({ok: true});
-  //   }
-
-  //   const isEditedByHomeTeam = (function() {
-  //     const schoolAdmin = game.homeTeam.school.schoolAdmin;
-  //     const reps = game.homeTeam.school.schoolReps;
-
-  //     const isRep = !!reps.find(rep => rep.equals(user));
-  //     const isSchoolAdmin = schoolAdmin && schoolAdmin.equals(user);
-
-  //     return isRep || isSchoolAdmin;
-  //   })();
-    
-  //   await repo.editGame({
-  //     id: gameId,
-  //     start: body.start,
-  //     location: body.location,
-  //     status: isEditedByHomeTeam
-  //       ? GameStatus.PENDING_AWAY_TEAM
-  //       : GameStatus.PENDING_HOME_TEAM
-  //   });
-
-  //   res.send({ok: true});
-  // }

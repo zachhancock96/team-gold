@@ -10,10 +10,10 @@ DELETE FROM USER;
 INSERT INTO USER (id, email, password, name, role) VALUES
   (1, 'admin@test.net', 'password', 'Admin', 'admin'),
   (2, 'assignor@test.net', 'password', 'Assignor', 'assignor'),
-  (3, 'schooladmin@test.net', 'password', 'School Admin', 'school_admin'),
-  (4, 'schoolrepa@test.net', 'password', 'School Representative A', 'school_rep'),
-  (5, 'schoolrepb@test.net', 'password', 'School Representative B', 'school_rep'),
-  (6, 'schoolrepc@test.net', 'password', 'School Representative C', 'school_rep');
+  (3, 'schoolA_admin@test.net', 'password', 'School A Admin', 'school_admin'),
+  (4, 'schoolA_rep1@test.net', 'password', 'School A Rep 1', 'school_rep'),
+  (5, 'schoolA_rep2@test.net', 'password', 'School A Rep 2', 'school_rep'),
+  (6, 'schoolB_rep1@test.net', 'password', 'School B Rep 1', 'school_rep');
 
 INSERT INTO DISTRICT (id, name, assignorId) VALUES
   (1, 'districtA', 2);

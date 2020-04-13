@@ -1,10 +1,10 @@
 import mysql from 'mysql';
-import moment from './moment';
+import moment, { DATETIME_TO_API_FORMAT } from './moment';
 import User from './user';
 import School from './school';
 import Team from './team';
 import District from './district';
-import Game, { GAME_START_TO_DB_FORMAT } from './game';
+import Game from './game';
 import { GameStatus } from './enums';
 import * as assert from 'assert';
 
@@ -26,6 +26,7 @@ const Q_ALL_TEAM = 'SELECT * FROM TEAM;';
 const Q_ALL_SCHOOL_REP = 'SELECT * FROM SCHOOL_REP;';
 const Q_ALL_SCHOOL_REP_TEAM_ASSN = 'SELECT * FROM SCHOOL_REP_TEAM_ASSN;';
 const Q_ALL_GAME = 'SELECT * FROM GAME;';
+const Q_GAME = (gameId: number) => `SELECT * FROM GAME WHERE id=${gameId};`;
 const Q_GAME_HISTORY_OF_GAME = (gameId: number) => `SELECT * FROM GAME_HISTORY WHERE gameId=${gameId} ORDER BY timestamp DESC;`;
 
 export default class Repository {
@@ -211,6 +212,31 @@ export default class Repository {
     return [...this.districts];
   }
 
+  async getGame(id: number) {
+    const rows = await promisifiedQuery(Q_GAME(id));
+    if (!rows.length) return null;
+
+    const row = rows[0];
+
+    const g = new Game({
+      id: row.id,
+      start: moment(row.start),
+      location: row.location,
+      status: row.status,
+    });
+
+    const homeTeamId: number = row.homeTeamId;
+    const awayTeamId: number = row.awayTeamId;
+
+    const homeTeam = this.teams.find(t => t.id === homeTeamId);
+    const awayTeam = this.teams.find(t => t.id === awayTeamId);
+    
+    g.homeTeam = homeTeam!;
+    g.awayTeam = awayTeam!;
+
+    return g;
+  }
+
   async getGames() {
     const gamesR = await promisifiedQuery(Q_ALL_GAME);
     const games: Game[] = gamesR.map(row => new Game({
@@ -246,10 +272,10 @@ export default class Repository {
       const history: {[key: string]: any} = {
         id: row.id, 
         gameId: row.gameId, 
-        start: row.start, 
+        start: moment(row.start).format(DATETIME_TO_API_FORMAT), 
         location: row.location, 
         status: row.status, 
-        timestamp: row.timestamp, 
+        timestamp: moment(row.timestamp).format(DATETIME_TO_API_FORMAT),
         updateType: row.updateType, 
         updaterType: row.updaterType,
       };
@@ -276,8 +302,8 @@ export default class Repository {
     updaterId: number, 
     updaterType: GameHistoryUpdaterType
   }) {
-    const start = moment(g.start).format(GAME_START_TO_DB_FORMAT);
-    const timestamp = moment(g.timestamp).format(GAME_START_TO_DB_FORMAT);
+    const start = moment(g.start).toISOString();
+    const timestamp = moment(g.timestamp).toISOString();
 
     const query = `INSERT INTO GAME_HISTORY (gameId, start, location, status, timestamp, updateType, updaterId, updaterType) VALUES
       ${sqlValues([g.gameId, start, g.location, g.status, timestamp, g.updateType, g.updaterId, g.updaterType])}`;
@@ -293,7 +319,8 @@ export default class Repository {
     location: string;
     status: GameStatus;
   }) {
-    const start = moment(g.start).format(GAME_START_TO_DB_FORMAT);
+    const start = moment(g.start).toISOString();
+
     const query = `
       INSERT INTO GAME (homeTeamId, awayTeamId, start, location, status, rejectionNote) VALUES
       ${sqlValues([g.homeTeamId, g.awayTeamId, start, g.location, g.status, null])}
@@ -315,7 +342,7 @@ export default class Repository {
     const doesGameExist = !!(await promisifiedQuery(`SELECT * FROM GAME WHERE id=${g.id}`));
     assert.ok(doesGameExist, 'Game not found');
 
-    const start = moment(g.start).format(GAME_START_TO_DB_FORMAT);
+    const start = moment(g.start).toISOString();
 
     const query = `
       UPDATE GAME 
