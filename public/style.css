@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;1,100;1,200;1,300;1,400;1,500&display=swap');
 
-
 * {
   box-sizing: border-box;
 }
@@ -29,14 +28,41 @@ input {
   left: 0;
   width: 100vw;
   height: 100vh;
-}
-
-.modal-loading {
   background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+/*Container bootstrap wrapper BEGIN
+*/ 
+
+@media only screen and (min-width: 576px) {
+  .container {
+    max-width: 100%;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    max-width: 100%;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+/*Container bootstrap wrapper END
+*/ 
 
 .navbar-links {
   padding: 8px;
@@ -72,7 +98,6 @@ input {
 .game-detail{
   padding-left: 20px;
   padding-bottom: 20px;
-  width: 70%;
 }
 .game-detail-header{
   font-weight: bold;
@@ -440,10 +465,11 @@ a.right{
   border-radius: 7.5px;
 }
 
-.game-list-item .contents:hover {
+.game-list-item .contents:hover,
+.game-list-item.active .contents {
   transform: scale(1.07);
   z-index: 100;
-  background-color: rgb(59, 196, 235);
+  background-color: #48ddb680;
   box-shadow: 0 5px 25px rgba(54, 121, 247, 0.2);
   color: #000;
   border-radius: 10px;
