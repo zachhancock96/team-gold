@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, ButtonRed, CurvedButton } from 'shared/widgets';
 import { brownBorder } from 'shared/color';
+import { dtFormat } from 'shared/dtFormat';
 
-/////// TODO - check if multiple edits in history display and are spaced correctly ///////
-///////      - format game date/time?? ///////
+/////// TODO - format game date/time?? ///////
 
 /*
   @param gameDetail: GameDetail
@@ -41,7 +41,7 @@ export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
       }}>
         <div style={{ flex: 1 }}>
           <Header>{title(gameDetail.game)}</Header>
-          <Header>{gameDetail.game.start}</Header>
+          <Header>{dtFormat(gameDetail.game.start)}</Header>
           <Header>{gameDetail.game.location}</Header>
         </div>
         <div>
@@ -130,17 +130,31 @@ const title = game => {
 const displayHistory = history => {
   let historyList = history.map(e => {
 
+    let dateCheck = 0;
+
     let bodyList = e.body.map(attribute => {
-      return <p>
-        {attribute}
-      </p>
+      dateCheck += 1;
+      
+      if (dateCheck == 3){
+        return <p>
+          {dtFormat(attribute)}
+        </p>
+      }
+
+      else{
+        return <p>
+          {attribute}
+        </p>
+      };
+
     });
 
     return <div className='game-history-block'>
-      <p className='game-display-timestamp'>{e.timestamp}</p>
+      <p className='game-display-timestamp'>{dtFormat(e.timestamp)}</p>
       <div className='game-display-body'>{bodyList}</div>
     </div>
   });
 
   return historyList;
 }
+
