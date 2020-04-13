@@ -46,7 +46,7 @@ export function View({
       <form onSubmit={e => {
         e.preventDefault();
         if (canSubmit) {
-          onSubmit();
+          onSubmit(); 
         }
       }}>
         <Row className={rowMarginClass}>

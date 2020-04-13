@@ -1,8 +1,8 @@
 import React from 'react';
 import { Nav } from './nav_controller';
-//import { EditGame } from '../edit_game';
 import { GameDetail } from '../game_detail';
 import { ListView } from './list_view';
+import { EditGame } from '../edit_game';
 import { Route } from '../../routes';
 import { api } from 'shared';
 
@@ -46,6 +46,10 @@ export class ManageGames extends React.Component {
   }
 
   componentDidMount() {
+    this.refreshGames();
+  }
+
+  refreshGames = () => {
     const m = this.props;
     m.actions.showLoading('ManageGames');
     api.getGames()
@@ -66,6 +70,20 @@ export class ManageGames extends React.Component {
 
   //list item click from list view page
   handleGameClick = id => {
+    const { actions, routing } = this.props;
+    const r = routing.next().childRoute(Route.GameDetail({id}));
+    actions.navigateTo(r);
+  }
+
+  //cancel clicked from edit page
+  handleEditCancel = id => {
+    const { actions, routing } = this.props;
+    const r = routing.next().childRoute(Route.GameDetail({id}));
+    actions.navigateTo(r);
+  }
+
+  handleEditSuccess = id => {
+    this.refreshGames();
     const { actions, routing } = this.props;
     const r = routing.next().childRoute(Route.GameDetail({id}));
     actions.navigateTo(r);
@@ -92,12 +110,11 @@ export class ManageGames extends React.Component {
           gameId={activeGameId}
           onEdit={this.handleEditClick} />
       ): isEdit? (
-        // <EditGame
-        //   actions={m.actions}
-        //   gameId={activeGameId}
-        //   onSuccess={this.handleEditSuccess}
-        //   onCancel={this.handleEditCancel} />
-        <div>Edit Game</div>
+        <EditGame
+          actions={m.actions}
+          gameId={activeGameId}
+          onSuccess={this.handleEditSuccess}
+          onCancel={this.handleEditCancel} />
       ): null;
 
     return (

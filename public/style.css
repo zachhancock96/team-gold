@@ -96,8 +96,7 @@ input {
   color: grey;
 }
 .game-detail{
-  padding-left: 20px;
-  padding-bottom: 20px;
+  padding: 16px;
 }
 .game-detail-header{
   font-weight: bold;
@@ -467,7 +466,7 @@ a.right{
 
 .game-list-item .contents:hover,
 .game-list-item.active .contents {
-  transform: scale(1.07);
+  transform: scale(1.02);
   z-index: 100;
   background-color: #48ddb680;
   box-shadow: 0 5px 25px rgba(54, 121, 247, 0.2);
@@ -525,6 +524,8 @@ a.right{
 
 
 /* LIST-VIEW CSS ENDS HERE */
+
+
 /*Game Detail Starts*/
 #gamedetail-heading {
   font-weight: bold;

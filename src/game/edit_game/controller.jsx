@@ -1,55 +1,119 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { View } from './view';
+import { api } from 'shared';
 
 export class EditGame extends React.Component {
 
   constructor(props) {
     super(props);
 
-    const { start, location, id, homeTeam, awayTeam } = props.game;
-
     this.state = {
-      id,
-      location,
-      start,
-      homeTeamName: homeTeam.name,
-      awayTeamName: awayTeam.name,
+      ready: false,
+
+      id: -1,
+      location: '',
+      start: null,
+      homeTeamName: '',
+      awayTeamName: '',
+      canSubmit: false,
     };
   }
 
-  handleEdit = () => {
+  componentDidMount() {
+    const { gameId, actions } = this.props;
+
+    actions.showLoading('EditGame');
+    api.getGame(gameId)
+      .then(game => {
+        this.setState({
+          ready: true,
+
+          id: gameId,
+          location: game.location,
+          start: game.start,
+          homeTeamName: game.homeTeam.name,
+          awayTeamName: game.awayTeam.name
+        })
+      })
+      .finally(() => {
+        actions.hideLoading('EditGame');
+      })
+  }
+
+  handleSubmit = () => {
     //TODO: do api.edit(id, { start, location }) leave this for now
-    this.props.onSuccess();
+    const s = this.state;
+    if (s.canSubmit) {
+      console.log({
+        id: s.id,
+        start: s.start,
+        location: s.location
+      });
+
+      this.props.onSuccess(this.props.gameId);
+    }
+  }
+
+  handleLocationChange = location => {
+    this.setState({location}, () => this.postFormUpdate());
+  }
+
+  handleStartChange = start => {
+    this.setState({start}, () => this.postFormUpdate());
+  }
+
+  postFormUpdate = () => {
+    const { start, location } = this.state;
+    const canSubmit = !!(start && location);
+    this.setState({canSubmit});
   }
 
   handleCancel = () => {
-    this.props.onCancel();
+    this.props.onCancel(this.props.gameId);
   }
 
   render() {
-    const { location, start, homeTeamName, awayTeamName } = this.state;
+    const { location, start, homeTeamName, awayTeamName, canSubmit, ready } = this.state;
     
-    //TODO: extract this in view just like in AddGame controller
     return (
-      <div>
-        <h1>Edit Game</h1>
-        <p>---------------------------------</p>
-        <p>---------------------------------</p>
-        <br />
-        <br />
-        <br />
-        <p>Home: {homeTeamName} </p>
-        <p>Away: {awayTeamName} </p>
-        <p>Location: {location} </p>
-        <p>Start: {start} </p>
-        <button onClick={this.handleEdit}>Edit</button> <button onClick={this.handleCancel}>Cancel</button>
-      </div>
+      ready
+      ? <View
+          homeTeamName={homeTeamName}
+          awayTeamName={awayTeamName}
+          start={start}
+          location={location}
+          canSubmit={canSubmit}
+          onSubmit={this.handleSubmit}
+          onLocationChange={this.handleLocationChange}
+          onCancel={this.handleCancel}
+          onStartChange={this.handleStartChange} />
+      : null
     );
-  }
+}
 }
 
 EditGame.propTypes = {
-  game: PropTypes.object.isRequired,
+  actions: PropTypes.object.isRequired,
+  gameId: PropTypes.number.isRequired,
   onCancel: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired
 }
+
+
+
+
+
+// <div>
+//   <h1>Edit Game</h1>
+//   <p>---------------------------------</p>
+//   <p>---------------------------------</p>
+//   <br />
+//   <br />
+//   <br />
+//   <p>Home: {homeTeamName} </p>
+//   <p>Away: {awayTeamName} </p>
+//   <p>Location: {location} </p>
+//   <p>Start: {start} </p>
+//   <button onClick={this.handleEdit}>Edit</button> <button onClick={this.handleCancel}>Cancel</button>
+// </div>

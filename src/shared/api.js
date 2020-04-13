@@ -28,6 +28,11 @@ export function getUsers() {
     .then(response => response.users);
 }
 
+export function getGame(id) {
+  return authGet(API_URLS.GET_GAME(id))
+    .then(o => o.game);
+}
+
 export function getMe() {
   return authGet(API_URLS.GET_ME())
     .then(response => response.user);
