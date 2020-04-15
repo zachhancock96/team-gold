@@ -37,7 +37,7 @@ export class Calendar extends React.Component {
       header={{
         left: 'prev,next today',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listYear'
       }}
       plugins={[ dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin ]} 
       events={games} />
