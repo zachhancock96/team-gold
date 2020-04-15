@@ -1,5 +1,5 @@
-import m from 'mithril';
 import { Calendar as MyCalendar } from 'shared/view';
+
 
 export const Calendar = ({state, actions, routing}) => {
   return (
