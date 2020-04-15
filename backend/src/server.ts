@@ -9,8 +9,8 @@ import {
   LoginController,
   SchoolController,
   TeamController,
-  UserController } from './controllers';
-import PrivilegeAccess from './privilege_access';
+  UserController,
+  ArbiterExportController } from './controllers';
 import Repository from './repository';
 
 const PORT = 4000;
@@ -52,14 +52,13 @@ connectMysql(async (err, mysql) => {
   const repository = new Repository(mysql!);
   await repository.init();
   console.log('finish init repository');
-
-  const privilegeAccess = new PrivilegeAccess(repository);
   
   const loginController = new LoginController(repository);
   const userController = new UserController(repository);
-  const gameController = new GameController(repository, privilegeAccess);
-  const teamController = new TeamController(repository, privilegeAccess);
-  const schoolController = new SchoolController(repository, privilegeAccess);
+  const gameController = new GameController(repository);
+  const teamController = new TeamController(repository);
+  const schoolController = new SchoolController(repository);
+  const arbiterExportController = new ArbiterExportController(repository);
 
   const authWrapper = authWrapperFactory(repository);
 
@@ -93,7 +92,13 @@ connectMysql(async (err, mysql) => {
   //school controller
   app.get('/api/schools', W(schoolController.getAllSchools));
   app.get('/api/schools/:id', W(schoolController.getSchool));
-  app.get('/api/users/:userId/privileges/:privileges/schools', W(schoolController.getSchoolsWithPrivilegesForUser));
+
+  //arbiter-export controller
+  //TODO: scope this to just the assignor and admins
+  app.get('/api/arbiter-export', W(arbiterExportController.getExports));
+  app.get('/api/arbiter-export/:id', W(arbiterExportController.getExport));
+  app.post('/api/arbiter-export', W(arbiterExportController.createExport));
+  app.post('/api/arbiter-export/:id/note', W(arbiterExportController.editExportNote));
 
   app.listen(PORT, () => {
     console.log(`server listening at port ${PORT}`);

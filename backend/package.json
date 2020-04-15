@@ -4,7 +4,7 @@
   "description": "backend repo for team-gold soft en",
   "main": "./dist/server.js",
   "scripts": {
-    "start": "tsc && node ./dist/server.js",
+    "start": "tsc && node -r dotenv/config ./dist/server.js",
     "tsc": "tsc --watch",
     "test": "tsc && node ./dist/test.js"
   },
@@ -18,6 +18,7 @@
     "@types/mysql": "^2.15.9",
     "body-parser": "^1.13.1",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.13.0",
     "moment-timezone": "^0.5.27",
     "morgan": "^1.6.0",

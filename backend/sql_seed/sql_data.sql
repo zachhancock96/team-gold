@@ -45,7 +45,7 @@ INSERT INTO SCHOOL_REP_TEAM_ASSN (id, schoolRepId, teamId) VALUES
 
 INSERT INTO GAME (id, homeTeamId, awayTeamId, start, location, status, rejectionNote) VALUES
   (1, 1, 3, '2020-03-15T18:00:00-05:00', 'WOHS', 'accepted', null),
-  (2, 3, 4, '2020-03-16T18:00:00-05:00', 'WMHS', 'accepted', null);
+  (2, 2, 4, '2020-03-16T18:00:00-05:00', 'WMHS', 'accepted', null);
 
 INSERT INTO GAME_HISTORY (id, gameId, start, location, status, timestamp, updateType, updaterId, updaterType) VALUES
   (1, 1, '2020-03-15T18:00:00-05:00', 'WOHS', 'accepted', '2020-03-16T18:00:00-05:00', 'create', 2, 'assignor'),

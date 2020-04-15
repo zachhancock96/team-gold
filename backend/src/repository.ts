@@ -4,6 +4,7 @@ import User from './user';
 import School from './school';
 import Team from './team';
 import District from './district';
+import ArbiterExport from './arbiter_export';
 import Game from './game';
 import { GameStatus } from './enums';
 import * as assert from 'assert';
@@ -28,6 +29,8 @@ const Q_ALL_SCHOOL_REP_TEAM_ASSN = 'SELECT * FROM SCHOOL_REP_TEAM_ASSN;';
 const Q_ALL_GAME = 'SELECT * FROM GAME;';
 const Q_GAME = (gameId: number) => `SELECT * FROM GAME WHERE id=${gameId};`;
 const Q_GAME_HISTORY_OF_GAME = (gameId: number) => `SELECT * FROM GAME_HISTORY WHERE gameId=${gameId} ORDER BY timestamp DESC;`;
+const Q_ALL_ARBITER_EXPORT = 'SELECT * FROM ARBITER_EXPORT ORDER BY timestamp DESC;';
+const Q_ARBITER_EXPORT = (id: number) => `SELECT * FROM ARBITER_EXPORT WHERE id=${id};`;
 
 export default class Repository {
   private users: User[] = []
@@ -262,6 +265,25 @@ export default class Repository {
     return games;
   }
 
+  async addGame(g: {
+    homeTeamId: number;
+    awayTeamId: number;
+    start: string | moment.Moment;
+    location: string;
+    status: GameStatus;
+  }) {
+    const start = moment(g.start).toISOString();
+
+    const query = `
+      INSERT INTO GAME (homeTeamId, awayTeamId, start, location, status, rejectionNote) VALUES
+      ${sqlValues([g.homeTeamId, g.awayTeamId, start, g.location, g.status, null])}
+    `;
+
+    const result: InsertQueryResult  = await promisifiedQuery(query);
+    assert.ok(result.insertId);
+    return result.insertId!;
+  }
+
   async getGameHistory(gameId: number) {
     const query = Q_GAME_HISTORY_OF_GAME(gameId);
     const historyR = await promisifiedQuery(query);
@@ -312,25 +334,7 @@ export default class Repository {
     return result.insertId!;
   }
 
-  async addGame(g: {
-    homeTeamId: number;
-    awayTeamId: number;
-    start: string | moment.Moment;
-    location: string;
-    status: GameStatus;
-  }) {
-    const start = moment(g.start).toISOString();
-
-    const query = `
-      INSERT INTO GAME (homeTeamId, awayTeamId, start, location, status, rejectionNote) VALUES
-      ${sqlValues([g.homeTeamId, g.awayTeamId, start, g.location, g.status, null])}
-    `;
-
-    const result: InsertQueryResult  = await promisifiedQuery(query);
-    assert.ok(result.insertId);
-    return result.insertId!;
-  }
-
+  //TODO: fails when quotation mark (') is sent
   async editGame(g: {
     id: number;
     start: string | moment.Moment;
@@ -339,7 +343,7 @@ export default class Repository {
     rejectionNote?: string | null
   }) {
 
-    const doesGameExist = !!(await promisifiedQuery(`SELECT * FROM GAME WHERE id=${g.id}`));
+    const doesGameExist = !!(await promisifiedQuery(Q_GAME(g.id)));
     assert.ok(doesGameExist, 'Game not found');
 
     const start = moment(g.start).toISOString();
@@ -353,6 +357,66 @@ export default class Repository {
 
     await promisifiedQuery(query);
   }
+
+  async getArbiterExports() {
+    const result: any[] = await promisifiedQuery(Q_ALL_ARBITER_EXPORT);
+    return result.map(row => rowToArbiterExport(row));
+  }
+
+  async getArbiterExport(id) {
+    const result = await promisifiedQuery(Q_ARBITER_EXPORT(id));
+    if (!result.length) return null;
+
+    return rowToArbiterExport(result[0]);
+  }
+
+  async addArbiterExport(a: {
+    timestamp: moment.Moment | string;
+    filename: string;
+    gameCount: number;
+    hasStartEndFilter: boolean;
+    hasSchoolIdsFilter: boolean;
+    schoolIdsFilter: number[] | null;
+    startFilter: moment.Moment | string | null;
+    endFilter: moment.Moment | string | null;
+    note: string | null
+    creatorId: number;
+  }) {
+    const startFilter = a.hasStartEndFilter
+      ? moment(a.startFilter!).toISOString(): null;
+    
+    const endFilter = a.hasStartEndFilter
+      ? moment(a.endFilter!).toISOString(): null;
+
+    const schoolIdsFilter= a.hasSchoolIdsFilter
+      ? a.schoolIdsFilter!.join(','): null;
+
+    const timestamp = moment(a.timestamp).toISOString();
+    
+    const query = `
+      INSERT INTO ARBITER_EXPORT (timestamp, filename, gameCount, schoolIdsFilter, startFilter, endFilter, note, creatorId) VALUES
+      ${sqlValues([timestamp, a.filename, a.gameCount, schoolIdsFilter, startFilter, endFilter, a.note, a.creatorId])}`;
+
+    const result: InsertQueryResult = await promisifiedQuery(query);
+    assert.ok(result.insertId);
+    return result.insertId!;
+  }
+
+  async editArbiterExport (a: {
+    id: number;
+    note: string | null;
+  }) {
+
+    const exists = !!(await promisifiedQuery(Q_ARBITER_EXPORT(a.id)));
+    assert.ok(exists, 'Arbiter export no found');
+
+    const query = `
+      UPDATE ARBITER_EXPORT
+      SET note=${sqlValue(a.note)}
+      WHERE id=${a.id};`;
+
+    await promisifiedQuery(query);
+  }
 }
 
 function sqlValues(array: Array<string | null | number | undefined>) { 
@@ -363,6 +427,20 @@ function sqlValue(v: string | null | number | undefined) {
   if (typeof v === 'string') return `'${v}'`;
   if (v === null || v === undefined) return 'null';
   return v;
+}
+
+function rowToArbiterExport(row: any) {
+  return new ArbiterExport({
+    id: row.id,
+    timestamp: moment(row.timestamp),
+    filename: row.filename,
+    gameCount: row.gameCount,
+    schoolIdsFilter: row.schoolIdsFilter,
+    startFilter: row.startFilter? moment(row.startFilter): null,
+    endFilter: row.endFilter? moment(row.endFilter): null,
+    note: row.note,
+    creatorId: row.creatorId
+  });
 }
 
 type InsertQueryResult = {

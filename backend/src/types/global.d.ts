@@ -108,6 +108,29 @@ declare global {
         name: string;
       };
     }
+
+    interface ArbiterExport {
+      id: number;
+      timestamp: string;
+      downloadUrl: string;
+      filename: string;
+      gameCount: number;
+
+      //if true, both startFilter and endFilter exist
+      hasStartEndFilter: boolean;
+
+      //if true, schoolIdsFilter would be an array of length >= 1
+      hasSchoolIdsFilter: boolean;
+
+      //null or array of length >= 1
+      schoolIdsFilter: number[] | null;
+
+      //either both are null or both are string
+      startFilter: string | null;
+      endFilter: string | null;
+
+      note: string | null;
+    }
   
     interface Privileges {
       game: P.GamePrivilege[];
@@ -240,6 +263,42 @@ declare global {
     interface Users_UserId_Privileges_Schools_GET_RES {
       ok: true;
       schools: School[]
+    }
+
+    //GET /arbiter-export
+    interface ArbiterExport_GET_RES {
+      ok: true;
+      exports: ArbiterExport[];
+    }
+
+    //GET /arbiter-export/:id
+    interface ArbiterExport_Id_GET_RES {
+      ok: true;
+      export: ArbiterExport | null;
+    }
+
+    //POST /arbiter-export
+    interface ArbiterExport_POST_REQ {
+
+      //@see ApiSchema.ArbiterExport definition
+      hasSchoolIdsFilter: boolean;
+      hasStartEndFilter: boolean;
+      schoolIdsFilter: number[] | null;
+      startFilter: string | null;
+      endFilter: string | null;
+      note: string | null;
+    }
+    interface ArbiterExport_POST_RES {
+      ok: true;
+      exportId: number;
+    }
+
+    //POST arbiter-export/:id/note
+    interface ArbiterExport_Id_Note_POST_REQ {
+      note: string | null;
+    }
+    interface ArbiterExport_Id_Note_POST_RES {
+      ok: boolean;
     }
 
     //All the responses that could not pass because of business rule

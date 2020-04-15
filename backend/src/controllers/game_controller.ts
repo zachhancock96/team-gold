@@ -3,7 +3,6 @@ import Game from '../game';
 import User from '../user';
 import Team from '../team';
 import Repository from '../repository';
-import PrivilegeAccess from '../privilege_access';
 import { GameStatus, Roles, GameAction } from '../enums';
 import moment, { DATETIME_FROM_API_FORMAT } from '../moment';
 
@@ -128,11 +127,9 @@ const getGameActions = async (repository: Repository, user: User, gameId: number
 export default class GameController {
 
   private repository: Repository;
-  private privilegeAccess: PrivilegeAccess;
-
-  constructor(repository: Repository, privilegeAccess: PrivilegeAccess) {
+  
+  constructor(repository: Repository) {
     this.repository = repository;
-    this.privilegeAccess = privilegeAccess;
   }
 
   getAllGames = async (req: Request, res: Response) => {

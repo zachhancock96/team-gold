@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import Repository from '../repository';
-import PrivilegeAccess from '../privilege_access';
 import { Privileges as P,  Roles } from '../enums';
 import Team from '../team';
 import User from '../user';
@@ -21,11 +20,9 @@ const getMyTeams = async (repo: Repository, user: User) => {
 
 export default class TeamController {
   private repository: Repository;
-  private privilegeAccess: PrivilegeAccess;
 
-  constructor(repository: Repository, privilegeAccess: PrivilegeAccess) {
+  constructor(repository: Repository) {
     this.repository = repository;
-    this.privilegeAccess = privilegeAccess;
   }
 
   getTeams = async (req: Request, res: Response) => {
