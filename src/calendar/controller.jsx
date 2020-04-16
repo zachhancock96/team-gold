@@ -26,11 +26,21 @@ export class Calendar extends React.Component {
   }
 
   render() {
-    const games = this.state.games.map(g => ({
-      title: g.homeTeam.name  + ' vs ' + g.awayTeam.name + ' @ ' + g.location,
-      start: g.start,
-      end: g.start
-    }));
+    const games = this.state.games.map(g => {
+      if (g.status == 'accepted') {
+        return ({
+          title: g.homeTeam.name  + ' vs ' + g.awayTeam.name + ' @ ' + g.location,
+          start: g.start,
+          end: g.start
+        });
+      } else {
+        return ({
+          title: '(' + g.status + ') ' + g.homeTeam.name  + ' vs ' + g.awayTeam.name + ' @ ' + g.location,
+          start: g.start,
+          end: g.start
+        });
+      }
+    });
 
     return (
       <FullCalendar defaultView="dayGridMonth"
