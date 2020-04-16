@@ -5,6 +5,7 @@ import { NavbarView } from './view';
 
 const links = [
   {id: Route.Game().id, align: 'left', name: 'Game'},
+  {id: Route.ArbiterExport().id, align: 'left', name: 'Arbiter'},
   {id: Route.School().id, align: 'left', name: 'School'},
   {id: Route.Calendar().id, align: 'left', name: 'Calendar'},
   {id: 'logout', align: 'right', name: 'Logout' }
@@ -12,9 +13,10 @@ const links = [
 
 const idToRouteMap = {
   [Route.Game().id]: [Route.Game(), Route.ManageGames(), Route.AllGames()],
+  [Route.ArbiterExport().id]: Route.ArbiterExport(),
   [Route.School().id]: Route.School(),
   [Route.Calendar().id]: Route.Calendar()
-}
+};
 
 export const Navbar = ({ state, actions, routing }) => {
   return <NavbarView

@@ -5,6 +5,7 @@ import { Login } from '../login';
 import { School } from '../school';
 import { Game } from '../game';
 import { Calendar } from '../calendar';
+import { ArbiterExport } from '../arbiter-export';
 import { Navbar } from '../navbar';
 import { Loading } from '../loading';
 import { Toast } from '../toast';
@@ -13,6 +14,7 @@ const componentMap = {
   Login,
   School,
   Game,
+  ArbiterExport,
   Calendar
 };
 

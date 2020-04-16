@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import moment, {API_DATE_FORMAT} from './moment';
+import moment, {API_DATETIME_FORMAT} from './moment';
 
-const BASE_URL = "http://18.219.186.34/api";
-//const BASE_URL = "http://localhost:4000/api";
+//const BASE_URL = "http://18.219.186.34/api";
+const BASE_URL = "http://localhost:4000/api";
 
 const API_URLS = {
   GET_USERS: () => `${BASE_URL}/users`,
@@ -22,9 +22,33 @@ const API_URLS = {
   REJECT_GAME: gameId => `${BASE_URL}/games/${gameId}/reject`,
   ACCEPT_GAME: gameId => `${BASE_URL}/games/${gameId}/accept`,
   EDIT_GAME: gameId => `${BASE_URL}/games/${gameId}/edit`,
+
+  CREATE_ARBITER_EXPORT: `${BASE_URL}/arbiter-export`,
+  GET_ARBITER_EXPORTS: `${BASE_URL}/arbiter-export`,
+  GET_ARBITER_EXPORT: id => `${BASE_URL}/arbiter-export/${id}`,
+  EDIT_ARBITER_EXPORT_NOTE: id => `${BASE_URL}/arbiter-export/${id}/note`,
   
   LOGIN: () => `${BASE_URL}/login`
 };
+
+export function createArbiterExport(o) {
+  return authPost(API_URLS.CREATE_ARBITER_EXPORT, o)
+    .then(response => response.exportId);
+}
+
+export function getArbiterExports() {
+  return authGet(API_URLS.GET_ARBITER_EXPORTS)
+    .then(response => response.exports);
+}
+
+export function getArbiterExport(id) {
+  return authGet(API_URLS.GET_ARBITER_EXPORT(id))
+    .then(response => response.export);
+}
+
+export function editArbiterExportNote(id, note) {
+  return authPost(API_URLS.EDIT_ARBITER_EXPORT_NOTE(id), {note: note || null});
+}
 
 export function getUsers() {
   return authGet(API_URLS.GET_USERS())
@@ -92,7 +116,7 @@ export function addGame(game) {
   const o = {
     homeTeamId: game.homeTeamId,
     awayTeamId: game.awayTeamId,
-    start: moment(game.start).format(API_DATE_FORMAT),
+    start: moment(game.start).format(API_DATETIME_FORMAT),
     location: game.location
   };
 
@@ -110,7 +134,7 @@ export function acceptGame(gameId) {
 
 export function editGame(gameId, edit) {
   const o = {
-    start: moment(edit.start).format(API_DATE_FORMAT),
+    start: moment(edit.start).format(API_DATETIME_FORMAT),
     location: edit.location
   };
 

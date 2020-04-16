@@ -2,9 +2,77 @@ import React from 'react';
 import moment from 'shared/moment';
 import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
+import  ReactMultiSelect from '@khanacademy/react-multi-select';
 import ReactTimePicker from 'react-time-picker';
 import ReactDatePicker from 'react-date-picker'
 import './input.css';
+
+/*
+  Props that are sort of required
+
+  options: Array<{label: string, value: number}>
+  value: Array<{label: string, value: number}>
+  onSelectedChanged: (ids: Array<number>) => any
+  itemType: string (e.g. if dealing with list of schoools, itemType would be 'School')
+
+  Optional props
+
+  maxWidth: string (e.g. '300px')
+  overrideStrings: {
+    selectSomeItems?: string,
+    allItemsAreSelected?: string,
+    selectAll?: string,
+    search?: string
+  }
+  disableSearch: boolean
+  disabled: boolean
+*/
+const MultiSelect = (() => {
+
+  const valueRenderer = itemType => {
+    itemType = itemType || '';
+    itemType = itemType.endsWith('s')? itemType: itemType + 's';
+
+    return  overrides => (selected, options) => {
+      if (selected.length === 0) {
+        return overrides.selectSomeItems || `Select some ${itemType}...`;
+      }
+    
+      if (selected.length === options.length) {
+        return overrides.allItemsAreSelected || `All ${itemType} selected`;
+      }
+    
+      return `Selected ${selected.length} ${itemType}`;
+    }  
+  }
+
+  return ({
+    options,
+    selected,
+    onSelectedChanged,
+    disableSearch,
+    overrideStrings,
+    itemType,
+    disabled,
+    maxWidth
+  }) => {
+    const style = maxWidth? { maxWidth }: {};
+    overrideStrings = overrideStrings || {};
+
+    return <div style={style}>
+      <ReactMultiSelect
+        selected={selected || []}
+        options={options || []}
+        onSelectedChanged={onSelectedChanged || (() => {})}
+        disableSearch={disableSearch || false}
+        disabled={disabled || false}
+        overrideStrings={overrideStrings || null}
+        valueRenderer={valueRenderer(itemType || 'item')(overrideStrings)} />
+    </div>
+  }
+})();
+
+
 
 /**
  * accepts style, className, onClick u name it.
@@ -145,4 +213,4 @@ const DateTimePicker = ({ value, onChange }) => {
     </React.Fragment>);
 }
 
-export { EditText, TextArea, Select, Switch, Timepicker, Datepicker, DateTimePicker };
+export { EditText, TextArea, Select, Switch, Timepicker, Datepicker, DateTimePicker, MultiSelect };

@@ -13,12 +13,25 @@ export const Route = createRouteSegments([
   "PendingGames",
   "RejectedGames",
   "EditGame",
-  "GameDetail"
+  "GameDetail",
+
+  "ArbiterExport",
+  "EditArbiterExport",
+  "CreateArbiterExport"
 ]);
 
 export const routeConfig = {
   Login: "/login",
   School: "/school/:id",
+
+  ArbiterExport: [
+    "/arbiter-export?just_added",
+    {
+      EditArbiterExport: "/edit/:id",
+      CreateArbiterExprot: "/create"
+    }
+  ],
+
   Game: [
     "/game",
     {
@@ -57,6 +70,7 @@ export const routeConfig = {
       ]
     }
   ],
+  
   Calendar: "/calendar",
 };
 

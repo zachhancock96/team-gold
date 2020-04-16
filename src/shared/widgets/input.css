@@ -10,12 +10,6 @@
 .form-control:focus {
   color: #47525e;
   border-color: #8492a6;
-  box-shadow: inset 0 0 2px 0px black;
-}
-
-.form-control:focus {
-  color: #47525e;
-  border-color: #8492a6;
   box-shadow: inset 0 0 4px 0px black;
 }
 
@@ -99,4 +93,36 @@
 
 .react-date-picker__inputGroup__input:invalid {
   background: none;
+}
+
+
+.multi-select input {
+  color: #47525e !important;
+  border-color: #8492a6 !important;
+}
+
+.multi-select input:focus {
+  box-shadow: inset 0 0 4px 0px black;
+}
+
+.multi-select .dropdown-heading {
+  border-color: #8492a6 !important;
+}
+
+.multi-select .dropdown-heading-value {
+  color: #47525e !important;
+}
+
+.multi-select .dropdown-heading-value span {
+  line-height: 2;/*NOTE: this is quite hacky and very particular to our current application*/
+}
+
+/*TODO: this doesn't seem to change the color of the arrow*/
+.multi-select .dropdown-heading-dropdown-arrow span {
+  color: #47525e !important;
+}
+
+
+.multi-select .dropdown[aria-expanded="true"] .dropdown-heading {
+  box-shadow: inset 0 0 4px 0px black;
 }

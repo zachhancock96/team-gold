@@ -539,3 +539,8 @@ a.right{
 }
 
 /*Game Detail Ends*/
+
+.arbiter-export-item .fa-file {
+  color: #00d69e;
+  font-size: 50px;
+}
