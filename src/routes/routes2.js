@@ -12,12 +12,21 @@ export const Route = createRouteSegments([
 
 export const routeConfig = {
   Login: "/login",
-  School: "/school/:id",
-  Schools: [
+  School: [
     "/school",
     {
-      MySchool: "/my School",
-      AllSchools: "All Schools"
+      MySchool: [
+        "/my",
+        {
+          SchoolDetail: '/:id',
+        }
+      ],
+      AllSchools: [
+        "/all",
+        {
+          SchoolDetail: '/:id',
+        }
+      ]
     }
   ],
   Calendar: "/calendar",
