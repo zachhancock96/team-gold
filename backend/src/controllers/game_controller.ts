@@ -97,8 +97,8 @@ const getGameActions = async (repository: Repository, user: User, gameId: number
   }
 
   //only reps and school admins from here
-
   if (g.status === GameStatus.PENDING_ASSIGNOR) {
+    //this covers NON-LHSAA games too
     return [EDIT, REJECT];
   }
 
@@ -267,6 +267,10 @@ export default class GameController {
       res.send({ok: false, reason: 'home team not found'});
       return;
     }
+    if (!homeTeam.isLhsaa) {
+      res.send({ok: false, reason: 'home team must be LHSAA member as recognized by the system'});
+      return;
+    }
     if (!awayTeam) {
       res.send({ok: false, reason: 'away team not found'});
       return;
@@ -277,19 +281,23 @@ export default class GameController {
 
     if (!hasPrivilegeOverHome && !hasPrivilegeOverAway) {
       res.send({ok: false, reason: 'Has no privelege over either home or away team'});
+      return;
     }
 
     if (homeTeam.teamKind !== awayTeam.teamKind) {
       res.send({ok: false, reason: 'Game should be matched between  same kind of team'});
+      return;
     }
 
     const status = user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN
       ? GameStatus.ACCEPTED
+      : !awayTeam.isLhsaa
+      ? GameStatus.PENDING_ASSIGNOR
       : hasPrivilegeOverHome
       ? GameStatus.PENDING_AWAY_TEAM
       : GameStatus.PENDING_HOME_TEAM;
 
-      //TODO: there may still be conflict in time/location
+    //TODO: there may still be conflict in time/location
 
     const insertedId = await repo.addGame({
       homeTeamId: body.homeTeamId,
@@ -337,7 +345,8 @@ export default class GameController {
     const canEdit = actions.indexOf(GameAction.EDIT) >= 0;
 
     if (!canEdit) {
-      return res.send({ok: false, reason: 'Cannot edit the game'});
+      res.send({ok: false, reason: 'Cannot edit the game'});
+      return;
     }
 
     const game = await repo.getGame(gameId);
