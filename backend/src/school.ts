@@ -3,7 +3,11 @@ import User from './user';
 import District from './district';
 import Team from './team';
 
-type constructorArgs = { id: number; name: string; }
+type constructorArgs = { 
+  id: number; 
+  name: string; 
+  isLhsaa: boolean; 
+};
 
 export default class School {
 
@@ -62,6 +66,10 @@ export default class School {
     return this.schoolAdmin_;
   }
 
+  get isLhsaa() {
+    return this.o.isLhsaa;
+  }
+
   toString() {
     const admin = this.schoolAdmin_? this.schoolAdmin_.toString(): 'null';
     const teams = this.teams.map(t => t.toString());
@@ -88,6 +96,7 @@ export default class School {
     return {
       id: this.id,
       name: this.name,
+      isLhsaa: this.isLhsaa,
       schoolReps: this.schoolReps.map(s => ({
         id: s.id,
         name: s.name

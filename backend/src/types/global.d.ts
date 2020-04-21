@@ -9,6 +9,7 @@ declare global {
     interface Team {
       id: number;
       name: string;
+      isLhsaa: boolean;
       school: {
         id: number,
         name: string
@@ -23,6 +24,7 @@ declare global {
     interface School {
       id: number;
       name: string;
+      isLhsaa: boolean;
       schoolReps: {
         id: number,
         name: string
@@ -59,6 +61,7 @@ declare global {
         id: number;
         name: string;
         teamKind: TeamKind;
+        isLhsaa: boolean;
         school: {
           id: number;
           name: string;
@@ -68,6 +71,7 @@ declare global {
         id: number;
         name: string;
         teamKind: TeamKind;
+        isLhsaa: boolean;
         school: {
           id: number;
           name: string;

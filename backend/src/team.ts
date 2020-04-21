@@ -2,7 +2,12 @@ import School from './school';
 import User from './user';
 import { TeamKind } from './enums';
 
-type constructorArgs = { id: number; name: string; teamKind: TeamKind };
+type constructorArgs = { 
+  id: number; 
+  name: string; 
+  teamKind: TeamKind;
+  isLhsaa: boolean;
+};
 
 export default class Team {
 
@@ -44,6 +49,10 @@ export default class Team {
     return this.school_!;
   }
 
+  get isLhsaa() {
+    return this.o.isLhsaa;
+  }
+
   toString() {
     const reps = this.schoolReps_;
     return `
@@ -59,11 +68,12 @@ export default class Team {
     return t.id === this.id;
   }
 
-  toApi() {
+  toApi(): ApiSchema.Team {
     return {
       id: this.id,
       name: this.name,
       teamKind: this.teamKind,
+      isLhsaa: this.isLhsaa,
       school: {
         id: this.school.id,
         name: this.school.name

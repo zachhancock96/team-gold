@@ -68,6 +68,7 @@ export default class Game {
         id: ht.id,
         name: ht.name,
         teamKind: ht.teamKind,
+        isLhsaa: ht.isLhsaa,
         school: {
           id: ht.school.id,
           name: ht.school.name
@@ -77,6 +78,7 @@ export default class Game {
         id: at.id,
         name: at.name,
         teamKind: at.teamKind,
+        isLhsaa: at.isLhsaa,
         school: {
           id: at.school.id,
           name: at.school.name

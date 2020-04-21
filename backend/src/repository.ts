@@ -83,7 +83,8 @@ export default class Repository {
     //3.a init schools
     const schools: School[] = schoolsR.map(row => new School({
       id: row.id,
-      name: row.name
+      name: row.name,
+      isLhsaa: !!row.isLhsaa
     }));
 
     //2.c schools to district
@@ -93,8 +94,12 @@ export default class Repository {
       
       schoolsR.forEach((schoolRow, i) => {
         const distId = schoolRow.districtId;
-        districtToSchoolMap[distId] = districtToSchoolMap[distId] || [];
-        districtToSchoolMap[distId].push(schools[i]);
+
+        //null for non lhsaa schools
+        if (distId) {
+          districtToSchoolMap[distId] = districtToSchoolMap[distId] || [];
+          districtToSchoolMap[distId].push(schools[i]);
+        }
       });
   
       Object.keys(districtToSchoolMap).forEach(k => {
@@ -142,7 +147,8 @@ export default class Repository {
     const teams: Team[] = teamsR.map(row => new Team({
       id: row.id,
       name: row.name,
-      teamKind: row.teamKind
+      teamKind: row.teamKind,
+      isLhsaa: !!row.isLhsaa
     }));
 
     //4.b schoolReps to team
