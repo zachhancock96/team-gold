@@ -35,6 +35,7 @@ CREATE TABLE DISTRICT (
 CREATE TABLE SCHOOL (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(55) NOT NULL,
+  isLhsaa boolean NOT NULL,
   schoolAdminId int NULL,
   districtId int NULL,
 
@@ -57,6 +58,7 @@ CREATE TABLE SCHOOL_REP (
 CREATE TABLE TEAM (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(55) NOT NULL,
+  isLhsaa boolean NOT NULL,
   teamKind varchar(55) NOT NULL,
   schoolId int NOT NULL,
 
