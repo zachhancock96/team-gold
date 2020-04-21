@@ -6,7 +6,7 @@ import Team from './team';
 import District from './district';
 import ArbiterExport from './arbiter_export';
 import Game from './game';
-import { GameStatus } from './enums';
+import { GameStatus, TeamKind } from './enums';
 import * as assert from 'assert';
 
 let connection: mysql.Connection;
@@ -271,13 +271,50 @@ export default class Repository {
     return games;
   }
 
+  async addSchool(o: {
+    name: string;
+    isLhsaa: boolean;
+    schoolAdminId: number | null;
+    districtId: number | null;
+  }): Promise<number> {
+
+    const query = `
+      INSERT INTO SCHOOL (name, isLhsaa, schoolAdminId, districtId) VALUES
+      ${sqlValues([o.name, o.isLhsaa, o.schoolAdminId, o.districtId])}`;
+
+    const result: InsertQueryResult = await promisifiedQuery(query);
+    assert.ok(result.insertId);
+
+    await this.refresh();
+
+    return result.insertId!;
+  }
+
+  async addTeam(o: {
+    name: string;
+    isLhsaa: boolean;
+    teamKind: TeamKind;
+    schoolId: number;
+  }): Promise<number> {
+    const query = `
+      INSERT INTO TEAM (name, isLhsaa, teamKind, schoolId) VALUES
+      ${sqlValues([o.name, o.isLhsaa, o.teamKind, o.schoolId])}`;
+
+    const result: InsertQueryResult = await promisifiedQuery(query);
+    assert.ok(result.insertId);
+
+    await this.refresh();
+
+    return result.insertId!;
+  }
+
   async addGame(g: {
     homeTeamId: number;
     awayTeamId: number;
     start: string | moment.Moment;
     location: string;
     status: GameStatus;
-  }) {
+  }): Promise<number> {
     const start = moment(g.start).toISOString();
 
     const query = `
@@ -425,12 +462,13 @@ export default class Repository {
   }
 }
 
-function sqlValues(array: Array<string | null | number | undefined>) { 
+function sqlValues(array: Array<string | boolean | null | number | undefined>) { 
   return '(' + array.map(r => sqlValue(r)).join(',') + ')';
 }
 
-function sqlValue(v: string | null | number | undefined) {
+function sqlValue(v: string | boolean | null | number | undefined) {
   if (typeof v === 'string') return `'${v}'`;
+  if (typeof v === 'boolean') return v? '1': '0';
   if (v === null || v === undefined) return 'null';
   return v;
 }

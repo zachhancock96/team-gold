@@ -247,11 +247,7 @@ declare global {
       ok: true;
       team: Team | null;
     }
-    //GET /users/:userId/privileges/:privileges/teams
-    interface Users_UserId_Privileges_Teams_GET_RES {
-      ok: true;
-      teams: Team[];
-    }
+
 
     //GET /schools
     interface Schools_GET_RES {
@@ -263,6 +259,15 @@ declare global {
       ok: true;
       school: School | null;
     }
+    //POST /schools/non-lhsaa
+    interface Schools_NonLhsaa_REQ {
+      name: string;
+    }
+    interface Schools_NonLhsaa_RES {
+      ok: true;
+      schoolId: number;
+    }
+
     //GET /users/:userId/privileges/:privileges/schools
     interface Users_UserId_Privileges_Schools_GET_RES {
       ok: true;

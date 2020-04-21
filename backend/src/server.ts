@@ -92,6 +92,7 @@ connectMysql(async (err, mysql) => {
   //school controller
   app.get('/api/schools', W(schoolController.getAllSchools));
   app.get('/api/schools/:id', W(schoolController.getSchool));
+  app.post('/api/schools/non-lhsaa', W(schoolController.addNonLhsaaSchool));
 
   //arbiter-export controller
   //TODO: scope this to just the assignor and admins
