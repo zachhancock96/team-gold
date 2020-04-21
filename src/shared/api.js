@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import moment, {API_DATETIME_FORMAT} from './moment';
 
-const BASE_URL = "http://18.219.186.34/api";
-//const BASE_URL = "http://localhost:4000/api";
+//const BASE_URL = "http://18.219.186.34/api";
+const BASE_URL = "http://localhost:4000/api";
 
 const API_URLS = {
   GET_USERS: () => `${BASE_URL}/users`,
@@ -12,6 +12,7 @@ const API_URLS = {
   GET_MY_TEAMS: () => `${BASE_URL}/teams/me`,
 
   GET_SCHOOLS: () => `${BASE_URL}/schools`,
+  POST_SCHOOL_NONLHSAA: `${BASE_URL}/schools/non-lhsaa`,
 
   GET_GAMES: () => `${BASE_URL}/games`,
   GET_MY_GAMES: () => `${BASE_URL}/games/me`,
@@ -30,6 +31,11 @@ const API_URLS = {
   
   LOGIN: () => `${BASE_URL}/login`
 };
+
+export function addNonLhsaaSchool(o) {
+  return authPost(API_URLS.POST_SCHOOL_NONLHSAA, o)
+    .then(response => response.schoolId);
+}
 
 export function createArbiterExport(o) {
   return authPost(API_URLS.CREATE_ARBITER_EXPORT, o)
@@ -78,6 +84,14 @@ export function getMyTeams() {
 export function getSchools() {
   return authGet(API_URLS.GET_SCHOOLS())
     .then(response => response.schools);
+}
+
+//TODO: have a backend api instead
+export function getSchool(schoolId) {
+  return getSchools()
+    .then(schools => {
+      return schools.find(s => s.id === schoolId) || null;
+    });
 }
 
 export function getGames() {

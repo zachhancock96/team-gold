@@ -1,5 +1,5 @@
 import React from 'react';
-import { EditText, Select, DateTimePicker } from 'shared/widgets';
+import { Select2, EditText, Select, DateTimePicker } from 'shared/widgets';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Button } from 'shared/widgets';
 
@@ -39,8 +39,15 @@ export function View({
   onHomeSelect,
   onLocationChange,
   onStartChange,
-  onAwaySelect
+  onAwaySelect,
+
+  isAddingSchool,
+  isAddingSchoolChange,
+  
+  schoolNameToAdd,
+  schoolNameToAddChange
 }) {
+
   return (
     <Layout>
       <form onSubmit={e => {
@@ -54,7 +61,7 @@ export function View({
             <Label>Choose home team</Label>
           </Col>
           <Col xs={12}>
-            <Select
+            {/* <Select
               style={{ maxWidth: maxWidthInput }}
               value={selectedHomeId}
               onChange={e => onHomeSelect(parseInt(e.target.value))}>
@@ -64,7 +71,11 @@ export function View({
                   <option key={ht.id} value={ht.id}>{ht.name}</option>
                 ))
               }
-            </Select>
+            </Select> */}
+              <TeamSelect 
+                onChange={onHomeSelect}
+                teams={homeTeams} 
+                selectedTeamId={selectedHomeId} />
           </Col>
         </Row>
 
@@ -73,17 +84,26 @@ export function View({
             <Label>Choose away team</Label>
           </Col>
           <Col xs={12}>
-            <Select
-              value={selectedAwayId}
-              style={{ maxWidth: maxWidthInput }}
-              onChange={e => onAwaySelect(parseInt(e.target.value))}>
-              <option value={-1}>Select Away Team</option>
-              {
-                awayTeams.map(at => (
-                  <option key={at.id} value={at.id}>{at.name}</option>
-                ))
-              }
-            </Select>
+
+            {
+              isAddingSchool
+                ? <EditText
+                    style={{maxWidth: maxWidthInput}}
+                    value={schoolNameToAdd} 
+                    onChange={e => schoolNameToAddChange(e.target.value) }/>
+                : <TeamSelect 
+                    onChange={onAwaySelect}
+                    teams={awayTeams} 
+                    selectedTeamId={selectedAwayId} />
+            }
+          </Col>
+          <Col xs={12}>
+            <div style={{display: 'flex', alignItems: 'center'}}>
+              <input type='checkbox' value='addSchool' 
+                checked={isAddingSchool} 
+                onChange={e => isAddingSchoolChange(e.target.checked)}  />{' '}
+              <label style={{fontSize: '.9em', fontStyle: 'italic'}}>Could not find away school? Check to add</label>
+            </div>
           </Col>
         </Row>
 
@@ -115,4 +135,23 @@ export function View({
         </Row>
       </form>
     </Layout>);
+}
+
+const TeamSelect = ({teams, selectedTeamId, onChange}) => {
+  const options = teams.map(t => ({value: t.id, label: t.name}));
+  const value = options.find(o => o.value === selectedTeamId) || null;
+
+  return <Select2 
+    value={value}
+    options={options}
+    styles={{
+      container: currStyles => {
+        return { ...currStyles, maxWidth: maxWidthInput };
+      }
+    }}
+    onChange={(a, b) => {
+      if (a.value !== selectedTeamId) {
+        return onChange(a.value);
+      }
+    }} />
 }

@@ -5,8 +5,11 @@ import { Form } from 'react-bootstrap';
 import  ReactMultiSelect from '@khanacademy/react-multi-select';
 import ReactTimePicker from 'react-time-picker';
 import ReactDatePicker from 'react-date-picker'
+import ReactSelect from 'react-select'
 import './input.css';
 
+
+const Select2 = props => ( <ReactSelect className='m-react-select' {...props} /> );
 /*
   Props that are sort of required
 
@@ -213,4 +216,4 @@ const DateTimePicker = ({ value, onChange }) => {
     </React.Fragment>);
 }
 
-export { EditText, TextArea, Select, Switch, Timepicker, Datepicker, DateTimePicker, MultiSelect };
+export { EditText, TextArea, Select, Switch, Timepicker, Datepicker, DateTimePicker, MultiSelect, Select2 };

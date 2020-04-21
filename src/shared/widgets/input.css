@@ -126,3 +126,13 @@
 .multi-select .dropdown[aria-expanded="true"] .dropdown-heading {
   box-shadow: inset 0 0 4px 0px black;
 }
+
+.m-react-select .css-yk16xz-control {
+  border-color: #8492a6;
+  color: #47525e;
+}
+.m-react-select .css-1pahdxg-control {
+  color: #47525e;
+  border-color: #8492a6;
+  box-shadow: inset 0 0 4px 0px black;
+}

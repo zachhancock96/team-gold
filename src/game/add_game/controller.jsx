@@ -16,7 +16,9 @@ export class AddGame extends React.Component {
       selectedAwayId: -1,
       canSubmit: false,
       start: null,
-      location: ''
+      location: '',
+      isAddingSchool: false,
+      schoolNameToAdd: ''
     }
   }
 
@@ -48,56 +50,116 @@ export class AddGame extends React.Component {
   }
 
   handleSubmit = () => {
-    const { canSubmit } = this.state;
+    const { homeTeams, canSubmit, isAddingSchool, schoolNameToAdd, selectedHomeId, selectedAwayId, start, location } = this.state;
+    const { actions } = this.props;
+
     if (!canSubmit) return;
 
-    const { selectedHomeId, selectedAwayId, start, location } = this.state;
+    if (isAddingSchool) {
+      const teamKind = homeTeams.find(ht => ht.id === selectedHomeId).teamKind;
 
-    const body = {
-      homeTeamId: selectedHomeId,
-      awayTeamId: selectedAwayId,
-      start: start,
-      location
-    };
+      actions.showLoading('AddGame');
+      api.addNonLhsaaSchool({name: schoolNameToAdd })
+        .then(async schoolId => {
+          console.log(`non lhsaa school added: ${schoolId}`);
+          const school = await api.getSchool(schoolId);
 
-    const { actions } = this.props;
-    
-    actions.showLoading('AddGame');
-    api.addGame(body)
-      .then(() => {
-        this.reset();
-        actions.showSuccess('Game added sucessfully');
-      })
-      .catch(err => {
-        actions.showError(err.message || err);
-      })
-      .finally(() => {
-        actions.hideLoading('AddGame');
-      })
+          const awayTeamId = school.teams.find(t => t.teamKind === teamKind).id;
+          
+          const body = {
+            homeTeamId: selectedHomeId,
+            awayTeamId,
+            start: start,
+            location
+          };
+
+          return body;
+        })
+          .then(async body => {
+            console.log(`adding game... ${JSON.stringify(body, null, 2)}`);
+            
+            await api.addGame(body);
+            console.log(`game added`);
+            this.reset();
+            actions.showSuccess('Game added sucessfully');
+          })
+          .catch(err => {
+            console.log(err);
+            actions.showError(err.message || err);
+          })
+          .finally(() => {
+            actions.hideLoading('AddGame');
+          });
+
+    } else {
+      const body = {
+        homeTeamId: selectedHomeId,
+        awayTeamId: selectedAwayId,
+        start: start,
+        location
+      };
+      
+      actions.showLoading('AddGame');
+      api.addGame(body)
+        .then(() => {
+          this.reset();
+          actions.showSuccess('Game added sucessfully');
+        })
+        .catch(err => {
+          actions.showError(err.message || err);
+        })
+        .finally(() => {
+          actions.hideLoading('AddGame');
+        })
+    }
   }
 
-  reset = () => {
+  reset = (cb) => {
+    cb = cb || (() => {});
+
     this.setState({
-      selectedHomeId: -1,
-      selectedAwayId: -1,
-      canSubmit: false,
-      start: null,
-      location: ''
+      ready: false
+    }, async () => {
+      let homeTeams  = await api.getMyTeams().catch(err => []);
+      homeTeams = homeTeams.filter(ht => ht.isLhsaa);
+      const awayTeams = await api.getTeams().catch(err => []);
+  
+      this.setState({
+        ready: true,
+        selectedHomeId: -1,
+        selectedAwayId: -1,
+        canSubmit: false,
+        start: null,
+        location: '',
+        homeTeams,
+        awayTeams,
+        isAddingSchool: false,
+        schoolNameToAdd: ''
+      }, cb);
     });
   }
 
     //by post we mean after form update
     postFormUpdate = () => {
-      const { selectedHomeId, selectedAwayId, location, start } = this.state;
+      console.log(this.state);
+      const { isAddingSchool, homeTeams, awayTeams } = this.state;
+      let illegal;
 
-      const { homeTeams, awayTeams } = this.state;
+      if (isAddingSchool) {
 
-      const home = homeTeams.find(h => h.id === selectedHomeId);
-      const away = awayTeams.find(a => a.id === selectedAwayId);
+        const { selectedHomeId, schoolNameToAdd, location, start } = this.state;
+        const home = homeTeams.find(h => h.id === selectedHomeId);
 
-      let illegal = !home || !away || home.teamKind !== away.teamKind || home.id === away.id;
-      illegal = illegal || !location.length
-      illegal = illegal || !start;
+        illegal = !home || !location.length || !schoolNameToAdd.length || !start;
+      } else {
+        const { selectedHomeId, selectedAwayId, location, start } = this.state;
+  
+        const home = homeTeams.find(h => h.id === selectedHomeId);
+        const away = awayTeams.find(a => a.id === selectedAwayId);
+  
+        illegal = !home || !away || home.teamKind !== away.teamKind || home.id === away.id;
+        illegal = illegal || !location.length || !start;
+      }
 
       this.setState({ canSubmit: !illegal });
     }
@@ -106,20 +168,23 @@ export class AddGame extends React.Component {
     const { actions } = this.props;
     actions.showLoading('AddGame');
 
-    const homeTeams  = await api.getMyTeams();
-    const awayTeams = await api.getTeams();
-
-    this.setState({
-      ready: true,
-      homeTeams: [...homeTeams],
-      awayTeams: [...awayTeams]
+    this.reset(() => {
+      actions.hideLoading('AddGame');
     });
+  }
 
-    actions.hideLoading('AddGame');
+  changeIsAdding = bool => {
+    this.setState({isAddingSchool: bool}, () => { this.postFormUpdate(); });
+  }
+
+  changeSchoolNameToAdd = schoolName => {
+    schoolName = schoolName || '';
+    this.setState({schoolNameToAdd: schoolName}, () => { this.postFormUpdate(); });
   }
 
   render() {
-    const { ready, homeTeams, awayTeams, selectedHomeId, selectedAwayId, start, location, canSubmit } = this.state;
+    const { ready, homeTeams, awayTeams, selectedHomeId, selectedAwayId, start, location, canSubmit,
+      isAddingSchool, schoolNameToAdd } = this.state;
     if (!ready) return null;
     
     return (
@@ -135,7 +200,13 @@ export class AddGame extends React.Component {
         onHomeSelect={this.handleHomeSelect}
         onLocationChange={this.handleLocationChange}
         onStartChange={this.handleStartChange}
-        onAwaySelect={this.handleAwaySelect} />
+        onAwaySelect={this.handleAwaySelect} 
+        
+        isAddingSchool={isAddingSchool}
+        isAddingSchoolChange={this.changeIsAdding}
+        schoolNameToAdd={schoolNameToAdd}
+        schoolNameToAddChange={this.changeSchoolNameToAdd}
+        />
     );
   }
 }
