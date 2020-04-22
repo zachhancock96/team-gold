@@ -6,6 +6,10 @@ export const Calendar = ({state, actions, routing}) => {
     <div>
       <h2>Calendar</h2>
       <div>
+        Hello world
+      </div>
+      
+      <div>
         <MyCalendar events={state.calendar.events}/>
       </div>
     </div>

@@ -1,0 +1,1 @@
+export { SchoolDetail } from './controller';
