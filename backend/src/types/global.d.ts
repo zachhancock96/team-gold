@@ -4,6 +4,15 @@ import User from '../user';
 declare global {
   type GameHistoryUpdaterType = 'home'| 'away'| 'assignor'| 'admin';
   type GameHistoryUpdateType = 'create'|  'update'| 'accept'| 'reject';
+  type EmailSubscriptionType = 'game_update' | 'team_game_day';
+
+  interface EmailSubscription {
+    id: number;
+    subscriberId: number;
+    subscriptionType: EmailSubscriptionType;
+    teamId?: number | null;
+    gameId?: number | null;
+  }
 
   namespace ApiSchema {
     interface Team {
@@ -303,6 +312,43 @@ declare global {
     }
     interface ArbiterExport_Id_Note_POST_RES {
       ok: boolean;
+    }
+
+    //POST /subscriptions/team-game-day/subscribe
+    interface Subscription_TeamGameDay_SUB_POST_REQ {
+      teamId: number;
+    }
+    interface Subscription_TeamGameDay_SUB_POST_RES {
+      ok: boolean;
+      subscriptionId: number;
+    }
+
+    //POST /subscriptions/game-update/subscribe
+    interface Subscription_GameUpdate_SUB_POST_REQ {
+      gameId: number;
+    }
+    interface Subscription_GameUpdate_SUB_POST_RES {
+      ok: boolean;
+      subscriptionId: number;
+    }
+
+    //POST /subscriptions/{subscriptionId}/unsubscribe
+    interface Subscription_Id_UNSUB_POST_REQ {
+      //empty body
+    }
+    interface Subscription_Id_UNSUB_POST_RES {
+      ok: boolean;
+    }
+
+    //GET /subscriptions/team-game-day
+    interface Subscription_TeamGameDay_RES {
+      ok: boolean;
+      subscriptions: {subscriptionId: number, teamId: number}[];
+    }
+    //GET /subscriptions/game-update
+    interface Subscription_GameUpdate_RES {
+      ok: boolean;
+      subscriptions: {subscriptionId: number, gameId: number}[];
     }
 
     //All the responses that could not pass because of business rule

@@ -30,6 +30,9 @@ const Q_GAME = (gameId: number) => `SELECT * FROM GAME WHERE id=${gameId};`;
 const Q_GAME_HISTORY_OF_GAME = (gameId: number) => `SELECT * FROM GAME_HISTORY WHERE gameId=${gameId} ORDER BY timestamp DESC;`;
 const Q_ALL_ARBITER_EXPORT = 'SELECT * FROM ARBITER_EXPORT ORDER BY timestamp DESC;';
 const Q_ARBITER_EXPORT = (id: number) => `SELECT * FROM ARBITER_EXPORT WHERE id=${id};`;
+const Q_EMAIL_SUBSCRIPTIONS = `SELECT * FROM EMAIL_SUBSCRIPTION`;
+const Q_EMAIL_SUBSCRIPTION_OF_SUBSCRIBER = (subscriberId: number) => `SELECT * FROM EMAIL_SUBSCRIPTION WHERE subscriberId=${subscriberId};`;
+const Q_EMAIL_SUBSCRIPTION = (id: number) => `SELECT * FROM EMAIL_SUBSCRIPTION WHERE id=${id};`;
 
 export default class Repository {
   private users: User[] = []
@@ -185,6 +188,10 @@ export default class Repository {
 
   async getTeams() {
     return [...this.teams];
+  }
+
+  async getTeam(teamId: number) {
+    return this.teams.find(t => t.id === teamId) || null;
   }
 
   async getDistricts() {
@@ -430,6 +437,48 @@ export default class Repository {
 
     await promisifiedQuery(query);
   }
+
+  async addEmailSubscription(o: {
+    subscriberId: number;
+    subscriptionType: string;
+    teamId?: number | null;
+    gameId?: number | null;
+  }) {
+    const query = `
+      INSERT INTO EMAIL_SUBSCRIPTION (subscriberId, subscriptionType, teamId, gameId) VALUES
+      ${sqlValues([o.subscriberId, o.subscriptionType, o.teamId, o.gameId])}`;
+
+    const result: InsertQueryResult = await promisifiedQuery(query);
+    assert.ok(result.insertId);
+    return result.insertId!;
+  }
+
+  async removeEmailSubscription(subscriptionId) {
+    const doesSubscriptionExist = !!(await this.getEmailSubscription(subscriptionId));
+    assert.ok(doesSubscriptionExist, 'Subscription not found');
+
+    const query = `DELETE FROM EMAIL_SUBSCRIPTION WHERE id=${subscriptionId}`;
+
+    await promisifiedQuery(query);
+  }
+
+  async getEmailSubscriptions() {
+    const rows = await promisifiedQuery(Q_EMAIL_SUBSCRIPTIONS);
+    return rows.map(rowToEmailSubscription) as EmailSubscription[];
+  }
+
+  async getEmailSubscription(subscriptionId: number) {
+    const rows = await promisifiedQuery(Q_EMAIL_SUBSCRIPTION(subscriptionId));
+    if (!rows.length) return null;
+
+    const row = rows[0];
+    return rowToEmailSubscription(row);
+  }
+
+  async getEmailSubscriptionsOfSubscriber(subscriberId: number) {
+    const rows = await promisifiedQuery(Q_EMAIL_SUBSCRIPTION_OF_SUBSCRIBER(subscriberId));
+    return rows.map(rowToEmailSubscription) as EmailSubscription[];
+  }
 }
 
 function sqlValues(array: Array<string | boolean | null | number | undefined>) { 
@@ -455,6 +504,16 @@ function rowToArbiterExport(row: any) {
     note: row.note,
     creatorId: row.creatorId
   });
+}
+
+function rowToEmailSubscription(row: any) {
+  return {
+    id: row.id,
+    subscriberId: row.subscriberId,
+    subscriptionType: row.subscriptionType,
+    teamId: row.teamId,
+    gameId: row.gameId
+  } as EmailSubscription
 }
 
 type InsertQueryResult = {

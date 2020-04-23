@@ -10,6 +10,7 @@ import {
   SchoolController,
   TeamController,
   UserController,
+  SubscriptionController,
   ArbiterExportController } from './controllers';
 import Repository from './repository';
 
@@ -59,6 +60,7 @@ connectMysql(async (err, mysql) => {
   const teamController = new TeamController(repository);
   const schoolController = new SchoolController(repository);
   const arbiterExportController = new ArbiterExportController(repository);
+  const subscriptionController = new SubscriptionController(repository);
 
   const authWrapper = authWrapperFactory(repository);
 
@@ -101,6 +103,12 @@ connectMysql(async (err, mysql) => {
   app.post('/api/arbiter-export', W(arbiterExportController.createExport));
   app.post('/api/arbiter-export/:id/note', W(arbiterExportController.editExportNote));
 
+  app.post('/api/subscriptions/team-game-day/subscribe', W(subscriptionController.subscribeTeamGameDay));
+  app.post('/api/subscriptions/game-update/subscribe', W(subscriptionController.subscribeGameUpdate));
+  app.post('/api/subscriptions/:subscriptionId/unsubscribe', W(subscriptionController.unsubscribe));
+  app.get('/api/subscriptions/team-game-day', W(subscriptionController.getTeamGameDaySubscriptions));
+  app.get('/api/subscriptions/game-update', W(subscriptionController.getGameUpdateSubscriptions));
+  
   app.listen(PORT, () => {
     console.log(`server listening at port ${PORT}`);
   });
