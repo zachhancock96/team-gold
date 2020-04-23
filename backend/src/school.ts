@@ -6,7 +6,8 @@ import Team from './team';
 type constructorArgs = { 
   id: number; 
   name: string; 
-  isLhsaa: boolean; 
+  isLhsaa: boolean;
+  schoolAdminId: number | null;
 };
 
 export default class School {
@@ -44,6 +45,10 @@ export default class School {
 
   get name() {
     return this.o.name;
+  }
+
+  get schoolAdminId() {
+    return this.o.schoolAdminId;
   }
 
   get id() {

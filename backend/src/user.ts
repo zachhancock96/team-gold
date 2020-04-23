@@ -1,6 +1,6 @@
-import { Roles } from './enums';
+import { Roles, UserStatus } from './enums';
 
-type constructorArgs = { id: number, name: string, email: string, password: string | null, role: Roles };
+type constructorArgs = { id: number, name: string, email: string, password: string | null, role: Roles, schoolId: number | null, status: UserStatus };
 
 export default class User {
   private o: constructorArgs;
@@ -29,12 +29,22 @@ export default class User {
     return this.o.role;
   }
 
+  get schoolId() {
+    return this.o.schoolId;
+  }
+
+  get status() {
+    return this.o.status;
+  }
+
   toString() {
     return `
     User: 
     {
       name: ${this.name},
-      email: ${this.email}
+      email: ${this.email},
+      status: ${this.status},
+      schoolId: ${this.schoolId}
     }`;
   }
 
@@ -47,7 +57,9 @@ export default class User {
       id: this.id,
       email: this.email,
       name: this.name,
-      role: this.role
+      role: this.role,
+      status: this.status,
+      schoolId: this.schoolId
     };
   }
 }

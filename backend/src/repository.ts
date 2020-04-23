@@ -6,7 +6,7 @@ import Team from './team';
 import District from './district';
 import ArbiterExport from './arbiter_export';
 import Game from './game';
-import { GameStatus, TeamKind } from './enums';
+import { GameStatus, TeamKind, UserStatus, Roles } from './enums';
 import * as assert from 'assert';
 
 let connection: mysql.Connection;
@@ -24,7 +24,6 @@ const Q_ALL_USER = 'SELECT * FROM USER;';
 const Q_ALL_DISTRICT = 'SELECT * FROM DISTRICT;';
 const Q_ALL_SCHOOL = 'SELECT * FROM SCHOOL;';
 const Q_ALL_TEAM = 'SELECT * FROM TEAM;';
-const Q_ALL_SCHOOL_REP = 'SELECT * FROM SCHOOL_REP;';
 const Q_ALL_SCHOOL_REP_TEAM_ASSN = 'SELECT * FROM SCHOOL_REP_TEAM_ASSN;';
 const Q_ALL_GAME = 'SELECT * FROM GAME;';
 const Q_GAME = (gameId: number) => `SELECT * FROM GAME WHERE id=${gameId};`;
@@ -52,7 +51,6 @@ export default class Repository {
     const districtsR = await promisifiedQuery(Q_ALL_DISTRICT);
     const schoolsR = await promisifiedQuery(Q_ALL_SCHOOL);
     const teamsR  = await promisifiedQuery(Q_ALL_TEAM);
-    const schoolRepsR = await promisifiedQuery(Q_ALL_SCHOOL_REP);
     const schoolRepTeamAssnsR = await promisifiedQuery(Q_ALL_SCHOOL_REP_TEAM_ASSN);
 
     //1 init users
@@ -61,34 +59,38 @@ export default class Repository {
       name: row.name,
       email: row.email,
       password: row.password,
-      role: row.role
+      role: row.role,
+      status: row.status,
+      schoolId: row.schoolId || null
     }));
 
-    //2.a init district
+    const acceptedUsers = users.filter(u => u.status === UserStatus.ACCEPTED);
+
+    //2 init district
     const districts: District[] = districtsR.map(row => new District({
       id: row.id,
       name: row.name
     }));
 
-    //2.b assignors to district
+    //3 assignors to district
     districtsR.forEach(row => {
       const assignorId: number | null = row.assignorId;
       if (assignorId) {
-        const assignor = users.find(u => u.id === assignorId) || null;
+        const assignor = acceptedUsers.find(u => u.id === assignorId) || null;
         const district = districts.find(d => d.id === row.id);
         district!.assignor = assignor;
       }
     });
 
-    //3.a init schools
+    //4 init schools
     const schools: School[] = schoolsR.map(row => new School({
       id: row.id,
       name: row.name,
-      isLhsaa: !!row.isLhsaa
+      isLhsaa: !!row.isLhsaa,
+      schoolAdminId: row.schoolAdminId || null
     }));
 
-    //2.c schools to district
-    //3.b district to school
+    //5 schools to district and district to school 
     {
       const districtToSchoolMap: { [districtId: number]: School[]} = {};
       
@@ -110,62 +112,35 @@ export default class Repository {
       });
     }
 
-    //3.c school reps to school
+    //6 school reps to school and school admin to school
     {
-      const schoolToSchoolRepMap: { [schoolId: number]: User[] } = {};
+      schools.forEach(school => {
+        const schoolReps = acceptedUsers.filter(u => u.schoolId === school.id && u.role === Roles.SCHOOL_REP);
+        school.schoolReps = schoolReps;
 
-      schoolRepsR.forEach(repRow => {
-        const schoolRepId: number = repRow.userId;
-        const schoolId: number = repRow.schoolId;
-        
-        const rep = users.find(u => u.id === schoolRepId);
-        schoolToSchoolRepMap[schoolId] = schoolToSchoolRepMap[schoolId] || [];
-        schoolToSchoolRepMap[schoolId].push(rep!);        
-      });
-
-      Object.keys(schoolToSchoolRepMap).forEach(k => {
-        const schoolId = Number(k);
-        const school = schools.find(s => s.id === schoolId);
-        const schoolReps = schoolToSchoolRepMap[schoolId];
-        school!.schoolReps = schoolReps;
+        const schoolAdmin = school.schoolAdminId? acceptedUsers.find(u => u.id === school.schoolAdminId)!: null;
+        school.schoolAdmin = schoolAdmin;
       });
     }
 
-    //3.d school admin to school
-    {
-      schoolsR.forEach(row => {
-        const schoolAdminId: number | null = row.schoolAdminId;
-        if (schoolAdminId) {
-          const schoolAdmin = users.find(u => u.id === schoolAdminId) || null;
-          const school = schools.find(s => s.id === row.id);
-          school!.schoolAdmin = schoolAdmin;
-        }
-      })
-    }
-
-    //4.a init teams
+    //7 init teams
     const teams: Team[] = teamsR.map(row => new Team({
       id: row.id,
       name: row.name,
       teamKind: row.teamKind,
-      isLhsaa: !!row.isLhsaa
+      isLhsaa: !!row.isLhsaa,
+      schoolId: row.schoolId
     }));
 
-    //4.b schoolReps to team
+    //8 schoolReps to team
     {
       const teamToSchoolRepMap: { [teamId: number]: User[] } = {};
       
       schoolRepTeamAssnsR.forEach(assnRow => {
         const teamId: number = assnRow.teamId;
-        const schoolRepId: number = (function() {
-          //this points to column in schoolRep table
-          const schoolRepId: number = assnRow.schoolRepId;
+        const schoolRepId: number = assnRow.schoolRepId;
+        const schoolRep = acceptedUsers.find(u => u.id === schoolRepId);
 
-          //returning userId field of that row
-          return schoolRepsR.find(r => r.id === schoolRepId).userId;
-        })();
-
-        const schoolRep = users.find(u => u.id === schoolRepId);
         teamToSchoolRepMap[teamId] = teamToSchoolRepMap[teamId] || [];
         teamToSchoolRepMap[teamId].push(schoolRep!);
       });
@@ -177,24 +152,19 @@ export default class Repository {
       })
     }
 
-    //3.d teams to school
-    //4.c school to team
+    //9 teams to school and school to team
     {
-      const schoolToTeamMap: { [schoolId: number]: Team[] } = {};
-
-      teamsR.forEach(teamRow => {
-        const teamId: number = teamRow.id;
-        const schoolId: number = teamRow.schoolId;
-
-        const team = teams.find(t => t.id === teamId);
-        schoolToTeamMap[schoolId] = schoolToTeamMap[schoolId] || [];
-        schoolToTeamMap[schoolId].push(team!);
-      });
+      const schoolToTeamMap: { [schoolId: number]: Team[] } = teams.reduce((acc, team) => {
+        acc[team.schoolId] = acc[team.schoolId] || [];
+        acc[team.schoolId].push(team);
+        return acc;
+      }, {});
 
       Object.keys(schoolToTeamMap).forEach(k => {
         const schoolId = Number(k);
         const school = schools.find(s => s.id === schoolId);
         school!.teams = schoolToTeamMap[schoolId];
+        teams.forEach(t => t.school = school!);
       });
     }
 

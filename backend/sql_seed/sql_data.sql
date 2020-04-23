@@ -1,33 +1,27 @@
 DELETE FROM GAME_HISTORY;
 DELETE FROM GAME;
 DELETE FROM SCHOOL_REP_TEAM_ASSN;
-DELETE FROM SCHOOL_REP;
 DELETE FROM TEAM;
 DELETE FROM SCHOOL;
 DELETE FROM DISTRICT;
 DELETE FROM USER;
 
-INSERT INTO USER (id, email, password, name, role) VALUES
-  (1, 'admin@test.net', 'password', 'Admin', 'admin'),
-  (2, 'assignor@test.net', 'password', 'Assignor', 'assignor'),
-  (3, 'schoolA_admin@test.net', 'password', 'School A Admin', 'school_admin'),
-  (4, 'schoolA_rep1@test.net', 'password', 'School A Rep 1', 'school_rep'),
-  (5, 'schoolA_rep2@test.net', 'password', 'School A Rep 2', 'school_rep'),
-  (6, 'schoolB_rep1@test.net', 'password', 'School B Rep 1', 'school_rep');
-
-INSERT INTO DISTRICT (id, name, assignorId) VALUES
-  (1, 'districtA', 2);
-
 INSERT INTO SCHOOL (id, name, isLhsaa, schoolAdminId, districtId) VALUES
-  (1, 'schoolA', 1, 3, 1),
-  (2, 'schoolB', 1, null, 1),
+  (1, 'schoolA', 1, null, null),
+  (2, 'schoolB', 1, null, null),
   (3, 'schoolC', 0, null, null),
   (4, 'schoolD', 0, null, null);
 
-INSERT INTO SCHOOL_REP (id, userId, schoolId) VALUES
-  (1, 4, 1),
-  (2, 5, 1),
-  (3, 6, 2);
+INSERT INTO USER (id, email, password, name, role, status, schoolId) VALUES
+  (1, 'admin@test.net', 'password', 'Admin', 'admin', 'accepted', null),
+  (2, 'assignor@test.net', 'password', 'Assignor', 'assignor', 'accepted', null),
+  (3, 'schoolA_admin@test.net', 'password', 'School A Admin', 'school_admin', 'accepted', 1),
+  (4, 'schoolA_rep1@test.net', 'password', 'School A Rep 1', 'school_rep', 'accepted', 1),
+  (5, 'schoolA_rep2@test.net', 'password', 'School A Rep 2', 'school_rep', 'accepted', 1),
+  (6, 'schoolB_rep1@test.net', 'password', 'School B Rep 1', 'school_rep', 'accepted', 2);
+
+INSERT INTO DISTRICT (id, name, assignorId) VALUES
+  (1, 'districtA', 2);
 
 INSERT INTO TEAM (id, name, isLhsaa, teamKind, schoolId) VALUES
   (1, 'schoolA VB',  1, 'vb', 1),
@@ -41,11 +35,11 @@ INSERT INTO TEAM (id, name, isLhsaa, teamKind, schoolId) VALUES
 -- school rep 2: team vb of schoolA
 -- school rep 3: both teams of schoolB
 INSERT INTO SCHOOL_REP_TEAM_ASSN (id, schoolRepId, teamId) VALUES
-  (1, 1, 1),
-  (2, 1, 2),
-  (3, 2, 1),
-  (4, 3, 3),
-  (5, 3, 4);
+  (1, 4, 1),
+  (2, 4, 2),
+  (3, 5, 1),
+  (4, 6, 3),
+  (5, 6, 4);
 
 INSERT INTO GAME (id, homeTeamId, awayTeamId, start, location, status, rejectionNote) VALUES
   (1, 1, 3, '2020-03-15T18:00:00-05:00', 'WOHS', 'accepted', null),
@@ -56,3 +50,6 @@ INSERT INTO GAME_HISTORY (id, gameId, start, location, status, timestamp, update
   (1, 1, '2020-03-15T18:00:00-05:00', 'WOHS', 'accepted', '2020-03-16T18:00:00-05:00', 'create', 2, 'assignor'),
   (2, 2, '2020-03-16T18:00:00-05:00', 'WMHS', 'accepted', '2020-03-16T18:00:00-05:00', 'create', 2, 'assignor'),
   (3, 2, '2020-03-16T18:00:00-05:00', 'WMHS', 'accepted', '2020-03-16T18:00:00-05:00', 'create', 3, 'home');
+
+UPDATE SCHOOL SET schoolAdminId=3,districtId=1 WHERE id=1;
+UPDATE SCHOOL SET districtId=1 WHERE id=2;

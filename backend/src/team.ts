@@ -7,6 +7,7 @@ type constructorArgs = {
   name: string; 
   teamKind: TeamKind;
   isLhsaa: boolean;
+  schoolId: number;
 };
 
 export default class Team {
@@ -47,6 +48,10 @@ export default class Team {
 
   get school() {
     return this.school_!;
+  }
+
+  get schoolId() {
+    return this.o.schoolId;
   }
 
   get isLhsaa() {

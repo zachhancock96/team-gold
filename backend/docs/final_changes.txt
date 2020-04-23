@@ -1,0 +1,26 @@
+POST /subscriptions/team-game-day/subscribe
+body: { teamId: number }
+
+POST /subscriptions/game-update/subscribe
+body: { gameId: number }
+
+POST /subscriptions/1/unsubscribe
+
+GET /subscriptions/team-game-day
+response: Array<{subscriptionId: number, teamId: number}>
+
+GET /subscriptions/game-update
+response: Array<{subscriptionId: number, gameId: number}>
+
+GET /schools/1/school-admins
+GET /schools/1/school-reps
+
+POST /schools/1/school-reps/1/accept
+POST /schools/1/school-reps/1/reject
+POST /schools/1/school-admins/1/remove
+
+POST /schools/1/school-admins/1/accept
+POST /schools/1/school-admins/1/reject
+POST /schools/1/school-reps/1/remove
+POST /schools/1/school-reps/1/edit
+

@@ -1,4 +1,4 @@
-import { Privileges as P, Roles, GameStatus, TeamKind } from '../enums';
+import {  Roles, GameStatus, TeamKind, UserStatus } from '../enums';
 import User from '../user';
 
 declare global {
@@ -53,6 +53,8 @@ declare global {
       name: string;
       email: string;
       role: string;
+      status: UserStatus;
+      schoolId?: number | null;
     }
   
     interface Game {
@@ -136,13 +138,6 @@ declare global {
       note: string | null;
     }
   
-    interface Privileges {
-      game: P.GamePrivilege[];
-      school: P.SchoolPrivilege[];
-      district: P.DistrictPrivilege[];
-      team: P.TeamPrivilege[];
-    }
-
     interface Game_ADD {
       homeTeamId: number,
       awayTeamId: number,

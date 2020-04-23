@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Repository from '../repository';
-import { Privileges as P,  Roles } from '../enums';
+import {  Roles } from '../enums';
 import Team from '../team';
 import User from '../user';
 
