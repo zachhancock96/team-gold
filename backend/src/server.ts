@@ -3,10 +3,11 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 import mysql from 'mysql';
 import bodyParser from 'body-parser';
+import { UserStatus } from './enums';
 
 import {  
   GameController,
-  LoginController,
+  GatewayController,
   SchoolController,
   TeamController,
   UserController,
@@ -54,7 +55,7 @@ connectMysql(async (err, mysql) => {
   await repository.init();
   console.log('finish init repository');
   
-  const loginController = new LoginController(repository);
+  const gatewayController = new GatewayController(repository);
   const userController = new UserController(repository);
   const gameController = new GameController(repository);
   const teamController = new TeamController(repository);
@@ -68,7 +69,8 @@ connectMysql(async (err, mysql) => {
   const W = (reqHandler: (req: Request, res: Response) => Promise<any>) => errorWrapper(authWrapper(reqHandler));
   
   //login controller
-  app.post('/api/login', errorWrapper(loginController.login));
+  app.post('/api/login', errorWrapper(gatewayController.login));
+  app.post('/api/signup', errorWrapper(gatewayController.signup));
 
   //user controller
   app.get('/api/users', W(userController.getAllUsers));
@@ -94,7 +96,17 @@ connectMysql(async (err, mysql) => {
   //school controller
   app.get('/api/schools', W(schoolController.getAllSchools));
   app.get('/api/schools/:id', W(schoolController.getSchool));
-  app.post('/api/schools/non-lhsaa', W(schoolController.addNonLhsaaSchool));
+  app.post('/api/schools/non-lhsaa', W(schoolController.addNonLhsaaSchool)); 
+  app.get('/api/schools/:schoolId/school-admins', W(schoolController.getSchoolAdmins));
+  app.get('/api/schools/:schoolId/school-reps', W(schoolController.getSchoolReps));
+  app.post('/api/schools/:schoolId/school-reps/:userId/accept', W(schoolController.acceptSchoolRep));
+  app.post('/api/schools/:schoolId/school-reps/:userId/reject', W(schoolController.rejectSchoolRep));
+  app.post('/api/schools/:schoolId/school-reps/:userId/remove', W(schoolController.removeSchoolRep));
+  app.post('/api/schools/:schoolId/school-reps/:userId/edit', W(schoolController.editSchoolRep));
+  app.post('/api/schools/:schoolId/school-admins/:userId/accept', W(schoolController.acceptSchoolAdmin));
+  app.post('/api/schools/:schoolId/school-admins/:userId/reject', W(schoolController.rejectSchoolAdmin));
+  app.post('/api/schools/:schoolId/school-admins/:userId/remove', W(schoolController.removeSchoolAdmin));
+
 
   //arbiter-export controller
   //TODO: scope this to just the assignor and admins
@@ -146,7 +158,7 @@ function authWrapperFactory(repository: Repository) {
       
       const users = await repository.getUsers();
       const user = users.find(u => u.id === userId);
-      if (!user) {
+      if (!user || user.status !== UserStatus.ACCEPTED) {
         return res.status(401).send();
       }
 

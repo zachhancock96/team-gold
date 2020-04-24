@@ -25,6 +25,7 @@ const Q_ALL_DISTRICT = 'SELECT * FROM DISTRICT;';
 const Q_ALL_SCHOOL = 'SELECT * FROM SCHOOL;';
 const Q_ALL_TEAM = 'SELECT * FROM TEAM;';
 const Q_ALL_SCHOOL_REP_TEAM_ASSN = 'SELECT * FROM SCHOOL_REP_TEAM_ASSN;';
+const Q_SCHOOL_REP_TEAM_ASSN_OF_REP = (id: number) => `SELECT * FROM SCHOOL_REP_TEAM_ASSN WHERE schoolRepId=${id};`;
 const Q_ALL_GAME = 'SELECT * FROM GAME;';
 const Q_GAME = (gameId: number) => `SELECT * FROM GAME WHERE id=${gameId};`;
 const Q_GAME_HISTORY_OF_GAME = (gameId: number) => `SELECT * FROM GAME_HISTORY WHERE gameId=${gameId} ORDER BY timestamp DESC;`;
@@ -144,8 +145,10 @@ export default class Repository {
         const schoolRepId: number = assnRow.schoolRepId;
         const schoolRep = acceptedUsers.find(u => u.id === schoolRepId);
 
-        teamToSchoolRepMap[teamId] = teamToSchoolRepMap[teamId] || [];
-        teamToSchoolRepMap[teamId].push(schoolRep!);
+        if (schoolRep) {
+          teamToSchoolRepMap[teamId] = teamToSchoolRepMap[teamId] || [];
+          teamToSchoolRepMap[teamId].push(schoolRep!);
+        }
       });
 
       Object.keys(teamToSchoolRepMap).forEach(k => {
@@ -182,12 +185,79 @@ export default class Repository {
     return [...this.users];
   }
 
+  async getUser(userId: number) {
+    return this.users.find(u => u.id === userId) || null;
+  }
+
+  async addUser(o: {
+    name: string;
+    email: string;
+    password: string;
+    role: Roles;
+    status: UserStatus;
+    schoolId: number | null;
+  }) {
+    const query = `
+      INSERT INTO USER (name, email, password, role, status, schoolId) VALUES
+      ${sqlValues([o.name, o.email, o.password, o.role, o.status, o.schoolId])}`;
+
+    const result: InsertQueryResult = await promisifiedQuery(query);
+    assert.ok(result.insertId);
+  
+    await this.refresh();
+  
+    return result.insertId!;
+  }
+
+  async updateUser(userId: number, status: UserStatus) {
+    const u = this.users.find(u => u.id === userId);
+    assert.ok(u, 'User not found');
+
+    if (u!.status === status) return;
+
+    const query = `
+      UPDATE USER
+      SET status=${sqlValue(status)}
+      WHERE id=${userId};`;
+
+    await promisifiedQuery(query);
+    await this.refresh();
+  }
+
   async getSchools() {
     return [...this.schools];
   }
 
+  async getSchool(schoolId: number) {
+    return this.schools.find(s => s.id === schoolId) || null;
+  }
+
   async getTeams() {
     return [...this.teams];
+  }
+
+  //replaces current team associations for schoolRepId and replaces with given teams
+  async updateSchoolRepTeamAssociations(schoolRepId: number, teamIds: number[]) {
+    const rows = await promisifiedQuery(Q_SCHOOL_REP_TEAM_ASSN_OF_REP(schoolRepId));
+
+    //delete existing associations
+    if (rows.length) {
+      const ids = rows.map(row => row.id);
+      const query = `
+        DELETE FROM SCHOOL_REP_TEAM_ASSN
+        WHERE id IN ${sqlValues(ids)};`;
+
+      await promisifiedQuery(query);
+    }
+
+    //make new associations
+    const queries = teamIds.map(teamId => `
+      INSERT INTO SCHOOL_REP_TEAM_ASSN (schoolRepId, teamId)
+      VALUES ${sqlValues([schoolRepId, teamId])};`);
+
+    await Promise.all(queries.map(q => promisifiedQuery(q)));
+
+    await this.refresh();
   }
 
   async getTeam(teamId: number) {
@@ -265,6 +335,23 @@ export default class Repository {
     await this.refresh();
 
     return result.insertId!;
+  }
+
+  async updateSchool(schoolId: number, schoolAdminId: number | null) {
+    const school = this.schools.find(s => s.id === schoolId);
+    assert.ok(school, 'School not found');
+
+    if ( (!school!.schoolAdminId && !schoolAdminId) 
+      || (school!.schoolAdminId === schoolAdminId) ) return;
+
+    const query = `
+      UPDATE SCHOOL
+      SET schoolAdminId=${sqlValue(schoolAdminId)}
+      WHERE id=${schoolId};`;
+
+     await promisifiedQuery(query);
+
+     await this.refresh();
   }
 
   async addTeam(o: {
@@ -372,8 +459,7 @@ export default class Repository {
       UPDATE GAME 
       SET start=${sqlValue(start)},location=${sqlValue(g.location)},
         status=${sqlValue(g.status)},rejectionNote=${sqlValue(g.rejectionNote)}
-      WHERE id=${g.id}
-    `;
+      WHERE id=${g.id};`;
 
     await promisifiedQuery(query);
   }

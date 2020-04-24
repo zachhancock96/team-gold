@@ -17,10 +17,9 @@ GET /schools/1/school-reps
 
 POST /schools/1/school-reps/1/accept
 POST /schools/1/school-reps/1/reject
-POST /schools/1/school-admins/1/remove
-
-POST /schools/1/school-admins/1/accept
-POST /schools/1/school-admins/1/reject
 POST /schools/1/school-reps/1/remove
 POST /schools/1/school-reps/1/edit
 
+POST /schools/1/school-admins/1/accept
+POST /schools/1/school-admins/1/reject
+POST /schools/1/school-admins/1/remove

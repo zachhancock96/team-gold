@@ -172,6 +172,16 @@ declare global {
       ok: true;
       sessionId: number
     }
+    //POST /signup
+    interface Signup_POST_REQ {
+      email: string;
+      password: string;
+      schoolId: number;
+      role: Roles;
+    }
+    interface Signup_POST_RES {
+      ok: true;
+    }
 
     //GET /users
     interface Users_GET_RES {
@@ -272,10 +282,51 @@ declare global {
       schoolId: number;
     }
 
-    //GET /users/:userId/privileges/:privileges/schools
-    interface Users_UserId_Privileges_Schools_GET_RES {
-      ok: true;
-      schools: School[]
+    //GET /schools/:schoolId/school-admins
+    interface Schools_Id_SchoolAdmin_GET_RES {
+      ok: true,
+      schoolAdmins: User[];
+    }
+    //GET /schools/:schoolId/school-reps
+    interface Schools_Id_SchoolRep_GET_RES {
+      ok: true,
+      schoolReps: User[];
+    }
+
+    //POST /schools/:schoolId/school-reps/:userId/accept
+    interface Accept_SchoolRep_POST_REQ {
+      //empty body
+      //{ok: true} response if success
+    }
+    //POST /schools/:schoolId/school-reps/:userId/reject
+    interface Reject_SchoolRep_POST_REQ {
+      //empty body
+      //{ok: true} response if success
+    }
+    //POST /schools/:schoolId/school-reps/:userId/remove
+    interface Remove_SchoolRep_POST_REQ {
+      //empty body
+      //{ok: true} response if success
+    }
+    //POST /schools/:schoolId/school-reps/:userId/edit
+    interface Edit_SchoolRep_POST_REQ {
+      teamIds: number[]
+      //{ok: true} response if success
+    }
+    //POST /schools/:schoolId/school-admins/:userId/accept
+    interface Accept_SchoolAdmin_POST_REQ {
+      //empty body
+      //{ok: true} response if success
+    }
+    //POST /schools/:schoolId/school-admins/:userId/reject
+    interface Reject_SchoolAdmin_POST_REQ {
+      //empty body
+      //{ok: true} response if success
+    }
+    //POST /schools/:schoolId/school-admins/:userId/remove
+    interface Remove_SchoolAdmin_POST_REQ {
+      //empty body
+      //{ok: true} response if success
     }
 
     //GET /arbiter-export
