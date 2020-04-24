@@ -12,7 +12,7 @@ import {
   TeamController,
   UserController,
   SubscriptionController,
-  ArbiterExportController } from './controllers';
+  CsvExportController } from './controllers';
 import Repository from './repository';
 
 const PORT = 4000;
@@ -60,7 +60,7 @@ connectMysql(async (err, mysql) => {
   const gameController = new GameController(repository);
   const teamController = new TeamController(repository);
   const schoolController = new SchoolController(repository);
-  const arbiterExportController = new ArbiterExportController(repository);
+  const csvExportController = new CsvExportController(repository);
   const subscriptionController = new SubscriptionController(repository);
 
   const authWrapper = authWrapperFactory(repository);
@@ -108,12 +108,12 @@ connectMysql(async (err, mysql) => {
   app.post('/api/schools/:schoolId/school-admins/:userId/remove', W(schoolController.removeSchoolAdmin));
 
 
-  //arbiter-export controller
-  //TODO: scope this to just the assignor and admins
-  app.get('/api/arbiter-export', W(arbiterExportController.getExports));
-  app.get('/api/arbiter-export/:id', W(arbiterExportController.getExport));
-  app.post('/api/arbiter-export', W(arbiterExportController.createExport));
-  app.post('/api/arbiter-export/:id/note', W(arbiterExportController.editExportNote));
+  //csv-export
+  app.get('/api/csv-export', W(csvExportController.getExports));
+  app.get('/api/csv-export/:id', W(csvExportController.getExport));
+  app.post('/api/csv-export', W(csvExportController.createExport));
+  app.post('/api/csv-export/:id/remove', W(csvExportController.removeExport));
+  app.post('/api/csv-export/:id/note', W(csvExportController.editExportNote));
 
   app.post('/api/subscriptions/team-game-day/subscribe', W(subscriptionController.subscribeTeamGameDay));
   app.post('/api/subscriptions/game-update/subscribe', W(subscriptionController.subscribeGameUpdate));

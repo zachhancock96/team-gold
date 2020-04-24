@@ -94,14 +94,11 @@ CREATE TABLE GAME_HISTORY (
   FOREIGN KEY(updaterId) REFERENCES USER(id)
 );
 
-CREATE TABLE ARBITER_EXPORT (
+CREATE TABLE CSV_EXPORT (
   id int NOT NULL AUTO_INCREMENT,
   timestamp DateTime NOT NULL,
   filename varchar(255) NOT NULL,
   gameCount int NOT NULL,
-  schoolIdsFilter varchar(255) NULL,
-  startFilter DateTime NULL,
-  endFilter DateTime NULL,
   note text NULL,
   creatorId int NOT NULL,
 

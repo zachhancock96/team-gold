@@ -55,6 +55,12 @@ export default class Game {
     return this.o.rejectionNote || null;
   }
 
+  isPending() {
+    const s = this.status;
+    return s === GameStatus.PENDING_ASSIGNOR || s === GameStatus.PENDING_AWAY_TEAM
+      || s === GameStatus.PENDING_HOME_TEAM;
+  }
+
   equals(g: Game) {
     return this.id === g.id;
   }

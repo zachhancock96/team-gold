@@ -1,11 +1,11 @@
 import moment, { DATETIME_TO_API_FORMAT } from './moment';
 
-export const ARBITER_EXPORT_SAVE_DIR = (() => {
-  const x = process.env.ARBITER_EXPORT_SAVE_DIR || '/';
+export const CSV_EXPORT_SAVE_DIR = (() => {
+  const x = process.env.CSV_EXPORT_SAVE_DIR || '/';
   if (x == '/') {
-    console.warn(`ARBITER_EXPORT_SAVE_DIR env variable is not provided.`);
+    console.warn(`CSV_EXPORT_SAVE_DIR env variable is not provided.`);
   } else {
-    console.log(`Saving arbiter exports at ${x}`);
+    console.log(`Saving csv exports at ${x}`);
   }
   return x;
 })();
@@ -15,23 +15,15 @@ type constructorArgs = {
   timestamp: moment.Moment | string;
   filename: string;
   gameCount: number;
-  schoolIdsFilter: string | null;
-  startFilter: moment.Moment | string | null;
-  endFilter: moment.Moment | string | null;
   note: string | null;
   creatorId: number;
 }
 
-export default class ArbiterExport {
+export default class CsvExport {
   private _id: number;
   private _timestamp: moment.Moment;
   private _filename: string;
   private _gameCount: number;
-  private _hasSchoolIdsFilter: boolean;
-  private _hasStartEndFilter: boolean;
-  private _schoolIdsFilter: number[] | null;
-  private _startFilter: moment.Moment | null;
-  private _endFilter: moment.Moment | null;
   private _note: string | null;
   private _creatorId: number;
 
@@ -42,19 +34,6 @@ export default class ArbiterExport {
     this._gameCount = o.gameCount;
     this._note = o.note;
     this._creatorId = o.creatorId;
-
-    this._schoolIdsFilter = (o.schoolIdsFilter && o.schoolIdsFilter.length > 0)
-      ? o.schoolIdsFilter.split(',').map(s => parseInt(s))
-      : null;
-    this._hasSchoolIdsFilter = !!this._schoolIdsFilter;
-
-    this._hasStartEndFilter = !!(o.startFilter && o.endFilter);
-    this._startFilter = this._hasStartEndFilter
-      ? moment(o.startFilter!)
-      : null;
-    this._endFilter = this._hasStartEndFilter
-      ? moment(o.endFilter!)
-      : null;    
   }
 
   get id() {
@@ -77,18 +56,13 @@ export default class ArbiterExport {
     return this._creatorId;
   }
 
-  toApi(): ApiSchema.ArbiterExport {
+  toApi(): ApiSchema.CsvExport {
     return {
       id: this._id,
       timestamp: dateTimeToApi(this._timestamp)!,
       downloadUrl: toDownloadUrl(this._filename),
       filename: this._filename,
       gameCount: this._gameCount,
-      hasSchoolIdsFilter: this._hasSchoolIdsFilter,
-      hasStartEndFilter: this._hasStartEndFilter,
-      schoolIdsFilter: this._schoolIdsFilter,
-      startFilter: dateTimeToApi(this._startFilter),
-      endFilter: dateTimeToApi(this._endFilter),
       note: this._note
     };
   }
@@ -100,7 +74,7 @@ function dateTimeToApi(start: moment.Moment | string | null) {
 }
 
 const toDownloadUrl = (() => {
-  const prefix = ARBITER_EXPORT_SAVE_DIR;
+  const prefix = CSV_EXPORT_SAVE_DIR;
   
   return filename => prefix.endsWith('/')
       ? `${prefix}${filename}`

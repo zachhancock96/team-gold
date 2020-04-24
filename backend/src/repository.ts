@@ -4,7 +4,7 @@ import User from './user';
 import School from './school';
 import Team from './team';
 import District from './district';
-import ArbiterExport from './arbiter_export';
+import CsvExport from './csv_export';
 import Game from './game';
 import { GameStatus, TeamKind, UserStatus, Roles } from './enums';
 import * as assert from 'assert';
@@ -29,8 +29,8 @@ const Q_SCHOOL_REP_TEAM_ASSN_OF_REP = (id: number) => `SELECT * FROM SCHOOL_REP_
 const Q_ALL_GAME = 'SELECT * FROM GAME;';
 const Q_GAME = (gameId: number) => `SELECT * FROM GAME WHERE id=${gameId};`;
 const Q_GAME_HISTORY_OF_GAME = (gameId: number) => `SELECT * FROM GAME_HISTORY WHERE gameId=${gameId} ORDER BY timestamp DESC;`;
-const Q_ALL_ARBITER_EXPORT = 'SELECT * FROM ARBITER_EXPORT ORDER BY timestamp DESC;';
-const Q_ARBITER_EXPORT = (id: number) => `SELECT * FROM ARBITER_EXPORT WHERE id=${id};`;
+const Q_ALL_CSV_EXPORT = 'SELECT * FROM CSV_EXPORT ORDER BY timestamp DESC;';
+const Q_CSV_EXPORT = (id: number) => `SELECT * FROM CSV_EXPORT WHERE id=${id};`;
 const Q_EMAIL_SUBSCRIPTIONS = `SELECT * FROM EMAIL_SUBSCRIPTION`;
 const Q_EMAIL_SUBSCRIPTION_OF_SUBSCRIBER = (subscriberId: number) => `SELECT * FROM EMAIL_SUBSCRIPTION WHERE subscriberId=${subscriberId};`;
 const Q_EMAIL_SUBSCRIPTION = (id: number) => `SELECT * FROM EMAIL_SUBSCRIPTION WHERE id=${id};`;
@@ -464,62 +464,59 @@ export default class Repository {
     await promisifiedQuery(query);
   }
 
-  async getArbiterExports() {
-    const result: any[] = await promisifiedQuery(Q_ALL_ARBITER_EXPORT);
-    return result.map(row => rowToArbiterExport(row));
+  async getCsvExports() {
+    const result: any[] = await promisifiedQuery(Q_ALL_CSV_EXPORT);
+    return result.map(row => rowToCsvExport(row));
   }
 
-  async getArbiterExport(id) {
-    const result = await promisifiedQuery(Q_ARBITER_EXPORT(id));
+  async getCsvExport(id) {
+    const result = await promisifiedQuery(Q_CSV_EXPORT(id));
     if (!result.length) return null;
 
-    return rowToArbiterExport(result[0]);
+    return rowToCsvExport(result[0]);
   }
 
-  async addArbiterExport(a: {
+  async addCsvExport(a: {
     timestamp: moment.Moment | string;
     filename: string;
     gameCount: number;
-    hasStartEndFilter: boolean;
-    hasSchoolIdsFilter: boolean;
-    schoolIdsFilter: number[] | null;
-    startFilter: moment.Moment | string | null;
-    endFilter: moment.Moment | string | null;
     note: string | null
     creatorId: number;
   }) {
-    const startFilter = a.hasStartEndFilter
-      ? moment(a.startFilter!).toISOString(): null;
-    
-    const endFilter = a.hasStartEndFilter
-      ? moment(a.endFilter!).toISOString(): null;
-
-    const schoolIdsFilter= a.hasSchoolIdsFilter
-      ? a.schoolIdsFilter!.join(','): null;
-
     const timestamp = moment(a.timestamp).toISOString();
     
     const query = `
-      INSERT INTO ARBITER_EXPORT (timestamp, filename, gameCount, schoolIdsFilter, startFilter, endFilter, note, creatorId) VALUES
-      ${sqlValues([timestamp, a.filename, a.gameCount, schoolIdsFilter, startFilter, endFilter, a.note, a.creatorId])}`;
+      INSERT INTO CSV_EXPORT (timestamp, filename, gameCount, note, creatorId) VALUES
+      ${sqlValues([timestamp, a.filename, a.gameCount, a.note, a.creatorId])}`;
 
     const result: InsertQueryResult = await promisifiedQuery(query);
     assert.ok(result.insertId);
     return result.insertId!;
   }
 
-  async editArbiterExport (a: {
+  async editCsvExport (a: {
     id: number;
     note: string | null;
   }) {
 
-    const exists = !!(await promisifiedQuery(Q_ARBITER_EXPORT(a.id)));
-    assert.ok(exists, 'Arbiter export no found');
+    const exists = !!(await this.getCsvExport(a.id));
+    assert.ok(exists, 'Csv export no found');
 
     const query = `
-      UPDATE ARBITER_EXPORT
+      UPDATE CSV_EXPORT
       SET note=${sqlValue(a.note)}
       WHERE id=${a.id};`;
+
+    await promisifiedQuery(query);
+  }
+
+  async removeCsvExport(exportId: number) {
+    const exists = !!(await this.getCsvExport(exportId));
+    assert.ok(exists, 'Csv export not found');
+
+    const query = `
+      DELETE FROM CSV_EXPORT
+      WHERE id=${exportId};`;
 
     await promisifiedQuery(query);
   }
@@ -578,15 +575,12 @@ function sqlValue(v: string | boolean | null | number | undefined) {
   return v;
 }
 
-function rowToArbiterExport(row: any) {
-  return new ArbiterExport({
+function rowToCsvExport(row: any) {
+  return new CsvExport({
     id: row.id,
     timestamp: moment(row.timestamp),
     filename: row.filename,
     gameCount: row.gameCount,
-    schoolIdsFilter: row.schoolIdsFilter,
-    startFilter: row.startFilter? moment(row.startFilter): null,
-    endFilter: row.endFilter? moment(row.endFilter): null,
     note: row.note,
     creatorId: row.creatorId
   });

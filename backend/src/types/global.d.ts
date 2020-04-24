@@ -124,26 +124,12 @@ declare global {
       };
     }
 
-    interface ArbiterExport {
+    interface CsvExport {
       id: number;
       timestamp: string;
       downloadUrl: string;
       filename: string;
       gameCount: number;
-
-      //if true, both startFilter and endFilter exist
-      hasStartEndFilter: boolean;
-
-      //if true, schoolIdsFilter would be an array of length >= 1
-      hasSchoolIdsFilter: boolean;
-
-      //null or array of length >= 1
-      schoolIdsFilter: number[] | null;
-
-      //either both are null or both are string
-      startFilter: string | null;
-      endFilter: string | null;
-
       note: string | null;
     }
   
@@ -329,39 +315,46 @@ declare global {
       //{ok: true} response if success
     }
 
-    //GET /arbiter-export
-    interface ArbiterExport_GET_RES {
+    //GET /csv-export
+    interface CsvExport_GET_RES {
       ok: true;
-      exports: ArbiterExport[];
+      exports: CsvExport[];
     }
 
-    //GET /arbiter-export/:id
-    interface ArbiterExport_Id_GET_RES {
+    //GET /csv-export/:id
+    interface CsvExport_Id_GET_RES {
       ok: true;
-      export: ArbiterExport | null;
+      export: CsvExport | null;
     }
 
-    //POST /arbiter-export
-    interface ArbiterExport_POST_REQ {
-
-      //@see ApiSchema.ArbiterExport definition
-      hasSchoolIdsFilter: boolean;
-      hasStartEndFilter: boolean;
-      schoolIdsFilter: number[] | null;
-      startFilter: string | null;
-      endFilter: string | null;
+    //POST /csv-export
+    interface CsvExport_POST_REQ {
+      //only non rejected games are exported
+      //if gameIds paramter is missing, export all non-rejected games
+      gameIds: number[] | null;
       note: string | null;
+
+      //this is ignored if the requester wasn't an assignor/admin
+      shouldApprovePendingGames?: boolean;
     }
-    interface ArbiterExport_POST_RES {
+    interface CsvExport_POST_RES {
       ok: true;
       exportId: number;
     }
 
-    //POST arbiter-export/:id/note
-    interface ArbiterExport_Id_Note_POST_REQ {
+    //POST /csv-export/:id/remove
+    interface CsvExport_Id_Remove_POST_REQ {
+      //empty body
+    }
+    interface CsvExport_Id_Remove_POST_RES {
+      ok: true;
+    }
+
+    //POST csv-export/:id/note
+    interface CsvExport_Id_Note_POST_REQ {
       note: string | null;
     }
-    interface ArbiterExport_Id_Note_POST_RES {
+    interface CsvExport_Id_Note_POST_RES {
       ok: boolean;
     }
 
