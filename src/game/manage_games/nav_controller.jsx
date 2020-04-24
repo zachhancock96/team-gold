@@ -3,10 +3,10 @@ import { Route } from '../../routes';
 import { NavView } from './nav_view';
 
 const links = [
-  { id: Route.AllGames().id, name: 'All Games' },
-  { id: Route.ApprovedGames().id, name: 'Approved Games' },
-  { id: Route.PendingGames().id, name: 'Pending Games' },
-  { id: Route.RejectedGames().id, name: 'Rejected Games' }
+  { id: Route.AllGames().id, name: 'All My Games' },
+  { id: Route.ApprovedGames().id, name: 'My Approved Games' },
+  { id: Route.PendingGames().id, name: 'My Pending Games' },
+  { id: Route.RejectedGames().id, name: 'My Rejected Games' }
 ];
 
 const idToRouteMap = {
