@@ -4,7 +4,8 @@ import { TeamKind } from './enums';
 
 type constructorArgs = { 
   id: number; 
-  name: string; 
+  name: string;
+  exportName: string;
   teamKind: TeamKind;
   isLhsaa: boolean;
   schoolId: number;
@@ -36,6 +37,10 @@ export default class Team {
 
   get name() {
     return this.o.name;
+  }
+
+  get exportName() {
+    return this.o.exportName;
   }
 
   get schoolReps() {

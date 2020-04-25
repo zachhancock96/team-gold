@@ -53,12 +53,17 @@ export default class SchoolController {
 
     //TODO: do addManyTeam with bulk add operation instead 
     //for better atomicity guarantee
-    const promises = TEAM_KINDS.map(teamKind => repo.addTeam({
-      name: createTeamName(schoolName, teamKind),
-      isLhsaa: false,
-      teamKind,
-      schoolId
-    }));
+    const promises = TEAM_KINDS.map(teamKind => {
+      const name = createTeamName(schoolName, teamKind);
+      
+      return repo.addTeam({
+        name,
+        exportName: name,
+        isLhsaa: false,
+        teamKind,
+        schoolId
+      });
+    });
 
     await Promise.all(promises);
 

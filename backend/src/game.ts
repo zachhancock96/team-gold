@@ -68,6 +68,7 @@ export default class Game {
   toApi(): ApiSchema.Game {
     const ht = this.homeTeam;
     const at = this.awayTeam;
+    
     return {
       id: this.id,
       homeTeam: {

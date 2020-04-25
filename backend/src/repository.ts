@@ -131,6 +131,7 @@ export default class Repository {
     const teams: Team[] = teamsR.map(row => new Team({
       id: row.id,
       name: row.name,
+      exportName: row.exportName,
       teamKind: row.teamKind,
       isLhsaa: !!row.isLhsaa,
       schoolId: row.schoolId
@@ -170,7 +171,7 @@ export default class Repository {
         const schoolId = Number(k);
         const school = schools.find(s => s.id === schoolId);
         school!.teams = schoolToTeamMap[schoolId];
-        teams.forEach(t => t.school = school!);
+        school!.teams.forEach(t => t.school = school!);
       });
     }
 
@@ -356,13 +357,14 @@ export default class Repository {
 
   async addTeam(o: {
     name: string;
+    exportName: string;
     isLhsaa: boolean;
     teamKind: TeamKind;
     schoolId: number;
   }): Promise<number> {
     const query = `
-      INSERT INTO TEAM (name, isLhsaa, teamKind, schoolId) VALUES
-      ${sqlValues([o.name, o.isLhsaa, o.teamKind, o.schoolId])}`;
+      INSERT INTO TEAM (name, exportName, isLhsaa, teamKind, schoolId) VALUES
+      ${sqlValues([o.name, o.exportName, o.isLhsaa, o.teamKind, o.schoolId])}`;
 
     const result: InsertQueryResult = await promisifiedQuery(query);
     assert.ok(result.insertId);
