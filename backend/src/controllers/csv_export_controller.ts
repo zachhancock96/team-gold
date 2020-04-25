@@ -187,14 +187,6 @@ export const createCsvExportFile = (() => {
     [TeamKind.JVB]: 'JV',
     [TeamKind.JVG]: 'JV'
   };
-  const teamKindMap: { [k: string]: string } = {
-    [TeamKind.VB]: 'VB',
-    [TeamKind.VG]: 'VG',
-    [TeamKind.JVB]: 'JVB',
-    [TeamKind.JVG]: 'JVG'
-  };
-
-  const teamName = (team: Team) => `${team.school.name} - ${teamKindMap[team.teamKind]}`;
   
   return async (games: Game[], path: string) => {
     const title = `Date,Time,Level,Home-Team,Home-Level,Away-Team,Away-Level`;
@@ -203,9 +195,9 @@ export const createCsvExportFile = (() => {
       const date = toDate(g.start);
       const time = toTime(g.start);
       const level = levelMap[g.homeTeam.teamKind];
-      const homeTeam = teamName(g.homeTeam);
+      const homeTeam = g.homeTeam.exportName;
       const homeLevel = level;
-      const awayTeam = teamName(g.awayTeam);
+      const awayTeam = g.awayTeam.exportName;
       const awayLevel = level;
       return `${date},${time},${level},${homeTeam},${homeLevel},${awayTeam},${awayLevel}`;
     });
