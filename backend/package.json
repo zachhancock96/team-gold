@@ -5,6 +5,7 @@
   "main": "./dist/server.js",
   "scripts": {
     "start": "tsc && node -r dotenv/config ./dist/server.js",
+    "seed": "node ./sql_seed/seed.js",
     "tsc": "tsc --watch",
     "test": "tsc && node ./dist/test.js"
   },

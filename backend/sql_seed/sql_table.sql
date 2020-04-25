@@ -43,6 +43,7 @@ ALTER TABLE USER ADD CONSTRAINT fk_schoolId FOREIGN KEY (schoolId) REFERENCES Sc
 CREATE TABLE TEAM (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(55) NOT NULL,
+  exportName varchar(55) NOT NULL,
   isLhsaa boolean NOT NULL,
   teamKind varchar(55) NOT NULL,
   schoolId int NOT NULL,
