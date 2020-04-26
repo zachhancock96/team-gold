@@ -145,7 +145,7 @@ const admin = {
   email: env('ADMIN_EMAIL'),
   password: env('ADMIN_PASSWORD'),
   name: env('ADMIN_NAME'),
-  role: 'assignor',
+  role: 'admin',
   status: 'accepted',
   schoolId: null
 };

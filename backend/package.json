@@ -2,9 +2,9 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "backend repo for team-gold soft en",
-  "main": "./dist/server.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "start": "tsc && node -r dotenv/config ./dist/server.js",
+    "start": "tsc && node -r dotenv/config ./dist/index.js",
     "seed": "node ./sql_seed/seed.js",
     "tsc": "tsc --watch",
     "test": "tsc && node ./dist/test.js"
@@ -21,9 +21,14 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.13.0",
+    "mailgun-js": "^0.22.0",
     "moment-timezone": "^0.5.27",
     "morgan": "^1.6.0",
     "mysql": "^2.7.0",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "rxjs": "^6.5.5"
+  },
+  "devDependencies": {
+    "@types/mailgun-js": "^0.22.4"
   }
 }

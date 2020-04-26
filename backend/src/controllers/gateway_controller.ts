@@ -2,13 +2,20 @@ import User from '../user';
 import Repository from '../repository';
 import {Request, Response} from 'express';
 import { UserStatus, Roles } from '../enums';
+import { Subject, Observable } from 'rxjs';
 
 //TODO: this is temporary
 export default class GatewayController {
   private repository: Repository;
+  private _signup$: Subject<number>;
 
   constructor(repository: Repository) {
     this.repository = repository;
+    this._signup$ = new Subject();
+  }
+
+  get signup$(): Observable<number> {
+    return this._signup$;
   }
 
   login = async (req: Request, res: Response) => {
@@ -80,12 +87,14 @@ export default class GatewayController {
       return;
     }
 
-    await repo.addUser({
+    const userId = await repo.addUser({
       name, email,
       password, role,
       schoolId,
       status: UserStatus.PENDING
     });
+
+    this._signup$.next(userId);
 
     res.send({ok: true});
   }

@@ -23,3 +23,22 @@ POST /schools/1/school-reps/1/edit
 POST /schools/1/school-admins/1/accept
 POST /schools/1/school-admins/1/reject
 POST /schools/1/school-admins/1/remove
+
+Send email notifications when:
+signup
+
+game accept
+game reject
+game edit
+
+create export (bulk game accept)
+
+school rep accept
+school rep reject
+school rep remove
+
+school admin accept
+school admin reject
+school admin remove
+
+routine check for team-game-day

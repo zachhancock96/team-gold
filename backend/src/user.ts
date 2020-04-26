@@ -37,6 +37,14 @@ export default class User {
     return this.o.status;
   }
 
+  get firstName() {
+    return this.name.split(' ')[0];
+  }
+
+  get prettyRole() {
+    return prettyRoles[this.role];
+  }
+
   toString() {
     return `
     User: 
@@ -63,3 +71,10 @@ export default class User {
     };
   }
 }
+
+const prettyRoles = {
+  [Roles.ADMIN]: 'Admin',
+  [Roles.ASSIGNOR]: 'Assignor',
+  [Roles.SCHOOL_ADMIN]: 'School admin',
+  [Roles.SCHOOL_REP]: 'School coach'
+};

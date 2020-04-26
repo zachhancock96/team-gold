@@ -5,7 +5,7 @@ import School from './school';
 import Team from './team';
 import District from './district';
 import CsvExport from './csv_export';
-import Game from './game';
+import Game, { GameHistory } from './game';
 import { GameStatus, TeamKind, UserStatus, Roles } from './enums';
 import * as assert from 'assert';
 
@@ -29,6 +29,7 @@ const Q_SCHOOL_REP_TEAM_ASSN_OF_REP = (id: number) => `SELECT * FROM SCHOOL_REP_
 const Q_ALL_GAME = 'SELECT * FROM GAME;';
 const Q_GAME = (gameId: number) => `SELECT * FROM GAME WHERE id=${gameId};`;
 const Q_GAME_HISTORY_OF_GAME = (gameId: number) => `SELECT * FROM GAME_HISTORY WHERE gameId=${gameId} ORDER BY timestamp DESC;`;
+const Q_GAME_HISTORY = (historyId: number) => `SELECT * FROM GAME_HISTORY WHERE id=${historyId};`;
 const Q_ALL_CSV_EXPORT = 'SELECT * FROM CSV_EXPORT ORDER BY timestamp DESC;';
 const Q_CSV_EXPORT = (id: number) => `SELECT * FROM CSV_EXPORT WHERE id=${id};`;
 const Q_EMAIL_SUBSCRIPTIONS = `SELECT * FROM EMAIL_SUBSCRIPTION`;
@@ -188,6 +189,14 @@ export default class Repository {
 
   async getUser(userId: number) {
     return this.users.find(u => u.id === userId) || null;
+  }
+
+  async getAdmin() {
+    return this.users.find(u => u.role === Roles.ADMIN)!;
+  }
+
+  async getAssignor() {
+    return this.users.find(u => u.role === Roles.ASSIGNOR)!;
   }
 
   async addUser(o: {
@@ -393,33 +402,26 @@ export default class Repository {
     return result.insertId!;
   }
 
-  async getGameHistory(gameId: number) {
+  async getGameHistory(historyId: number): Promise<GameHistory | null> {
+    const query = Q_GAME_HISTORY(historyId);
+    const historyR = await promisifiedQuery(query);
+    if (!historyR.length) return null;
+
+    const row = historyR[0];
+    const updater = await this.getUser(row.updaterId);
+    return rowToGameHistory(row, updater!);    
+  }
+
+  async getGameHistoriesOfGame(gameId: number): Promise<GameHistory[]> {
     const query = Q_GAME_HISTORY_OF_GAME(gameId);
     const historyR = await promisifiedQuery(query);
     const users = await this.getUsers();
 
     return historyR.map(row => {
-
-      const history: {[key: string]: any} = {
-        id: row.id, 
-        gameId: row.gameId, 
-        start: moment(row.start).format(DATETIME_TO_API_FORMAT), 
-        location: row.location, 
-        status: row.status, 
-        timestamp: moment(row.timestamp).format(DATETIME_TO_API_FORMAT),
-        updateType: row.updateType, 
-        updaterType: row.updaterType,
-      };
-
       const updaterId = row.updaterId;
       const updater = users.find(u => u.id === updaterId);
-      
-      history.updater = {
-        id: updater!.id,
-        name: updater!.name
-      };
 
-      return history;
+      return rowToGameHistory(row, updater!);
     });
   }
 
@@ -596,6 +598,20 @@ function rowToEmailSubscription(row: any) {
     teamId: row.teamId,
     gameId: row.gameId
   } as EmailSubscription
+}
+
+function rowToGameHistory(row: any, updater: User) {
+  return {
+    id: row.id, 
+    gameId: row.gameId, 
+    start: moment(row.start).format(DATETIME_TO_API_FORMAT), 
+    location: row.location, 
+    status: row.status, 
+    timestamp: moment(row.timestamp).format(DATETIME_TO_API_FORMAT),
+    updateType: row.updateType, 
+    updaterType: row.updaterType,
+    updater: { id: updater.id, name: updater.name }
+  } as GameHistory;
 }
 
 type InsertQueryResult = {

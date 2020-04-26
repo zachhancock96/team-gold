@@ -3,14 +3,40 @@ import Repository from '../repository';
 import { Roles, TeamKind, UserStatus } from '../enums';
 import School from '../school';
 import User from '../user';
+import { Subject, Observable } from 'rxjs';
 
 const TEAM_KINDS: TeamKind[]  = [ TeamKind.VB, TeamKind.VG, TeamKind.JVB, TeamKind.JVG ];
 
 export default class SchoolController {
   private repository: Repository;
+  private _acceptUser$: Subject<number>;
+  private _rejectUser$: Subject<number>;
+  private _removeUser$: Subject<number>;
+  private _nonLhsaaSchool$: Subject<number>;
   
   constructor(repository: Repository) {
     this.repository = repository;
+
+    this._acceptUser$ = new Subject();
+    this._rejectUser$ = new Subject();
+    this._removeUser$ = new Subject();
+    this._nonLhsaaSchool$ = new Subject();
+  }
+
+  get acceptUser$(): Observable<number> {
+    return this._acceptUser$;
+  }
+
+  get rejectUser$(): Observable<number> {
+    return this._rejectUser$;
+  }
+
+  get removeUser$(): Observable<number> {
+    return this._removeUser$;
+  }
+
+  get nonLhsaaSchool$(): Observable<number> {
+    return this._nonLhsaaSchool$;
   }
 
   getAllSchools = async (req: Request, res: Response) => {
@@ -68,6 +94,8 @@ export default class SchoolController {
     await Promise.all(promises);
 
     res.send({ok: true, schoolId });
+
+    this._nonLhsaaSchool$.next(schoolId);
   }
 
   acceptSchoolRep = async (req: Request, res: Response) => {
@@ -100,6 +128,8 @@ export default class SchoolController {
     console.log('team associations added');
     
     res.send({ok: true});
+
+    this._acceptUser$.next(repId);
   }
   
   rejectSchoolRep = async (req: Request, res: Response) => {
@@ -125,6 +155,8 @@ export default class SchoolController {
     await repo.updateUser(repId, UserStatus.REJECTED);
 
     res.send({ok: true});
+
+    this._rejectUser$.next(repId);
   }
   
   removeSchoolRep = async (req: Request, res: Response) => {
@@ -155,6 +187,8 @@ export default class SchoolController {
     console.log('team associations removed');
     
     res.send({ok: true});
+
+    this._removeUser$.next(repId);
   }
 
   //school admins that are either pending or accepted
@@ -287,6 +321,8 @@ export default class SchoolController {
     console.log('updated school');
 
     res.send({ok: true});
+
+    this._acceptUser$.next(schoolAdminId);
   }
   
   rejectSchoolAdmin = async (req: Request, res: Response) => {
@@ -313,6 +349,8 @@ export default class SchoolController {
     console.log('updated user status');
 
     res.send({ok: true});
+    
+    this._rejectUser$.next(schoolAdminId);
   }
   
   removeSchoolAdmin = async (req: Request, res: Response) => {
@@ -342,6 +380,8 @@ export default class SchoolController {
     console.log('updated school');
 
     res.send({ok: true});
+
+    this._removeUser$.next(schoolAdminId);
   }  
 }
 

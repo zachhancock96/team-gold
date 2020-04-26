@@ -1,10 +1,34 @@
 import {  Roles, GameStatus, TeamKind, UserStatus } from '../enums';
 import User from '../user';
+import{ GameHistory as GameHistoryX } from '../game';
 
 declare global {
   type GameHistoryUpdaterType = 'home'| 'away'| 'assignor'| 'admin';
   type GameHistoryUpdateType = 'create'|  'update'| 'accept'| 'reject';
   type EmailSubscriptionType = 'game_update' | 'team_game_day';
+
+  //either mail or mailDispatcher arg should be provided
+  //if both are provided then mailDispatcher is used, and mail is ignored
+  interface ServerConfig {
+    sql: {
+      host: string;
+      user: string;
+      password: string;
+      timezone: string;
+      database: string;
+    };
+    http: {
+      port: number;
+    };
+    mail?: {
+      apiKey: string;
+      domain: string;
+      from: string;
+    };
+    mailDispatcher?: MailDispatcher
+  }  
+
+  export type MailDispatcher = (msg: { to: string; subject: string; html: string; }) => Promise<void>;
 
   interface EmailSubscription {
     id: number;
@@ -93,22 +117,9 @@ declare global {
       status: GameStatus;
     }
 
-    interface GameHistory {
-      id: number,
-      start: string,
-      location: string,
-      status: GameStatus,
-      gameId: number,
-    
-      //timestamp of when the update was made
-      timestamp: string,
-      
-      updateType: 'create'|  'update'| 'accept'| 'reject',
-      updater: {
-        id: number,
-        name: string
-      },
-      updaterType: 'home'| 'away'| 'assignor'| 'admin'
+    interface GameHistory extends GameHistoryX {
+      start: string;
+      timestamp: string;
     }
   
     interface District {

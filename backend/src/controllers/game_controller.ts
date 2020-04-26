@@ -5,6 +5,7 @@ import Team from '../team';
 import Repository from '../repository';
 import { GameStatus, Roles, GameAction } from '../enums';
 import moment, { DATETIME_FROM_API_FORMAT } from '../moment';
+import { Subject, Observable } from 'rxjs';
 
 /*
 
@@ -127,9 +128,21 @@ const getGameActions = async (repository: Repository, user: User, gameId: number
 export default class GameController {
 
   private repository: Repository;
+  private _gameUpdate$: Subject<number>;
+  private _gameEdit$: Subject<{oldGame: Game, historyId: number}>;
   
   constructor(repository: Repository) {
     this.repository = repository;
+    this._gameUpdate$ = new Subject();
+    this._gameEdit$ = new Subject();
+  }
+
+  get gameUpdate$(): Observable<number> {
+    return this._gameUpdate$;
+  }
+
+  get gameEdit$(): Observable<{oldGame: Game, historyId: number}> {
+    return this._gameEdit$;
   }
 
   getAllGames = async (req: Request, res: Response) => {
@@ -183,7 +196,7 @@ export default class GameController {
       status
     });
 
-    await this.repository.addGameHistory({
+    const historyId = await this.repository.addGameHistory({
       gameId: game!.id,
       start: game!.start,
       location: game!.location,
@@ -194,7 +207,9 @@ export default class GameController {
       updaterId: user.id
     });
 
-    res.send({ ok: true})
+    res.send({ ok: true});
+
+    this._gameUpdate$.next(historyId);
   }
 
   rejectGame = async (req: Request, res: Response) => {
@@ -221,7 +236,7 @@ export default class GameController {
       status
     });
 
-    await this.repository.addGameHistory({
+    const historyId = await this.repository.addGameHistory({
       gameId: game!.id,
       start: game!.start,
       location: game!.location,
@@ -232,7 +247,9 @@ export default class GameController {
       updaterId: user.id
     });
 
-    res.send({ ok: true})
+    res.send({ ok: true});
+
+    this._gameUpdate$.next(historyId);
   }
 
   addGame = async (req: Request, res: Response) => {
@@ -310,7 +327,7 @@ export default class GameController {
     const game = await this.repository.getGame(insertedId);
     const updaterType = await getUpdaterType(repo, user, game!);
 
-    await repo.addGameHistory({
+    const historyId = await repo.addGameHistory({
       gameId: insertedId,
       start: body.start,
       location: body.location,
@@ -322,6 +339,8 @@ export default class GameController {
     });
 
     res.send({ok: true, gameId: insertedId});
+
+    this._gameUpdate$.next(historyId);
   }
 
   editGame = async (req: Request, res: Response) => {
@@ -349,9 +368,9 @@ export default class GameController {
       return;
     }
 
-    const game = await repo.getGame(gameId);
+    const game = (await repo.getGame(gameId))!;
 
-    const hasPrivilegeOverHome = await isMyTeam(repo, user, game!.homeTeam);
+    const hasPrivilegeOverHome = await isMyTeam(repo, user, game.homeTeam);
     
     const status = user.role === Roles.ASSIGNOR || user.role === Roles.ADMIN
       ? GameStatus.ACCEPTED
@@ -364,14 +383,14 @@ export default class GameController {
     //TODO: there may still be conflict in time/location
 
     await this.repository.editGame({
-      id: game!.id,
+      id: game.id,
       start: body.start,
       location: body.location,
       status
     });
 
-    await this.repository.addGameHistory({
-      gameId: game!.id,
+    const historyId = await this.repository.addGameHistory({
+      gameId: game.id,
       start: body.start,
       location: body.location,
       status,
@@ -381,12 +400,14 @@ export default class GameController {
       updaterId: user.id
     });
 
-    res.send({ ok: true})
+    res.send({ ok: true});
+
+    this._gameEdit$.next({oldGame: game, historyId});
   }
 
   getGameHistory = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id);
-    const history = await this.repository.getGameHistory(id);
-    res.send({ok: true, history: history})
+    const history = await this.repository.getGameHistoriesOfGame(id);
+    res.send({ok: true, history: history});
   }
 }

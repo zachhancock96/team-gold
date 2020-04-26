@@ -1,5 +1,5 @@
 import moment, { DATETIME_TO_API_FORMAT } from './moment';
-import { GameStatus } from './enums';
+import { GameStatus, TeamKind } from './enums';
 import Team from './team';
 
 type constructorArgs = {
@@ -55,6 +55,14 @@ export default class Game {
     return this.o.rejectionNote || null;
   }
 
+  get level() {
+    return levelMap[this.homeTeam.teamKind];
+  }
+
+  get prettyStart() {
+    return prettyStart(this.start);
+  }
+
   isPending() {
     const s = this.status;
     return s === GameStatus.PENDING_ASSIGNOR || s === GameStatus.PENDING_AWAY_TEAM
@@ -100,4 +108,27 @@ export default class Game {
 
 function startToApi(start: moment.Moment | string) {
   return moment(start).format(DATETIME_TO_API_FORMAT);
+}
+
+function prettyStart(start: moment.Moment | string) {
+  return moment(start).format('MMM DD, hh:mm A');
+}
+
+const levelMap = {
+  [TeamKind.VB]: 'Varsity Boys',
+  [TeamKind.VG]: 'Varsity Girls',
+  [TeamKind.JVB]: 'Junior Varsity Boys',
+  [TeamKind.JVG]: 'Junior Varsity Girls'
+};
+
+export interface GameHistory {
+  id: number,
+  start: moment.Moment | string,
+  location: string,
+  status: GameStatus,
+  gameId: number,    
+  timestamp: moment.Moment | string, //timestamp of when the update was made     
+  updateType: GameHistoryUpdateType,
+  updater: { id: number, name: string },
+  updaterType: GameHistoryUpdaterType
 }
