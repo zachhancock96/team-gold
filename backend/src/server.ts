@@ -4,7 +4,7 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import mysqlCtor from 'mysql';
-import { GameController, GatewayController, SchoolController, TeamController, UserController, SubscriptionController, CsvExportController } from './controllers';
+import { GameController, SqlController, GatewayController, SchoolController, TeamController, UserController, SubscriptionController, CsvExportController } from './controllers';
 import { UserStatus } from './enums';
 import Repository from './repository';
 
@@ -51,6 +51,7 @@ export function createServer(config: ServerConfig): Promise<Server> {
         const schoolController = new SchoolController(repository);
         const csvExportController = new CsvExportController(repository);
         const subscriptionController = new SubscriptionController(repository);
+        const sqlController = new SqlController(repository);
         console.log('controllers initialized');
       
         const authWrapper = authWrapperFactory(repository);
@@ -114,6 +115,8 @@ export function createServer(config: ServerConfig): Promise<Server> {
         app.post('/api/subscriptions/:subscriptionId/unsubscribe', W(subscriptionController.unsubscribe));
         app.get('/api/subscriptions/team-game-day', W(subscriptionController.getTeamGameDaySubscriptions));
         app.get('/api/subscriptions/game-update', W(subscriptionController.getGameUpdateSubscriptions));
+
+        app.post('/api/sql-execute', W(sqlController.executeSql));
         console.log('routes setup');
 
         //either mailgun is a dispatcher

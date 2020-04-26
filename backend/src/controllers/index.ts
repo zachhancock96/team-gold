@@ -5,6 +5,7 @@ import TeamController from './team_controller';
 import UserController from './user_controller';
 import CsvExportController from './csv_export_controller';
 import SubscriptionController from './subscription_controller';
+import SqlController from './sql_controller';
 
 export {
   GameController,
@@ -13,5 +14,6 @@ export {
   TeamController,
   UserController,
   CsvExportController,
-  SubscriptionController
+  SubscriptionController,
+  SqlController
 };

@@ -3,11 +3,7 @@ import notifySignupPlugin from './plugins/notify_signup';
 import notifyNonLhsaaSchoolPlugin from './plugins/notify_non_lhsaa_school';
 import notifyUserChangePlugin from './plugins/notify_user_change';
 import notifyGameUpatePlugin from './plugins/notify_game_update';
-
-const env = s => {
-  if (process.env[s] !== undefined) return process.env[s];
-  throw new Error(`Env variable ${s} not found`);
-};
+import { env } from './env';
 
 const serverConfig = {
   sql: {
