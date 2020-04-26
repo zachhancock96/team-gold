@@ -1,285 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;1,100;1,200;1,300;1,400;1,500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background-color: antiquewhite;
-  font-family: 'Roboto', sans-serif;
-}
-input {
-  font-family: 'Roboto', sans-serif;
-}
-
-.flex-col-100 {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.flex-1 {
-  flex: 1;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/*Container bootstrap wrapper BEGIN
-*/ 
-
-@media only screen and (min-width: 576px) {
-  .container {
-    max-width: 100%;
-  }
-}
-
-@media only screen and (min-width: 768px) {
-  .container {
-    max-width: 100%;
-  }
-}
-
-@media only screen and (min-width: 992px) {
-  .container {
-    max-width: 1200px;
-  }
-}
-
-@media only screen and (min-width: 1200px) {
-  .container {
-    max-width: 1200px;
-  }
-}
-
-/*Container bootstrap wrapper END
-*/ 
-
-.navbar-links {
-  padding: 8px;
-  background-color: lightblue;
-  display: inline-block;
-  margin-left: 2px;
-}
-.navbar-links.active {
-  background-color: rgb(72, 188, 226);
-}
-
-.navbar-links:hover {
-  cursor: pointer;
-  color: blue;
-}
-
-.school-list-item {
-  padding: 16px;
-  cursor: pointer;
-}
-.school-list-item.active {
-  background-color: #0000ffa6;
-  color: white;
-}
-
-.game-detail-empty{
-  font-size: x-large;
-  padding: 20px;
-  font-style: italic;
-  font-weight: bold;
-  color: grey;
-}
-.game-detail{
-  padding: 16px;
-}
-.game-detail-header{
-  font-weight: bold;
-  font-size: large;
-  text-decoration: underline;
-  padding-top: 20px;
-  padding-bottom: 10px;
-}
-.game-accept-button{
-  font-size: large;
-  font-weight: bold;
-  background-color: rgb(81, 161, 81);
-  border-radius: 10px;
-  padding: 10px;
-}
-.game-reject-button{
-  font-size: large;
-  font-weight: bold;
-  background-color: rgb(230, 90, 90);
-  border-radius: 10px;
-  padding: 10px;
-}
-.game-edit-button{
-  font-size: large;
-  font-weight: bold;
-  background-color: rgb(226, 213, 26);
-  border-radius: 10px;
-  padding: 10px;
-  float: right;
-  position: relative;
-  top: 10px;
-}
-
-.game-display-timestamp{
-  color: grey;
-  font-style: italic;
-}
-.game-display-body{
-  padding-left: 25px;
-}
-
-.game-history-block{
-  padding-bottom: 20px;
-}
-
-/* NAVBAR CSS STARTS*/
-
-.m-navbar{
-  background-color: rgb(65, 43, 25);
-  font-size: large;
-  color: white;
-  padding: 20px;
-}
-
-a.left-active{
-  color: antiquewhite;
-  padding: 15px;
-}
-
-a.left{
-  color: white;
-  float: left, center;
-  padding: 15px;
-}
-
-a.right{
-  color: white;
-  float: right;
-}
-
-.nav1{
-  padding: 10px;
-  font-size: .9em;
-}
-
-.nav2{
-  padding: 10px;
-  font-size: .9em;
-}
-
-/* LIST-VIEW CSS STARTS HERE */
-
-.game-list-item .contents {
-  justify-content: start;
-  width: 100%;
-  height: auto;
-  padding: 15px;
-  align-items: flex-start;
-  border-collapse: collapse;
-  box-shadow: 0px 5px 10px grey;
-  background-color: rgb(232, 235, 236);
-  border-radius: 7.5px;
-}
-
-.game-list-item .contents:hover,
-.game-list-item.active .contents {
-  transform: scale(1.02);
-  z-index: 100;
-  background-color: #48ddb680;
-  box-shadow: 0 5px 25px rgba(54, 121, 247, 0.2);
-  color: #000;
-  border-radius: 10px;
-}
-
-.game-list-item .time  {
-  font-weight: 300;
-  font-size: 18px;
-  padding: 0px;
-  margin: 0;
-  margin-bottom: 5px;
-}
-
-.game-list-item p {
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.game-list-item .status {
-  font-size: 15px;
-  font-weight: 300;
-}
-
-
-.game-list-item .field {
-  padding-left: -50px;
-  font-size: 18px;
-  color: black;
-  font-weight: 300;
-  font-style: italic;
-}
-
-.game-list-item .font-before {
-  font-weight: 500;
-  font-style: normal;
-  font-size: 15px;
-}
-
-.game-list-item .school-type{
-  font-weight: 300;
-  font-size: 15px;
-  padding: 0px;
-  margin: 0;
-  margin-bottom: 5px;
-  margin-top: 5px;
-
-}
-.game-list-item .game-box {
-  display: flex;
-  flex-direction: row;
-}
-
-
-
-/* LIST-VIEW CSS ENDS HERE */
-
-
-/*Game Detail Starts*/
-#gamedetail-heading {
-  font-weight: bold;
-  font-size: large;
-}
-
-#timestamp {
-  font-size: small;
-  font-style: italic;
-  font: grey;
-}
-
-/*Game Detail Ends*/
-
-.arbiter-export-item .fa-file {
-  color: #00d69e;
-  font-size: 50px;
-}
-
-
-
-
-/*@import url('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css');*/
-/*@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');*/
-
-
 /* LOGIN CSS STARTS */
 /* LOGIN CSS STARTS */
 /* LOGIN CSS STARTS */
@@ -288,7 +6,7 @@ a.right{
 
 body {
   font-family: "Raleway", sans-serif;
-  background: linear-gradient(180deg, rgba(250,235,215,1) 0%, rgba(191,179,163,1) 35%, rgba(77,74,71,1) 100%);
+  background: linear-gradient(45deg, black, transparent);;
 }
 
 .m-login .container {
@@ -537,7 +255,7 @@ body {
   font-size: 12px;
   text-transform: uppercase;
   padding: 8px 30px;
-  background: rgb(65, 43, 25);
+  background: #f95959;
   color: #fff;
   border-radius: 30px;
   margin-right: 20px;
@@ -547,7 +265,7 @@ body {
 .m-login .form form .CTA input:hover {
   text-transform: capitalize;
   transform: scale(1.1);
-  background-color:rgb(63, 60, 57);
+  background-color: rgb(47, 88, 224);
 }
 .m-login .form form .CTA a:hover {
   text-transform: capitalize;
@@ -559,13 +277,13 @@ body {
   font-size: 13px;
   font-weight: 400;
   font-family: "Montserrat", sans-serif;
-  color: rgb(65, 43, 25);
+  color: #bbbbbb;
   text-decoration: underline;
   transition: all 0.3s;
 }
 
 .m-login .form form .CTA a.switch:hover {
-  color: #7f6fa3;
+  color: #4b06ec;
 }
 
 .m-login footer {
@@ -653,7 +371,6 @@ body {
 .m-login .SignIN {
   font-weight: 600;
   font-size: 25px;
-  padding-top: 10px;
 }
 .m-login .signup-heading {
   font-weight: 600;
