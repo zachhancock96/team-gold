@@ -173,6 +173,7 @@ const DesktopLayout = ({ children }) => {
     }}>
       <div style={{
         width: '400px',
+        height: '100%',
         backgroundColor: 'white',
         overflowY: 'scroll',
         overflowX: 'hidden'

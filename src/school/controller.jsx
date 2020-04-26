@@ -94,7 +94,7 @@ export class School extends React.Component {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '50%'
       }}>
         {
           m.state.device === 'mobile' ?
@@ -147,7 +147,8 @@ const DesktopLayout = ({ children }) => {
         width: '400px',
         backgroundColor: 'white',
         overflowY: 'scroll',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
+        height: '550px'
       }}>
         {left}
       </div>
@@ -155,7 +156,8 @@ const DesktopLayout = ({ children }) => {
         marginLeft: '20px',
         flex: 1,
         backgroundColor: 'white',
-        overflowY: 'scroll'
+        overflowY: 'scroll',
+        height: '550px'
       }}>
         {right}
       </div>

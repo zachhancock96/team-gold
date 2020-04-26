@@ -32,6 +32,8 @@ export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
 
   const gameHistory = displayHistory(history);
 
+  // const status = formatStatus(gameDetail.game.status)
+
   return (
     <div className='game-detail'>
       <div style={{
@@ -56,14 +58,15 @@ export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
       </div>
       <div>
         <p className='game-detail-header'>Status</p>
-        <p style={{ paddingBottom: '10px' }}>{gameDetail.game.status}</p>
+        <p style={{ paddingTop: '15px', paddingBottom: '10px' }}>{gameDetail.game.status}</p>
+        <hr />
       </div>
       <div style={{
         borderBottom: brownBorder,
         marginBottom: '8px',
       }}>
         <p className='game-detail-header'>Game History</p>
-        <div>{gameHistory}</div>
+        <div className='game-history-box'>{gameHistory}</div>
       </div>
       <div>
         {
