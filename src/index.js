@@ -8,7 +8,6 @@ import { createApp } from './app';
 import { router } from './router';
 import { viewport } from './viewport';
 import { toast } from './toast';
-// import { TracerComponent } from './tracer';
 
 const withTracer = false;
 
@@ -39,23 +38,6 @@ createApp()
     //removes `toasts` from array whenever any toast expires
     toast.watchToastChange({ update, states, actions });
   });
-
-// const ViewWithTracer = states => ({app, state, actions}) => {
-//   return [
-//     <div style={{
-//       display: 'flex',
-//       flexDirection: 'row',
-//       justifyContent: 'space-between'
-//     }}>
-//       <div style={{flex: 1}}>
-//         { app.view({state, actions}) }
-//       </div>
-//       <div>
-//         <TracerComponent states={states} /> 
-//       </div>
-//     </div>
-//   ];
-// }
 
 const ViewWithTracer = states => ({app, state, actions}) => {
   return <div>View with Tracer (dont worry about this)</div>;

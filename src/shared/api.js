@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import moment, {API_DATETIME_FORMAT} from './moment';
 
-const BASE_URL = "http://18.219.186.34/api";
-//const BASE_URL = "http://localhost:4000/api";
+//const BASE_URL = "http://18.219.186.34/api";
+const BASE_URL = "http://localhost:4000/api";
 
 const API_URLS = {
   GET_USERS: () => `${BASE_URL}/users`,
@@ -24,14 +24,63 @@ const API_URLS = {
   ACCEPT_GAME: gameId => `${BASE_URL}/games/${gameId}/accept`,
   EDIT_GAME: gameId => `${BASE_URL}/games/${gameId}/edit`,
 
-  CREATE_ARBITER_EXPORT: `${BASE_URL}/arbiter-export`,
-  GET_ARBITER_EXPORTS: `${BASE_URL}/arbiter-export`,
-  GET_ARBITER_EXPORT: id => `${BASE_URL}/arbiter-export/${id}`,
-  EDIT_ARBITER_EXPORT_NOTE: id => `${BASE_URL}/arbiter-export/${id}/note`,
+  CREATE_CSV_EXPORT: `${BASE_URL}/csv-export`,
+  GET_CSV_EXPORTS: `${BASE_URL}/csv-export`,
+  GET_CSV_EXPORT: id => `${BASE_URL}/csv-export/${id}`,
+  EDIT_CSV_EXPORT_NOTE: id => `${BASE_URL}/csv-export/${id}/note`,
   
   LOGIN: () => `${BASE_URL}/login`,
-  SIGNUP: `${BASE_URL}/signup`
+  SIGNUP: `${BASE_URL}/signup`,
+
+  ACCEPT_REP: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-reps/${userId}/accept`,
+  REJECT_REP: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-reps/${userId}/reject`,
+  REMOVE_REP: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-reps/${userId}/remove`,
+  EDIT_REP: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-reps/${userId}/edit`,
+  ACCEPT_SADMIN: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-admins/${userId}/accept`,
+  REJECT_SADMIN: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-admins/${userId}/reject`,
+  REMOVE_SADMIN: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-admins/${userId}/remove`,
+  GET_SADMINS_OF_SCHOOL: schoolId => `${BASE_URL}/schools/${schoolId}/school-admins`,
+  GET_REPS_OF_SCHOOL: schoolId => `${BASE_URL}/schools/${schoolId}/school-reps`
+
 };
+
+export function acceptSchoolRep(schoolId, repId) {
+  return authPost(API_URLS.ACCEPT_REP(schoolId, repId))
+}
+
+export function rejectSchoolRep(schoolId, repId) {
+  return authPost(API_URLS.REJECT_REP(schoolId, repId))
+}
+
+export function removeSchoolRep(schoolId, repId) {
+  return authPost(API_URLS.REMOVE_REP(schoolId, repId))
+}
+
+export function editSchoolRep(schoolId, repId, teamIds) {
+  return authPost(API_URLS.EDIT_REP(schoolId, repId), { teamIds })
+}
+
+export function acceptSchoolAdmin(schoolId, userId) {
+  return authPost(API_URLS.ACCEPT_SADMIN(schoolId, userId))
+}
+
+export function rejectSchoolAdmin(schoolId, userId) {
+  return authPost(API_URLS.REJECT_SADMIN(schoolId, userId))
+}
+
+export function removeSchoolAdmin(schoolId, userId) {
+  return authPost(API_URLS.REMOVE_SADMIN(schoolId, userId));
+}
+
+export function getSchoolAdminsOfSchool(schoolId) {
+  return authGet(API_URLS.GET_SADMINS_OF_SCHOOL(schoolId))
+    .then(res => res.schoolAdmins);
+}
+
+export function getSchoolRepsOfSchool(schoolId) {
+  return authGet(API_URLS.GET_REPS_OF_SCHOOL(schoolId))
+    .then(res => res.schoolReps);
+}
 
 export function login(credentials) {
   const o = {
@@ -46,8 +95,7 @@ export function login(credentials) {
 }
 
 export function signup(o) {
-  return httpPost(API_URLS.SIGNUP, o)
-    .then(res => { });
+  return httpPost(API_URLS.SIGNUP, o);
 }
 
 export function addNonLhsaaSchool(o) {
@@ -56,22 +104,22 @@ export function addNonLhsaaSchool(o) {
 }
 
 export function createArbiterExport(o) {
-  return authPost(API_URLS.CREATE_ARBITER_EXPORT, o)
+  return authPost(API_URLS.CREATE_CSV_EXPORT, o)
     .then(response => response.exportId);
 }
 
 export function getArbiterExports() {
-  return authGet(API_URLS.GET_ARBITER_EXPORTS)
+  return authGet(API_URLS.GET_CSV_EXPORTS)
     .then(response => response.exports);
 }
 
 export function getArbiterExport(id) {
-  return authGet(API_URLS.GET_ARBITER_EXPORT(id))
+  return authGet(API_URLS.GET_CSV_EXPORT(id))
     .then(response => response.export);
 }
 
 export function editArbiterExportNote(id, note) {
-  return authPost(API_URLS.EDIT_ARBITER_EXPORT_NOTE(id), {note: note || null});
+  return authPost(API_URLS.EDIT_CSV_EXPORT_NOTE(id), {note: note || null});
 }
 
 export function getUsers() {

@@ -29,7 +29,6 @@ import { Root } from '../root';
 
 export const createApp = async () => {
   const initial = await Initial();
-
   return {
     initial,
     Actions: update => Object.assign(
