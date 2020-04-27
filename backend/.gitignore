@@ -7,3 +7,4 @@
 !/sql_seed/*.js
 !/sql_seed/.env.example
 !/sql_seed/school_list
+/test/dist

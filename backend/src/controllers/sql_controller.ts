@@ -1,37 +1,22 @@
 import { env } from '../env';
-import cp from 'child_process';
 import fs from 'fs';
 import Repository from '../repository';
 import {Request, Response} from 'express';
 import { Roles } from '../enums';
+import { execSql } from '../sql_exec';
 
 const sqlSourceFilePath = env('sql_execute_source_file');
+const sqlExecutor = (() => {
+  const host = env('sql_host');
+  const user = env('sql_user');
+  const password = env('sql_password');
+  const database = env('sql_database');
 
-const spawnCommand = (() => {
-  const connString = (() => {
-    const host = env('sql_host');
-    const user = env('sql_user');
-    const password = env('sql_password');
-    const database = env('sql_database');
-    
-    let str = `mysql -h ${host} -u ${user} --table`;
-    str = password? `${str} -p ${password}`: str;
-    str = database? `${str} ${database}`: str;
-  
-    return str;
-  })();
-
-  return `${connString} < ${sqlSourceFilePath}`;
+  return execSql({
+    host, user,
+    password, database,
+    sqlSourceFilePath });
 })();
-
-const execSql = () => {
-  try {
-    const result = cp.execSync(`${spawnCommand}`, { stdio: 'pipe', encoding: 'ascii', maxBuffer: 1024 * 1024 * 10 });
-    return { ok: true, result };
-  } catch(error) {
-    return { ok: false, result: error.stderr as string };
-  }  
-}
 
 export default class SqlController {
 
@@ -55,9 +40,8 @@ export default class SqlController {
     }
 
     fs.writeFileSync(sqlSourceFilePath, sql);
-    const { ok, result } = execSql();
+    const { ok, result } = sqlExecutor();
     console.log(result);
-
 
     res.send({ok: true, sqlResult: { ok, result } });
   }

@@ -6,8 +6,7 @@
   "scripts": {
     "start": "tsc && node -r dotenv/config ./dist/index.js",
     "seed": "node ./sql_seed/seed.js",
-    "tsc": "tsc --watch",
-    "test": "tsc && node ./dist/test.js"
+    "test": "tsc --p ./test && node -r dotenv/config ./test/dist/test/index.js dotenv_config_path=./test/.env"
   },
   "author": "Team Gold",
   "license": "ISC",
@@ -21,6 +20,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.13.0",
+    "jasmine": "^3.5.0",
     "mailgun-js": "^0.22.0",
     "moment-timezone": "^0.5.27",
     "morgan": "^1.6.0",
@@ -29,6 +29,9 @@
     "rxjs": "^6.5.5"
   },
   "devDependencies": {
-    "@types/mailgun-js": "^0.22.4"
+    "@types/jasmine": "^3.5.10",
+    "@types/mailgun-js": "^0.22.4",
+    "@types/supertest": "^2.0.8",
+    "supertest": "^4.0.2"
   }
 }

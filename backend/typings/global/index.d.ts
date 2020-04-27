@@ -1,6 +1,10 @@
-import {  Roles, GameStatus, TeamKind, UserStatus } from '../enums';
-import User from '../user';
-import{ GameHistory as GameHistoryX } from '../game';
+/*note that type package is a folder
+with index.d.ts file in it. so this is a global type package
+and is located by typescript by following compiler option { "typeRoots": ["./typings"] }
+there wasn't other way of doing it*/
+import {  Roles, GameStatus, TeamKind, UserStatus } from '../../src/enums';
+import User from '../../src/user';
+import{ GameHistory as GameHistoryX } from '../../src/game';
 
 declare global {
   type GameHistoryUpdaterType = 'home'| 'away'| 'assignor'| 'admin';

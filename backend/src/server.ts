@@ -147,6 +147,7 @@ export function createServer(config: ServerConfig): Promise<Server> {
         app.listen(httpConfig.port, () => {
           console.log(`Waiting for Incoming request at ${httpConfig.port}`);
           resolve(new Server(
+            app,
             gatewayController,
             userController,
             gameController,
@@ -177,8 +178,9 @@ export class Server {
   private subscriptionCtrl: SubscriptionController;
   private repo: Repository;
   private dispatcher: MailDispatcher;
+  private app: express.Application;
 
-  constructor(gatewayCtrl: GatewayController, userCtrl: UserController, gameCtrl: GameController,teamCtrl: TeamController, schoolCtrl: SchoolController, csvExportCtrl: CsvExportController, subscriptionCtrl: SubscriptionController, repo: Repository, dispatcher: MailDispatcher) {
+  constructor(app: express.Application, gatewayCtrl: GatewayController, userCtrl: UserController, gameCtrl: GameController,teamCtrl: TeamController, schoolCtrl: SchoolController, csvExportCtrl: CsvExportController, subscriptionCtrl: SubscriptionController, repo: Repository, dispatcher: MailDispatcher) {
     this.gatewayCtrl = gatewayCtrl;
     this.userCtrl = userCtrl;
     this.gameCtrl = gameCtrl;
@@ -188,6 +190,11 @@ export class Server {
     this.subscriptionCtrl = subscriptionCtrl;
     this.repo = repo;
     this.dispatcher = dispatcher;
+    this.app = app;
+  }
+
+  get expressApp() {
+    return this.app;
   }
 
   get gatewayController() {
