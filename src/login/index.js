@@ -1,4 +1,4 @@
 import { Actions } from './actions';
-export { Login } from './view';
+export { Login } from './controller';
 
 export const login = { Actions };

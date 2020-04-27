@@ -29,8 +29,26 @@ const API_URLS = {
   GET_ARBITER_EXPORT: id => `${BASE_URL}/arbiter-export/${id}`,
   EDIT_ARBITER_EXPORT_NOTE: id => `${BASE_URL}/arbiter-export/${id}/note`,
   
-  LOGIN: () => `${BASE_URL}/login`
+  LOGIN: () => `${BASE_URL}/login`,
+  SIGNUP: `${BASE_URL}/signup`
 };
+
+export function login(credentials) {
+  const o = {
+    email: credentials.email,
+    password: credentials.password
+  }
+  return httpPost(API_URLS.LOGIN(o), o)
+    .then(response => {
+      const sessionId = response.sessionId;
+      setToken(sessionId);
+    })
+}
+
+export function signup(o) {
+  return httpPost(API_URLS.SIGNUP, o)
+    .then(res => { });
+}
 
 export function addNonLhsaaSchool(o) {
   return authPost(API_URLS.POST_SCHOOL_NONLHSAA, o)
@@ -82,7 +100,7 @@ export function getMyTeams() {
 }
 
 export function getSchools() {
-  return authGet(API_URLS.GET_SCHOOLS())
+  return httpGet(API_URLS.GET_SCHOOLS())
     .then(response => response.schools);
 }
 
@@ -153,18 +171,6 @@ export function editGame(gameId, edit) {
   };
 
   return authPost(API_URLS.EDIT_GAME(gameId), o);
-}
-
-export function login(credentials) {
-  const o = {
-    email: credentials.email,
-    password: credentials.password
-  }
-  return httpPost(API_URLS.LOGIN(o), o)
-    .then(response => {
-      const sessionId = response.sessionId;
-      setToken(sessionId);
-    })
 }
 
 const [httpGet, httpPost] = (function() {
