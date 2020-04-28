@@ -24,79 +24,13 @@ const API_URLS = {
   ACCEPT_GAME: gameId => `${BASE_URL}/games/${gameId}/accept`,
   EDIT_GAME: gameId => `${BASE_URL}/games/${gameId}/edit`,
 
-  CREATE_CSV_EXPORT: `${BASE_URL}/csv-export`,
-  GET_CSV_EXPORTS: `${BASE_URL}/csv-export`,
-  GET_CSV_EXPORT: id => `${BASE_URL}/csv-export/${id}`,
-  EDIT_CSV_EXPORT_NOTE: id => `${BASE_URL}/csv-export/${id}/note`,
+  CREATE_ARBITER_EXPORT: `${BASE_URL}/arbiter-export`,
+  GET_ARBITER_EXPORTS: `${BASE_URL}/arbiter-export`,
+  GET_ARBITER_EXPORT: id => `${BASE_URL}/arbiter-export/${id}`,
+  EDIT_ARBITER_EXPORT_NOTE: id => `${BASE_URL}/arbiter-export/${id}/note`,
   
-  LOGIN: () => `${BASE_URL}/login`,
-  SIGNUP: `${BASE_URL}/signup`,
-
-  ACCEPT_REP: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-reps/${userId}/accept`,
-  REJECT_REP: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-reps/${userId}/reject`,
-  REMOVE_REP: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-reps/${userId}/remove`,
-  EDIT_REP: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-reps/${userId}/edit`,
-  ACCEPT_SADMIN: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-admins/${userId}/accept`,
-  REJECT_SADMIN: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-admins/${userId}/reject`,
-  REMOVE_SADMIN: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-admins/${userId}/remove`,
-  GET_SADMINS_OF_SCHOOL: schoolId => `${BASE_URL}/schools/${schoolId}/school-admins`,
-  GET_REPS_OF_SCHOOL: schoolId => `${BASE_URL}/schools/${schoolId}/school-reps`
-
+  LOGIN: () => `${BASE_URL}/login`
 };
-
-export function acceptSchoolRep(schoolId, repId) {
-  return authPost(API_URLS.ACCEPT_REP(schoolId, repId))
-}
-
-export function rejectSchoolRep(schoolId, repId) {
-  return authPost(API_URLS.REJECT_REP(schoolId, repId))
-}
-
-export function removeSchoolRep(schoolId, repId) {
-  return authPost(API_URLS.REMOVE_REP(schoolId, repId))
-}
-
-export function editSchoolRep(schoolId, repId, teamIds) {
-  return authPost(API_URLS.EDIT_REP(schoolId, repId), { teamIds })
-}
-
-export function acceptSchoolAdmin(schoolId, userId) {
-  return authPost(API_URLS.ACCEPT_SADMIN(schoolId, userId))
-}
-
-export function rejectSchoolAdmin(schoolId, userId) {
-  return authPost(API_URLS.REJECT_SADMIN(schoolId, userId))
-}
-
-export function removeSchoolAdmin(schoolId, userId) {
-  return authPost(API_URLS.REMOVE_SADMIN(schoolId, userId));
-}
-
-// export function getSchoolAdminsOfSchool(schoolId) {
-//   return authGet(API_URLS.GET_SADMINS_OF_SCHOOL(schoolId))
-//     .then(res => res.schoolAdmins);
-// }
-
-// export function getSchoolRepsOfSchool(schoolId) {
-//   return authGet(API_URLS.GET_REPS_OF_SCHOOL(schoolId))
-//     .then(res => res.schoolReps);
-// }
-
-export function login(credentials) {
-  const o = {
-    email: credentials.email,
-    password: credentials.password
-  }
-  return httpPost(API_URLS.LOGIN(o), o)
-    .then(response => {
-      const sessionId = response.sessionId;
-      setToken(sessionId);
-    })
-}
-
-export function signup(o) {
-  return httpPost(API_URLS.SIGNUP, o);
-}
 
 export function addNonLhsaaSchool(o) {
   return authPost(API_URLS.POST_SCHOOL_NONLHSAA, o)
@@ -104,22 +38,22 @@ export function addNonLhsaaSchool(o) {
 }
 
 export function createArbiterExport(o) {
-  return authPost(API_URLS.CREATE_CSV_EXPORT, o)
+  return authPost(API_URLS.CREATE_ARBITER_EXPORT, o)
     .then(response => response.exportId);
 }
 
 export function getArbiterExports() {
-  return authGet(API_URLS.GET_CSV_EXPORTS)
+  return authGet(API_URLS.GET_ARBITER_EXPORTS)
     .then(response => response.exports);
 }
 
 export function getArbiterExport(id) {
-  return authGet(API_URLS.GET_CSV_EXPORT(id))
+  return authGet(API_URLS.GET_ARBITER_EXPORT(id))
     .then(response => response.export);
 }
 
 export function editArbiterExportNote(id, note) {
-  return authPost(API_URLS.EDIT_CSV_EXPORT_NOTE(id), {note: note || null});
+  return authPost(API_URLS.EDIT_ARBITER_EXPORT_NOTE(id), {note: note || null});
 }
 
 export function getUsers() {
@@ -148,7 +82,7 @@ export function getMyTeams() {
 }
 
 export function getSchools() {
-  return httpGet(API_URLS.GET_SCHOOLS())
+  return authGet(API_URLS.GET_SCHOOLS())
     .then(response => response.schools);
 }
 
@@ -160,11 +94,6 @@ export function getSchool(schoolId) {
     });
 }
 
-export function executeSql(command) {
-  return authPost(API_URLS.EXECUTE_SQL, { sql: command})
-    .then(response => response.sqlResult);
-}
-
 export function getGames() {
   return authGet(API_URLS.GET_GAMES())
     .then(response => response.games);
@@ -173,78 +102,6 @@ export function getGames() {
 export function getMyGames() {
   return authGet(API_URLS.GET_MY_GAMES())
     .then(response => response.games);
-}
-
-export function getSchoolAdminsOfSchool(schoolId) {
-  return Promise.resolve()
-    .then(() => {
-      return [
-        {
-          "id": 1,
-          "email": "alla@test.net",
-          "name": "Alla Balla",
-          "role": "school_admin",
-          "status": "accepted",
-          "schoolId": schoolId
-        }, 
-        {
-          "id": 2,
-          "email": "calla@test.net",
-          "name": "Calla Dalla",
-          "role": "school_admin",
-          "status": "pending",
-          "schoolId": schoolId
-        },
-        {
-          "id": 3,
-          "email": "ealla@test.net",
-          "name": "Ealla Falla",
-          "role": "school_admin",
-          "status": "pending",
-          "schoolId": schoolId
-        }
-      ]
-    });
-}
-
-export function getSchoolRepsOfSchool(schoolId) {
-  return Promise.resolve()
-    .then(() => {
-      return [
-        {
-          "id": 1,
-          "email": "aaeko@test.net",
-          "name": "Aaeko Baeko",
-          "role": "school_rep",
-          "status": "accepted",
-          "schoolId": schoolId
-        }, 
-        {
-          "id": 2,
-          "email": "caeko@test.net",
-          "name": "Caeko Daeko",
-          "role": "school_rep",
-          "status": "accepted",
-          "schoolId": schoolId
-        },
-        {
-          "id": 3,
-          "email": "eaiko@test.net",
-          "name": "Eaiko Faiko",
-          "role": "school_rep",
-          "status": "pending",
-          "schoolId": schoolId
-        },
-        {
-          "id": 4,
-          "email": "eaiko@test.net",
-          "name": "Gaiko Haiko",
-          "role": "school_rep",
-          "status": "pending",
-          "schoolId": schoolId
-        }
-      ]
-    });
 }
 
 /*
@@ -296,6 +153,18 @@ export function editGame(gameId, edit) {
   };
 
   return authPost(API_URLS.EDIT_GAME(gameId), o);
+}
+
+export function login(credentials) {
+  const o = {
+    email: credentials.email,
+    password: credentials.password
+  }
+  return httpPost(API_URLS.LOGIN(o), o)
+    .then(response => {
+      const sessionId = response.sessionId;
+      setToken(sessionId);
+    })
 }
 
 const [httpGet, httpPost] = (function() {

@@ -3,35 +3,84 @@ import PropTypes from 'prop-types';
 import { View } from './view';
 import { api } from 'shared';
 
+/*
+    interface School {
+      id: number;
+      name: string;
+      isLhsaa: boolean;
+      schoolReps: {
+        id: number,
+        name: string
+      }[];
+      teams: {
+        id: number;
+        name: string;
+        teamKind: TeamKind;
+      }[];
+      schoolAdmin: {
+        id: number,
+        name: string
+      } | null;
+      district: {
+        id: number,
+        name: string
+      } | null;
+      assignor: {
+        id: number,
+        name: string
+      } | null;
+    }
+*/
+const load = async schoolDetailid => {
+  const school = await api.getSchool(schoolDetailid);
+  const schoolAdmins = await api.getSchoolAdminsOfSchool(schoolDetailid);
+  const schoolReps = await api.getSchoolRepsOfSchool(schoolDetailid);
+
+  return {
+    school,
+    schoolAdmins,
+    schoolReps
+  };
+}
+
+//following props are recieved:
+//schoolDetailId: number
+//actions e.g. actions.showLoading
 export class SchoolDetail extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      schoolDetail: null
+      schoolAdmins: [],
+      schoolReps: [],
+      school: null,
+      ready: false,
     };
   }
 
   async componentDidMount() {
     //TODO: do this on component update and when schoolId is different
-    const m = this.props;
-    this._loadSchool(m.schoolDetail);
+    this._load(this.props.schoolDetailId);
   }
 
-  _loadSchool = () => {
-    const m = this.props;
+  _load = async (schoolDetailId) => {
+    //TODO: show loading
+    const { schoolAdmins, schoolReps, school } = await load(schoolDetailId);
+    this.setState({
+      schoolAdmins,
+      schoolReps,
+      school,
+      ready: true
+    });
 
-    m.actions.showLoading('SchoolDetail');
-    this.setState(m);
-    m.actions.hideLoading('SchoolDetail');
   }
 
   async componentDidUpdate(prevProps) {
-    const prevSchoolId = prevProps.schoolDetail.id;
-    const newSchoolId = this.props.schoolDetail.id;
+    const prevSchoolId = prevProps.schoolDetailId;
+    const newSchoolId = this.props.schoolDetailId;
 
     if (newSchoolId != prevSchoolId) {
-      this._loadSchool(newSchoolId);
+      this._load(newSchoolId);
     }
   }
 
@@ -59,17 +108,22 @@ export class SchoolDetail extends Component {
   // }
 
   render() {
-    const { schoolDetail } = this.state;
-    return (<View
-        schoolDetail={schoolDetail}
-        onAccept={this.handleAccept}
-        onReject={this.handleReject}
-        onEdit={this.handleEdit}
-        onEditSchool={this.handleEditSchool}
-         />);
+    const { ready, school, schoolAdmins, schoolReps } = this.state;
+    
+    return ready ?
+      (<View
+          schoolAdmins={schoolAdmins}
+          schoolReps={schoolReps}
+          schoolDetail={school}
+          onAccept={this.handleAccept}
+          onReject={this.handleReject}
+          onEdit={this.handleEdit}
+          onEditSchool={this.handleEditSchool} />)
+      : null;
   }
 }
 
 SchoolDetail.propTypes = {
-  schoolDetail: PropTypes.array.isRequired
+  schoolDetailId: PropTypes.number.isRequired,
+  actions: PropTypes.object.isRequired
 }

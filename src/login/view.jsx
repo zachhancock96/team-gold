@@ -2,8 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 
 export class View extends React.Component {
-
-  componentWillMount() {
+ componentWillMount() {
     $('head').append(`<style id="styles-login">${css}</style>`)
   }
 
@@ -12,12 +11,6 @@ export class View extends React.Component {
   }
 
   componentDidMount() {
-
-    // Detect browser for css purpose
-    if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-        $('.m-login .form form label').addClass('fontSwitch');
-    }
-
     // Label effect
     $('.m-login input').focus(function () {
       $(this).siblings('label').addClass('active');
@@ -234,8 +227,6 @@ export class View extends React.Component {
       </footer>
     </div>);
   }
-
-
 }
 
 const css = `

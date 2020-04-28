@@ -1,0 +1,26 @@
+.styled-table {
+  width: 100%;
+}
+
+.styled-table, .styled-table th, .styled-table td {
+  border-collapse: collapse;
+  border: 0px;
+  padding: .5em;
+}
+
+.styled-table th {
+  color: #00D69E;
+}
+
+.styled-table.hb td {
+  border-bottom: 1px solid #969FAA;
+}
+
+.styled-table.vb th, .styled-table.vb td {
+  border-right: 1px solid #969FAA;
+  border-left: 1px solid #969FAA;
+}
+
+.styled-table.hb.vb th, .styled-table.hb.vb td{
+  border: 1px solid #969FAA;
+}

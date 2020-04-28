@@ -76,7 +76,7 @@ export class School extends React.Component {
     const isDetail = isDetailPage(m.routing);
 
     const activeSchoolId = getSchoolDetailId(m.routing);
-    const activeSchoolDetail = schools[activeSchoolId - 1];
+    
 
     const list = <ListView
       schools={schools}
@@ -87,7 +87,7 @@ export class School extends React.Component {
       ? (
         <SchoolDetail
           actions={m.actions}
-          schoolDetail={activeSchoolDetail}/>
+          schoolDetailId={activeSchoolId} />
       ): null;
 
     return (
@@ -100,7 +100,7 @@ export class School extends React.Component {
           m.state.device === 'mobile' ?
             (
               <MobileLayout>
-                Testing
+                {detail? detail: list}
               </MobileLayout>
             ) :
             (
