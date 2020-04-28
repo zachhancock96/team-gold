@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import moment, {API_DATETIME_FORMAT} from './moment';
 
-const BASE_URL = "http://18.219.186.34/api";
-//const BASE_URL = "http://localhost:4000/api";
+//const BASE_URL = "http://18.219.186.34/api";
+const BASE_URL = "http://localhost:4000/api";
 
 const API_URLS = {
   GET_USERS: () => `${BASE_URL}/users`,
@@ -72,15 +72,15 @@ export function removeSchoolAdmin(schoolId, userId) {
   return authPost(API_URLS.REMOVE_SADMIN(schoolId, userId));
 }
 
-// export function getSchoolAdminsOfSchool(schoolId) {
-//   return authGet(API_URLS.GET_SADMINS_OF_SCHOOL(schoolId))
-//     .then(res => res.schoolAdmins);
-// }
+export function getSchoolAdminsOfSchool(schoolId) {
+  return authGet(API_URLS.GET_SADMINS_OF_SCHOOL(schoolId))
+    .then(res => res.schoolAdmins);
+}
 
-// export function getSchoolRepsOfSchool(schoolId) {
-//   return authGet(API_URLS.GET_REPS_OF_SCHOOL(schoolId))
-//     .then(res => res.schoolReps);
-// }
+export function getSchoolRepsOfSchool(schoolId) {
+  return authGet(API_URLS.GET_REPS_OF_SCHOOL(schoolId))
+    .then(res => res.schoolReps);
+}
 
 export function login(credentials) {
   const o = {
@@ -173,78 +173,6 @@ export function getGames() {
 export function getMyGames() {
   return authGet(API_URLS.GET_MY_GAMES())
     .then(response => response.games);
-}
-
-export function getSchoolAdminsOfSchool(schoolId) {
-  return Promise.resolve()
-    .then(() => {
-      return [
-        {
-          "id": 1,
-          "email": "alla@test.net",
-          "name": "Alla Balla",
-          "role": "school_admin",
-          "status": "accepted",
-          "schoolId": schoolId
-        }, 
-        {
-          "id": 2,
-          "email": "calla@test.net",
-          "name": "Calla Dalla",
-          "role": "school_admin",
-          "status": "pending",
-          "schoolId": schoolId
-        },
-        {
-          "id": 3,
-          "email": "ealla@test.net",
-          "name": "Ealla Falla",
-          "role": "school_admin",
-          "status": "pending",
-          "schoolId": schoolId
-        }
-      ]
-    });
-}
-
-export function getSchoolRepsOfSchool(schoolId) {
-  return Promise.resolve()
-    .then(() => {
-      return [
-        {
-          "id": 1,
-          "email": "aaeko@test.net",
-          "name": "Aaeko Baeko",
-          "role": "school_rep",
-          "status": "accepted",
-          "schoolId": schoolId
-        }, 
-        {
-          "id": 2,
-          "email": "caeko@test.net",
-          "name": "Caeko Daeko",
-          "role": "school_rep",
-          "status": "accepted",
-          "schoolId": schoolId
-        },
-        {
-          "id": 3,
-          "email": "eaiko@test.net",
-          "name": "Eaiko Faiko",
-          "role": "school_rep",
-          "status": "pending",
-          "schoolId": schoolId
-        },
-        {
-          "id": 4,
-          "email": "eaiko@test.net",
-          "name": "Gaiko Haiko",
-          "role": "school_rep",
-          "status": "pending",
-          "schoolId": schoolId
-        }
-      ]
-    });
 }
 
 /*
