@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import moment, {API_DATETIME_FORMAT} from './moment';
 
-//const BASE_URL = "http://18.219.186.34/api";
-const BASE_URL = "http://localhost:4000/api";
+const BASE_URL = "http://18.219.186.34/api";
+//const BASE_URL = "http://localhost:4000/api";
 
 const API_URLS = {
   GET_USERS: () => `${BASE_URL}/users`,
@@ -158,6 +158,11 @@ export function getSchool(schoolId) {
     .then(schools => {
       return schools.find(s => s.id === schoolId) || null;
     });
+}
+
+export function executeSql(command) {
+  return authPost(API_URLS.EXECUTE_SQL, { sql: command})
+    .then(response => response.sqlResult);
 }
 
 export function getGames() {

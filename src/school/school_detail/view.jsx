@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { Component} from 'react';
 import { Button, ButtonRed, CurvedButton } from 'shared/widgets';
 import { brownBorder } from 'shared/color';
-import { school } from 'school';
+import { Table } from '../../shared/ui';
+import { getSchoolRepsOfSchool } from 'shared/api';
+import { api } from 'shared';
+import { API_DATE_FORMAT } from 'shared/moment';
 
 /*
   Edit button is commented out at the moment, need to create an api to edit the users for a school
@@ -17,30 +20,87 @@ const Header = ({ children }) => (
   </h3>
 );
 
-export const View = ({ schoolDetail, onAccept, onReject, onEdit, onEditSchool }) => {
-  if (!schoolDetail) return <div className='school-detail-empty'>Click on a school for more details</div>;
-
-  // const history = prettyHistory(gameDetail);
-
-  // const reps = checkReps(schoolDetail.schoolReps);
-  // const admin = checkAdmin(schoolDetail);
-  // const district = checkDistrict(schoolDetail);
-  // const assignor = checkAssignor(schoolDetail);
-
-  const test = {
-    name: 'Test High School',
-    district: {name: 'Test District'},
-    assignor: {name: 'Test Assignor'},
-    schoolAdmin: {name: 'Test Admin'},
-    teams: [{name: 'Test High Eagles', type: 'vb'}, {name: 'Test High Tigers', type: 'vg'}],
-    reps: [{name: 'Rep 1', email: 'rep1@test.com', teams: [], state: 'pending'}, {name: 'Rep 2', email: 'rep2@test.com', teams: ['VB', 'JVB'], state: 'accepted'}]
+//teams is like teams: Array<{ abbrevName: string, name: string, teamKind: string, id: number}>
+/*e.g.
+  "abbrevName": "vb",
+  "name": "Acadiana HomeSchool - VB",
+  "id": 1,
+  "teamKind": "vb" (i formatted this way in controller.jsx line 66)
+*/
+class UserRow extends Component {
+  static defaultProps = {
+    name: [],
+    email: [],
+    teams: [],
+    status: [],
+    actions: [],
+    onApprove: () => {},
+    onReject: () => {},
+    onRemove: () => {},
+    onEdit: () => {},
+    onEditSchool: () => {},
   };
 
-  const admin = checkAdmin(test);
-  const district = checkDistrict(test);
-  const assignor = checkAssignor(test);
-  const reps = checkReps(test.reps);
-  const teams = checkTeams(test.teams);
+  render() {
+    const {
+      name,
+      email,
+      teams,
+      status,
+      actions
+    } = this.props;
+
+    console.log(teams);
+
+    if (status === 'pending'){
+      return (<tr className='user-pending'>
+        <td>{name}</td>
+        <td>{email}</td>
+        <td>{fmTeams(teams)}</td>
+        <td>{actions[0]}{actions[1]}</td>
+      </tr>);
+    }
+    else{
+      return (<tr className='user-accepted'>
+        <td>{name}</td>
+        <td>{email}</td>
+        <td>{fmTeams(teams)}</td>
+        <td>{actions[2]}{actions[3]}</td>
+      </tr>);
+    }
+  }
+}
+const fmTeams = teams =>{
+  let t = teams.length
+    ? teams.map(t => t.abbrevName).join(', ')
+    : ''; 
+
+  return <span>{t}</span>;
+}
+
+export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onEditSchool }) => {
+  if (!schoolDetail) return <div className='school-detail-empty'></div>;
+
+    // Example of schoolDetail format
+    //
+    // assignor: {id: 2, name: "Sir Birtleby Assignor"}
+    // district: {id: 1, name: "District A"}
+    // id: 1
+    // isLhsaa: true
+    // name: "Acadiana HomeSchool"
+    // schoolAdmin: null
+    // schoolReps: []
+    // teams: Array(4)
+    // 0: {id: 1, name: "Acadiana HomeSchool - VB", teamKind: "vb"}
+    // 1: {id: 2, name: "Acadiana HomeSchool - VG", teamKind: "vg"}
+    // 2: {id: 3, name: "Acadiana HomeSchool - JVG", teamKind: "jvb"}
+    // 3: {id: 4, name: "Acadiana HomeSchool - JVB", teamKind: "jvg"}
+
+  const admins = checkAdmin(schoolAdmins);
+  const district = checkDistrict(schoolDetail.district);
+  const assignor = checkAssignor(schoolDetail.assignor);
+  const reps = checkReps(schoolReps);
+  const teams = checkTeams(schoolDetail.teams);
 
   return (
     <div className='game-detail'>
@@ -53,7 +113,7 @@ export const View = ({ schoolDetail, onAccept, onReject, onEdit, onEditSchool })
           <CurvedButton
                   style={{ paddingLeft: '5px', paddingRight: '5px', margin: '8px', float: 'right'}}
                   onClick={null}>Edit School</CurvedButton>
-          <Header>{test.name}</Header>
+          <Header>{schoolDetail.name}</Header>
         </div>
         {/* <div>
           {
@@ -78,7 +138,7 @@ export const View = ({ schoolDetail, onAccept, onReject, onEdit, onEditSchool })
       </div>
       <div>
         <p className='game-detail-header'>School Admin</p>
-        <p className='school-detail-comp'>{admin}</p>
+        <p className='school-detail-comp'>{admins}</p>
         <hr />
       </div>
       <div style={{
@@ -93,86 +153,75 @@ export const View = ({ schoolDetail, onAccept, onReject, onEdit, onEditSchool })
 
 }
 
-const checkReps = reps => {
-  if (reps.length === 0){
-    return <p>---Reps Not Assigned---</p>
-  }
-  else{
-    let repList = reps.map(e => {
-          if (e.state === 'pending'){
-            return <div>
-              <span style={{fontWeight: 'bold', color: 'red'}}> -PENDING- </span>
-              Name: {e.name} 
-              <span style={{position: 'relative', left: '20px'}}>Email: {e.email}</span>
-              <Button
-                  style={{ paddingLeft: '5px', paddingRight: '5px', margin: '8px', position: 'relative', left: '20px' }}
-                  onClick={null}>Accept</Button>
-              <ButtonRed
-                  style={{ paddingLeft: '10px', paddingRight: '10px', margin: '8px', fontWeight: 'bold', position: 'relative', left: '20px'}}
-                  onClick={null}>Reject</ButtonRed>
-            </div>
-          }
-          else if (e.state === 'accepted'){
-            let teams = getTeams(e.teams);
-            return <div>
-              - Name: {e.name}
-              <span style={{position: 'relative', left: '20px'}}>Email: {e.email}</span>
-              <span style={{position: 'relative', left: '30px'}}> Teams: {teams}</span>
-              <Button
-                  style={{ paddingLeft: '5px', paddingRight: '5px', margin: '8px', backgroundColor: '#168ed3', borderColor: '#1378b3', position: 'relative', left: '30px'}}
-                  onClick={null}>Edit</Button>
-            </div>
-          }
-          else{
-            return <div>
-              whateva
-            </div>
-          }
-        }
-    );
+const checkReps = schoolReps => {
+    
+    const header = ['Name', 'Email', 'Teams', 'Options'];
+    
+    console.log(JSON.stringify(schoolReps, null, 2))
 
-    return repList;
-  }
+    return <Table>
+              <thead>
+                <tr>
+                  {header.map((title) => (
+                    <th>{title}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {schoolReps.map(user =>{
+                    return <UserRow
+                    name={user.name}
+                    email={user.email}
+                    teams={user.teams}
+                    status={user.status}
+                    actions={ [AcceptButton(), RejectButton(), EditButton(), DeleteButton()] } />
+                  })}
+              </tbody>
+           </Table>
+  
 }
 
-const checkAdmin = schoolDetail => {
-  if (!schoolDetail.schoolAdmin){
-    return <p>---Admin Not Assigned---</p>
-  }
-  else{
-    return <p>- Name: {schoolDetail.schoolAdmin.name}</p>
-  }
+const checkAdmin = schoolAdmins => {
+    
+    const header = ['Name', 'Email', 'Options'];
+    
+    console.log(JSON.stringify(schoolAdmins, null, 2))
+
+    return <Table>
+              <thead>
+                <tr>
+                  {header.map((title) => (
+                    <th>{title}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {schoolAdmins.map(user =>{
+                    return <UserRow
+                    name={user.name}
+                    email={user.email}
+                    status={user.status}
+                    actions={ [AcceptButton(), RejectButton(), EditButton(), DeleteButton()] } />
+                  })}
+              </tbody>
+           </Table>
 } 
 
-const checkDistrict = schoolDetail => {
-  if (!schoolDetail.district){
+const checkDistrict = district => {
+  if (!district){
     return <p>---District Not Assigned---</p>
   }
   else{
-    return <p>- District: {schoolDetail.district.name}</p>
+    return <p>- District: {district.name}</p>
   }
 }
 
-const checkAssignor = schoolDetail => {
-  if (!schoolDetail.assignor){
+const checkAssignor = assignor => {
+  if (!assignor){
     return <p>---Assignor Not Assigned---</p>
   }
   else{
-    return <p>- Assignor: {schoolDetail.assignor.name}</p>
-  }
-}
-
-const getTeams = teams => {
-
-  if (!teams){
-    return <span>Unassigned</span>
-  }
-  else{
-    let teamList = teams.map(e =>{
-      return <span> {e} </span>
-    })
-
-    return teamList;
+    return <p>- Assignor: {assignor.name}</p>
   }
 }
 
@@ -182,9 +231,25 @@ const checkTeams = teams =>{
   }
   else{
     let teamList = teams.map(e => {
-    return <p style={{marginBottom:'5px'}}>- {e.name} ({e.type})</p>
+    return <p style={{marginBottom:'5px'}}>- {e.name}</p>
     });
 
     return teamList;
   }
+}
+
+const AcceptButton = onClick => {
+  return <button>Accept</button>
+}
+
+const RejectButton = onClick => {
+  return <button>Reject</button>
+}
+
+const EditButton = onClick => {
+  return <button>Edit</button>
+}
+
+const DeleteButton = onClick =>{
+  return <button>Delete</button>
 }

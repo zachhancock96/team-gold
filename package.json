@@ -20,6 +20,7 @@
     "@fullcalendar/react": "^4.4.0",
     "@fullcalendar/timegrid": "^4.4.0",
     "@khanacademy/react-multi-select": "^0.3.3",
+    "eslint": "^6.8.0",
     "feather-route-matcher": "^3.1.0",
     "jquery": "^3.5.0",
     "meiosis-routing": "^2.0.1",

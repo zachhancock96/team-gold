@@ -151,6 +151,81 @@ input {
   padding-top: 10px;
 }
 
+.game-box {
+  display: flex;
+  flex-direction: row;
+  font-family: 'Poppins', sans-serif;
+}
+
+.game-list-item .contents {
+  justify-content: start;
+  width: 100%;
+  height: auto;
+  padding: 15px;
+  align-items: flex-start;
+  border-collapse: collapse;
+  box-shadow: 0px 5px 10px grey;
+  background-color: rgb(232, 235, 236);
+  border-radius: 7.5px;
+}
+
+.game-list-item .contents:hover,
+.game-list-item.active .contents {
+  transform: scale(1.02);
+  z-index: 100;
+  background-color: #48ddb680;
+  box-shadow: 0 5px 25px rgba(54, 121, 247, 0.2);
+  color: #000;
+  border-radius: 10px;
+}
+
+.game-list-item .time  {
+  font-weight: 300;
+  font-size: 18px;
+  padding: 0px;
+  margin: 0;
+  margin-bottom: 5px;
+}
+
+.game-list-item p {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.game-list-item .status {
+  font-size: 15px;
+  font-weight: 300;
+}
+
+
+.game-list-item .field {
+  padding-left: -50px;
+  font-size: 18px;
+  color: black;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.game-list-item .font-before {
+  font-weight: 500;
+  font-style: normal;
+  font-size: 15px;
+}
+
+.game-list-item .school-type{
+  font-weight: 300;
+  font-size: 15px;
+  padding: 0px;
+  margin: 0;
+  margin-bottom: 5px;
+  margin-top: 5px;
+
+}
+.game-list-item .game-box {
+  display: flex;
+  flex-direction: row;
+}
+
 /* NAVBAR CSS STARTS*/
 
 .m-navbar{
@@ -184,6 +259,10 @@ a.right{
 .nav2{
   padding: 10px;
   font-size: .9em;
+}
+
+.user-pending{
+  background-color: rgb(196, 196, 196);
 }
 
 

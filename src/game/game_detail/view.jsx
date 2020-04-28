@@ -26,7 +26,7 @@ const Header = ({ children }) => (
 );
 
 export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
-  if (!gameDetail) return <div className='game-detail-empty'>Click on a game for more details</div>;
+  if (!gameDetail) return <div className='game-detail-empty'></div>;
 
   const history = prettyHistory(gameDetail);
 
