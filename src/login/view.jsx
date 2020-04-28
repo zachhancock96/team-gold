@@ -274,7 +274,7 @@ body {
   background-size: cover;
   background-position: center center;
   color: #fff;
-  min-height: 540px;
+  min-height: 600px;
   position: relative;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
   transition: all 0.6s cubic-bezier(1, -0.375, 0.285, 0.995);
@@ -386,7 +386,7 @@ body {
 
 .m-login .form .form-peice {
   background: #fff;
-  min-height: 500px;
+  min-height: 560px;
   margin-top: 20px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
   color: #000000;
@@ -547,6 +547,7 @@ body {
   }
   .m-login section#formHolder div.brand {
       min-height: 200px ;
+      min-width: 100%;
   }
   .m-login section#formHolder div.brand.active {
       min-height: 100vh ;
@@ -556,17 +557,13 @@ body {
       left: 50%;
       transform: translate(-50%, -50%);
   }
-  .m-login section#formHolder div.brand .success-msg p {
-      font-size: 16px;
-  }
-  .m-login section#formHolder div.brand .success-msg a {
-      padding: 5px 30px;
-      font-size: 10px;
-  }
+
   .m-login section#formHolder .form {
-      width: 80vw;
-      min-height: 500px;
+      width: 100%;
+      heigh: auto;
+      min-height: 600px;
       margin-left: 10vw;
+      min-width: 400px;
   }
   .m-login section#formHolder .form .form-peice {
       margin: 0;
@@ -585,12 +582,18 @@ body {
       padding: 60px;
       left: 50%;
   }
+  
+  .m-login footer {
+    padding-top: 20px;
+  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 501px) {
   .m-login section#formHolder .form {
-      width: 100vw;
-      margin-left: 0;
+      // width: 100vw;
+      // margin-left: 0;
+      width: 80%;
+      margin-left: 10px;
   }
   .m-login h2 {
       font-size: 50px ;

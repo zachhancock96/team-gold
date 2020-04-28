@@ -1,6 +1,5 @@
 import React from 'react';
 import $ from 'jquery';
-import './loading.css'
 
 export class Loading extends React.Component {
   state = {
