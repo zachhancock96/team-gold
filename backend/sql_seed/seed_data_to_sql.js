@@ -69,6 +69,23 @@ const teamsToSql = teams => {
     ${sqlValues(teamMatrix)}`;
 }
 
+const schoolUpdatesToSql = schoolUpdates => {
+  return schoolUpdates
+    .map(su => `UPDATE School set schoolAdminId=${su.schoolAdminId} where id=${su.id};`)
+    .join('\n');
+}
+
+const assnsToSql = assns => {
+  const assnMatrix = assns.map(a => [
+    a.id,
+    a.schoolRepId,
+    a.teamId
+  ]);
+
+  return `INSERT INTO SCHOOL_REP_TEAM_ASSN (id, schoolRepId, teamId) VALUES
+    ${sqlValues(assnMatrix)}`;
+}
+
 const jsonReadSource = env('FILENAME_SEED_DATA_JSON');
 const sqlWriteDestination = env('FILENAME_SEED_DATA_SQL');
 
@@ -86,13 +103,29 @@ const schoolsSql = schoolsToSql(schools);
 const teams = data.teams;
 const teamsSql = teamsToSql(teams);
 
+const schoolUpdates = data.schoolUpdates;
+const schoolUpdatesSql = schoolUpdatesToSql(schoolUpdates);
+
+const assns = data.schoolRepTeamAssns;
+const assnsSql = assnsToSql(assns);
+
 const sql =
-`${usersSql}
+`
+SET FOREIGN_KEY_CHECKS = 0;
+
+${usersSql}
+
+${assnsSql}
 
 ${districtSql}
 
 ${schoolsSql}
 
-${teamsSql}`;
+${schoolUpdatesSql}
+
+${teamsSql}
+
+SET FOREIGN_KEY_CHECKS = 1;
+`;
 
 fs.writeFileSync(sqlWriteDestination, sql);

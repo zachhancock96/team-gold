@@ -6,6 +6,7 @@ const createUserId = idGeneratorFactory(1);
 const createDistrictId = idGeneratorFactory(1);
 const createTeamId = idGeneratorFactory(1);
 const createSchoolId = idGeneratorFactory(1);
+const createTeamAssnId = idGeneratorFactory(1);
 
 const ADMIN_ID = createUserId(), ASSIGNOR_ID = createUserId(), DISTRICT_ID = createDistrictId();
 
@@ -163,7 +164,62 @@ const assignor = {
 };
 console.log('assignor ready');
 
-const users = [admin, assignor];
+const [schoolAdmins, schoolUpdates, schoolReps, schoolRepTeamAssns] = (() => {
+  const f = role => (k, schoolId) => status => {
+    const id = createUserId();
+    const name = `${k}${id}`;
+    return {
+      id,
+      name: `${name}`,
+      email: `${name}@test.net`,
+      password: 'password', role,
+      schoolId,
+      status
+    };
+  }
+
+  const sadminFactory = f('school_admin');
+  const srepFactory = f('school_rep');
+
+  const f1 = sadminFactory('acadiana', 1);
+  const f2 = sadminFactory('adams', 2);
+
+  const schoolAdmins = [f1('accepted'), f1('pending'), f2('accepted')];
+
+  const schoolUpdates = [
+    { id: 1, schoolAdminId: schoolAdmins[0].id},
+    { id: 2, schoolAdminId: schoolAdmins[2].id}
+  ];
+
+  const f3 = srepFactory('acadiana', 1);
+  const f4 = srepFactory('adams', 2);
+
+  const schoolReps = [f3('accepted'), f3('accepted'), f3('pending'),
+    f4('accepted')];
+
+  const schoolRepTeamAssns = (() => {
+    const rep1 = schoolReps[0];
+    const rep2 = schoolReps[1];
+    const rep4 = schoolReps[3];
+
+    return [
+      { id: createTeamAssnId(), schoolRepId: rep1.id, teamId: 1 },
+      { id: createTeamAssnId(), schoolRepId: rep1.id, teamId: 2 },
+      { id: createTeamAssnId(), schoolRepId: rep1.id, teamId: 3 },
+      { id: createTeamAssnId(), schoolRepId: rep1.id, teamId: 4 },
+      { id: createTeamAssnId(), schoolRepId: rep2.id, teamId: 1 },
+      { id: createTeamAssnId(), schoolRepId: rep2.id, teamId: 2 },
+      { id: createTeamAssnId(), schoolRepId: rep4.id, teamId: 5 },
+      { id: createTeamAssnId(), schoolRepId: rep4.id, teamId: 6 },
+      { id: createTeamAssnId(), schoolRepId: rep4.id, teamId: 7 },
+      { id: createTeamAssnId(), schoolRepId: rep4.id, teamId: 8 }
+    ];
+  })();
+
+  return [schoolAdmins, schoolUpdates, schoolReps, schoolRepTeamAssns];
+})();
+
+const users = [admin, assignor, ...schoolAdmins, ...schoolReps];
 console.log('users ready');
 
 const district = {
@@ -180,6 +236,8 @@ const json = JSON.stringify({
   users,
   schools,
   teams,
+  schoolUpdates,
+  schoolRepTeamAssns
 }, null, 2);
 fs.writeFileSync(jsonOutFilename, json);
 console.log(`finished dumping json`);

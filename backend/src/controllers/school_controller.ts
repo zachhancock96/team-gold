@@ -223,9 +223,10 @@ export default class SchoolController {
   //school reps that are either pending or accepted
   //accepted first and pending follows
   getSchoolReps = async (req: Request, res: Response) => {
+    const repo = this.repository;
     const schoolId = parseInt(req.params.schoolId);
 
-    const school = await this.repository.getSchool(schoolId);
+    const school = await repo.getSchool(schoolId);
     if (!school) {
       res.send({ok: false, reason: 'School not found.'});
       return;
@@ -233,6 +234,7 @@ export default class SchoolController {
 
     let users = await this.repository.getUsers();
 
+    //1. reps of school
     users = users
       .filter(u => u.schoolId === schoolId && u.role === Roles.SCHOOL_REP)
       .reduce((acc: User[], user) => {
@@ -246,7 +248,24 @@ export default class SchoolController {
         return acc;
     }, []);
 
-    res.send({ok: true, schoolReps: users} as ApiSchema.Schools_Id_SchoolRep_GET_RES);
+    //2. hashmap where key is user id, and value is list of teams he is associated with
+    const userToTeamMap: {[key: number]: number[]} = {};
+    school.teams.forEach(t => {
+      t.schoolReps.forEach(rep => {
+        userToTeamMap[rep.id] = userToTeamMap[rep.id] || [];
+        userToTeamMap[rep.id].push(t.id);
+      })
+    })
+
+    //from 1. and 2. have { rep, teamIds } pairings for every reps of school
+    const result = users.map(u => {
+      return ({
+        rep: u.toApi(),
+        teamIds: userToTeamMap[u.id] || []
+      })
+    });
+
+    res.send({ok: true, schoolReps: result} as ApiSchema.Schools_Id_SchoolRep_GET_RES);
   }
   
   editSchoolRep = async (req: Request, res: Response) => {

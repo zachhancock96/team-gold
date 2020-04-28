@@ -291,7 +291,7 @@ declare global {
     //GET /schools/:schoolId/school-reps
     interface Schools_Id_SchoolRep_GET_RES {
       ok: true,
-      schoolReps: User[];
+      schoolReps: { rep: User, teamIds: number[] }[]
     }
 
     //POST /schools/:schoolId/school-reps/:userId/accept
