@@ -20,6 +20,13 @@ const Header = ({ children }) => (
   </h3>
 );
 
+//teams is like teams: Array<{ abbrevName: string, name: string, teamKind: string, id: number}>
+/*e.g.
+  "abbrevName": "vb",
+  "name": "Acadiana HomeSchool - VB",
+  "id": 1,
+  "teamKind": "vb" (i formatted this way in controller.jsx line 66)
+*/
 class UserRow extends Component {
   static defaultProps = {
     name: [],
@@ -43,6 +50,8 @@ class UserRow extends Component {
       actions
     } = this.props;
 
+    console.log(teams);
+
     if (status === 'pending'){
       return (<tr className='user-pending'>
         <td>{name}</td>
@@ -60,6 +69,13 @@ class UserRow extends Component {
       </tr>);
     }
   }
+}
+const fmTeams = teams =>{
+  let t = teams.length
+    ? teams.map(t => t.abbrevName).join(', ')
+    : ''; 
+
+  return <span>{t}</span>;
 }
 
 export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onEditSchool }) => {
@@ -163,15 +179,6 @@ const checkReps = schoolReps => {
               </tbody>
            </Table>
   
-}
-
-const fmTeams = teams =>{
-  let newTeams = '';
-  teams.map(e=>{
-    newTeams = (newTeams + e + ' ');
-  })
-
-  return <span>{newTeams}</span>;
 }
 
 const checkAdmin = schoolAdmins => {

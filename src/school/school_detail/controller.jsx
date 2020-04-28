@@ -4,7 +4,17 @@ import { View } from './view';
 import { api } from 'shared';
 
 /*
-    interface School {
+  type User = {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    status: string;
+    schoolId: number
+  }
+
+  when doing getSchool
+    {
       id: number;
       name: string;
       isLhsaa: boolean;
@@ -30,11 +40,37 @@ import { api } from 'shared';
         name: string
       } | null;
     }
+
+  when doing getSchoolAdminsOfSchool
+  Array<User>
+
+  when doing getSchoolRepsOfSchool
+  Array<{ rep: User, teamIds: number[] }>
 */
 const load = async schoolDetailid => {
   const school = await api.getSchool(schoolDetailid);
   const schoolAdmins = await api.getSchoolAdminsOfSchool(schoolDetailid);
-  const schoolReps = await api.getSchoolRepsOfSchool(schoolDetailid);
+  let schoolReps = await api.getSchoolRepsOfSchool(schoolDetailid);
+
+  /*
+  formatting the return of getSchoolRepsOfSchool to
+  Array<{
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    status: string;
+    schoolId: number
+    teams: Array<{ abbrevName: string, name: string, teamKind: string, id: number}>
+  */
+  schoolReps = schoolReps.map(({ rep, teamIds }) => {
+    const teams = school
+      .teams
+      .filter(t => teamIds.indexOf(t.id) >= 0)
+      .map(t => ({ abbrevName: t.teamKind, name: t.name, id: t.id, teamKind: t.teamKind}));
+    rep.teams = teams;
+    return rep;
+  });
 
   return {
     school,
