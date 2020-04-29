@@ -5,6 +5,7 @@ import { Table } from '../../shared/ui';
 import { getSchoolRepsOfSchool } from 'shared/api';
 import { api } from 'shared';
 import { API_DATE_FORMAT } from 'shared/moment';
+import { school } from 'school';
 
 /*
   Edit button is commented out at the moment, need to create an api to edit the users for a school
@@ -29,56 +30,64 @@ const Header = ({ children }) => (
 */
 class UserRow extends Component {
   static defaultProps = {
+    schoolId: [],
+    id: [],
     name: [],
     email: [],
+    role: [],
     teams: [],
     status: [],
-    actions: [],
-    onApprove: () => {},
+    buttons: [],
+    onAccept: () => {},
     onReject: () => {},
-    onRemove: () => {},
-    onEdit: () => {},
-    onEditSchool: () => {},
+    onDelete: () => {},
+    onEdit: () => {}
   };
 
   render() {
     const {
+      schoolId,
+      id,
       name,
       email,
+      role,
       teams,
       status,
-      actions
+      buttons,
+      onAccept,
+      onReject,
+      onDelete,
+      onEdit
     } = this.props;
-
-    console.log(teams);
-
+    
     if (status === 'pending'){
       return (<tr className='user-pending'>
         <td>{name}</td>
         <td>{email}</td>
-        <td>{fmTeams(teams)}</td>
-        <td>{actions[0]}{actions[1]}</td>
+        <td>{teams}</td>
+        <td><button onClick={(e) => onAccept(schoolId, id, role)}>Accept</button><button onClick={(e) => onReject(schoolId, id, role)}>Reject</button></td>
       </tr>);
     }
     else{
       return (<tr className='user-accepted'>
         <td>{name}</td>
         <td>{email}</td>
-        <td>{fmTeams(teams)}</td>
-        <td>{actions[2]}{actions[3]}</td>
+        <td>{teams}</td>
+        <td><button onClick={(e) => onEdit()}>Edit</button><button onClick={(e) => onDelete(schoolId, id, role)}>Delete</button></td>
       </tr>);
     }
   }
 }
-const fmTeams = teams =>{
-  let t = teams.length
-    ? teams.map(t => t.abbrevName).join(', ')
-    : ''; 
 
-  return <span>{t}</span>;
-}
+// const fmTeams = teams =>{
+//   let t = teams.length
+//     ? teams.map(t => t.abbrevName).join(', ')
+//     : ''; 
 
-export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onEditSchool }) => {
+//   return <span>{t}</span>;
+// }
+
+export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onEditSchool, onRemove }) => {
   if (!schoolDetail) return <div className='school-detail-empty'></div>;
 
     // Example of schoolDetail format
@@ -95,13 +104,13 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
     // 1: {id: 2, name: "Acadiana HomeSchool - VG", teamKind: "vg"}
     // 2: {id: 3, name: "Acadiana HomeSchool - JVG", teamKind: "jvb"}
     // 3: {id: 4, name: "Acadiana HomeSchool - JVB", teamKind: "jvg"}
-
-  const admins = checkAdmin(schoolAdmins);
+  
+  const admins = checkAdmin(schoolDetail.id, schoolAdmins, onAccept, onReject, onEdit, onRemove);
   const district = checkDistrict(schoolDetail.district);
   const assignor = checkAssignor(schoolDetail.assignor);
-  const reps = checkReps(schoolReps);
+  const reps = checkReps(schoolDetail.id, schoolReps, onAccept, onReject, onEdit, onRemove);
   const teams = checkTeams(schoolDetail.teams);
-
+  
   return (
     <div className='game-detail'>
       <div style={{
@@ -112,7 +121,7 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
         <div style={{ flex: 1 }}>
           <CurvedButton
                   style={{ paddingLeft: '5px', paddingRight: '5px', margin: '8px', float: 'right'}}
-                  onClick={null}>Edit School</CurvedButton>
+                  onClick={null}>Subscribe</CurvedButton>
           <Header>{schoolDetail.name}</Header>
         </div>
         {/* <div>
@@ -153,12 +162,10 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
 
 }
 
-const checkReps = schoolReps => {
+const checkReps = (schoolId, schoolReps, onAccept, onReject, onEdit, onRemove) => {
     
     const header = ['Name', 'Email', 'Teams', 'Options'];
     
-    console.log(JSON.stringify(schoolReps, null, 2))
-
     return <Table>
               <thead>
                 <tr>
@@ -170,22 +177,27 @@ const checkReps = schoolReps => {
               <tbody>
                 {schoolReps.map(user =>{
                     return <UserRow
-                    name={user.name}
-                    email={user.email}
-                    teams={user.teams}
-                    status={user.status}
-                    actions={ [AcceptButton(), RejectButton(), EditButton(), DeleteButton()] } />
+                    id={user.rep.id}
+                    name={user.rep.name}
+                    email={user.rep.email}
+                    role={user.rep.role}
+                    teams={user.teamIds}
+                    status={user.rep.status}
+                    buttons={ [] }
+                    onAccept={onAccept}
+                    onReject={onReject}
+                    onEdit={onEdit}
+                    onRemove={onRemove}
+                    schoolId={schoolId} />
                   })}
               </tbody>
            </Table>
   
 }
 
-const checkAdmin = schoolAdmins => {
+const checkAdmin = (schoolId, schoolAdmins, onAccept, onReject, onEdit, onRemove) => {
     
     const header = ['Name', 'Email', 'Options'];
-    
-    console.log(JSON.stringify(schoolAdmins, null, 2))
 
     return <Table>
               <thead>
@@ -198,10 +210,17 @@ const checkAdmin = schoolAdmins => {
               <tbody>
                 {schoolAdmins.map(user =>{
                     return <UserRow
-                    name={user.name}
-                    email={user.email}
-                    status={user.status}
-                    actions={ [AcceptButton(), RejectButton(), EditButton(), DeleteButton()] } />
+                    id={user.o.id}
+                    name={user.o.name}
+                    email={user.o.email}
+                    role={user.o.role}
+                    status={user.o.status}
+                    buttons={ [] }
+                    onAccept={onAccept}
+                    onReject={onReject}
+                    onEdit={onEdit}
+                    onRemove={onRemove}
+                    schoolId={schoolId} />
                   })}
               </tbody>
            </Table>
@@ -237,6 +256,9 @@ const checkTeams = teams =>{
     return teamList;
   }
 }
+/*
+  standard buttons are being created and used up above when UserRow renders
+  Just turn these into whatever you need them to be and plug in the pieces
 
 const AcceptButton = onClick => {
   return <button>Accept</button>
@@ -250,6 +272,7 @@ const EditButton = onClick => {
   return <button>Edit</button>
 }
 
-const DeleteButton = onClick =>{
+const DeleteButton = onClick => {
   return <button>Delete</button>
 }
+*/
