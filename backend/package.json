@@ -6,6 +6,7 @@
   "scripts": {
     "start": "tsc && node -r dotenv/config ./dist/index.js",
     "seed": "node ./sql_seed/seed.js",
+    "seed_then_start": "npm run seed && npm start",
     "test": "tsc --p ./test && node -r dotenv/config ./test/dist/test/index.js dotenv_config_path=./test/.env"
   },
   "author": "Team Gold",

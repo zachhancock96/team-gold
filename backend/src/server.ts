@@ -89,7 +89,7 @@ export function createServer(config: ServerConfig): Promise<Server> {
         app.get('/api/teams/:id', W(teamController.getTeam));
     
         //school controller
-        app.get('/api/schools', W(schoolController.getAllSchools));
+        app.get('/api/schools', errorWrapper(schoolController.getAllSchools));
         app.get('/api/schools/:id', W(schoolController.getSchool));
         app.post('/api/schools/non-lhsaa', W(schoolController.addNonLhsaaSchool)); 
         app.get('/api/schools/:schoolId/school-admins', W(schoolController.getSchoolAdmins));
