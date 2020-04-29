@@ -37,7 +37,6 @@ class UserRow extends Component {
     role: [],
     teams: [],
     status: [],
-    buttons: [],
     onAccept: () => {},
     onReject: () => {},
     onDelete: () => {},
@@ -53,13 +52,12 @@ class UserRow extends Component {
       role,
       teams,
       status,
-      buttons,
       onAccept,
       onReject,
       onDelete,
       onEdit
     } = this.props;
-    
+
     if (status === 'pending'){
       return (<tr className='user-pending'>
         <td>{name}</td>
@@ -73,7 +71,7 @@ class UserRow extends Component {
         <td>{name}</td>
         <td>{email}</td>
         <td>{teams}</td>
-        <td><button onClick={(e) => onEdit()}>Edit</button><button onClick={(e) => onDelete(schoolId, id, role)}>Delete</button></td>
+        <td><button onClick={(e) => onEdit()}>Edit</button><button onClick={(e) => onDelete(id, schoolId, role)}>Delete</button></td>
       </tr>);
     }
   }
@@ -87,7 +85,7 @@ class UserRow extends Component {
 //   return <span>{t}</span>;
 // }
 
-export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onEditSchool, onRemove }) => {
+export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onSubscribe, onDelete }) => {
   if (!schoolDetail) return <div className='school-detail-empty'></div>;
 
     // Example of schoolDetail format
@@ -105,10 +103,10 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
     // 2: {id: 3, name: "Acadiana HomeSchool - JVG", teamKind: "jvb"}
     // 3: {id: 4, name: "Acadiana HomeSchool - JVB", teamKind: "jvg"}
   
-  const admins = checkAdmin(schoolDetail.id, schoolAdmins, onAccept, onReject, onEdit, onRemove);
+  const admins = checkAdmin(schoolDetail.id, schoolAdmins, onAccept, onReject, onEdit, onDelete);
   const district = checkDistrict(schoolDetail.district);
   const assignor = checkAssignor(schoolDetail.assignor);
-  const reps = checkReps(schoolDetail.id, schoolReps, onAccept, onReject, onEdit, onRemove);
+  const reps = checkReps(schoolDetail.id, schoolReps, onAccept, onReject, onEdit, onDelete);
   const teams = checkTeams(schoolDetail.teams);
   
   return (
@@ -162,7 +160,7 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
 
 }
 
-const checkReps = (schoolId, schoolReps, onAccept, onReject, onEdit, onRemove) => {
+const checkReps = (schoolId, schoolReps, onAccept, onReject, onEdit, onDelete) => {
     
     const header = ['Name', 'Email', 'Teams', 'Options'];
     
@@ -187,7 +185,7 @@ const checkReps = (schoolId, schoolReps, onAccept, onReject, onEdit, onRemove) =
                     onAccept={onAccept}
                     onReject={onReject}
                     onEdit={onEdit}
-                    onRemove={onRemove}
+                    onDelete={onDelete}
                     schoolId={schoolId} />
                   })}
               </tbody>
@@ -273,6 +271,6 @@ const EditButton = onClick => {
 }
 
 const DeleteButton = onClick => {
-  return <button>Delete</button>
+  return <button}>Delete</button>
 }
 */
