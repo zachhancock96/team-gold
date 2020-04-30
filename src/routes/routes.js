@@ -4,6 +4,7 @@ export const Route = createRouteSegments([
   "Login",
   "School",
   "Calendar",
+  "SqlExecute",
 
   "Game",
   "AddGame",
@@ -23,6 +24,7 @@ export const Route = createRouteSegments([
 export const routeConfig = {
   Login: "/login",
   School: "/school/:id",
+  SqlExecute: "/sql-execute",
 
   ArbiterExport: [
     "/arbiter-export?just_added",

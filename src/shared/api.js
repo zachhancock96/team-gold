@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import moment, {API_DATETIME_FORMAT} from './moment';
 
-const BASE_URL = "http://18.219.186.34/api";
-//const BASE_URL = "http://localhost:4000/api";
+//const BASE_URL = "http://18.219.186.34/api";
+const BASE_URL = "http://localhost:4000/api";
 
 const API_URLS = {
   GET_USERS: () => `${BASE_URL}/users`,
@@ -24,6 +24,8 @@ const API_URLS = {
   ACCEPT_GAME: gameId => `${BASE_URL}/games/${gameId}/accept`,
   EDIT_GAME: gameId => `${BASE_URL}/games/${gameId}/edit`,
 
+  EXECUTE_SQL: `${BASE_URL}/sql-execute`,
+
   CREATE_CSV_EXPORT: `${BASE_URL}/csv-export`,
   GET_CSV_EXPORTS: `${BASE_URL}/csv-export`,
   GET_CSV_EXPORT: id => `${BASE_URL}/csv-export/${id}`,
@@ -41,7 +43,6 @@ const API_URLS = {
   REMOVE_SADMIN: (schoolId, userId) => `${BASE_URL}/schools/${schoolId}/school-admins/${userId}/remove`,
   GET_SADMINS_OF_SCHOOL: schoolId => `${BASE_URL}/schools/${schoolId}/school-admins`,
   GET_REPS_OF_SCHOOL: schoolId => `${BASE_URL}/schools/${schoolId}/school-reps`
-
 };
 
 export function acceptSchoolRep(schoolId, repId) {

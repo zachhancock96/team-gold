@@ -54,6 +54,7 @@ export class ManageGames extends React.Component {
     m.actions.showLoading('ManageGames');
     api.getMyGames()
       .then(games => {
+        console.log(games);
         this.setState({games});
       })
       .finally(() => {

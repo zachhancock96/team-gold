@@ -268,14 +268,17 @@ export class CalendarMain extends Component {
           schools={m.schools}></Filter>
       </div>
       
-      <RCalendar
-        showDoubleView={false}
-        onChange={this.onChange}
-        selectRange={true}
-        maxDetail='month'
-        minDetail='year'
-        value={range}
-        tileContent={labelRenderer} />
+      <div stye={{height: '100%', width: '100%'}} className='main-calendar'>
+        <RCalendar
+          className="main-calendar"
+          showDoubleView={false}
+          onChange={this.onChange}
+          selectRange={true}
+          maxDetail='month'
+          minDetail='year'
+          value={range}
+          tileContent={labelRenderer} />
+      </div>
       </>
     );
   }
