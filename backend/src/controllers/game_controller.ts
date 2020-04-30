@@ -20,6 +20,8 @@ import { Subject, Observable } from 'rxjs';
 
 */
 
+const BUFFER = 120;
+
 const getUpdaterType = async (repo: Repository, user: User, game: Game) => {
   const hasPrivilegeOverHome = await isMyTeam(repo, user, game.homeTeam);
 
@@ -252,6 +254,34 @@ export default class GameController {
     this._gameUpdate$.next(historyId);
   }
 
+  _checkConflict = async (homeTeamId: number, awayTeamId: number, start: string | moment.Moment) => {
+    const repo = this.repository;
+    let games  = await repo.getGames();
+
+    const fn = (g: Game) => g.homeTeam.id === homeTeamId || g.homeTeam.id === awayTeamId
+      || g.awayTeam.id === homeTeamId || g.awayTeam.id === awayTeamId;
+    
+    games = games
+      .filter(fn)
+      .filter(g => g.status !== 'rejected');
+
+    const left = moment(start).add(-BUFFER, 'minutes');
+    const right = moment(start).add(BUFFER, 'minutes');
+    
+    const error = games.reduce((error: string | null, g: Game) => {
+      if (error) return error;
+      
+      const doesOverlap = left.isBefore(g.start) && right.isAfter(g.start);
+
+      if (doesOverlap) return `There is a conflict in schedule with the game, ${g.homeTeam.name} vs ${g.awayTeam.name}
+        ,scheduled at ${g.prettyStart}`;
+
+      return null;
+    }, null);
+
+    return error;
+  }
+
   addGame = async (req: Request, res: Response) => {
     const repo = this.repository;
     const body = req.body as ApiSchema.Game_ADD;
@@ -314,7 +344,11 @@ export default class GameController {
       ? GameStatus.PENDING_AWAY_TEAM
       : GameStatus.PENDING_HOME_TEAM;
 
-    //TODO: there may still be conflict in time/location
+    const message = await this._checkConflict(homeTeam.id, awayTeam.id, body.start);
+    if (message) {
+      res.send({ok: false, reason: message});
+      return;
+    }
 
     const insertedId = await repo.addGame({
       homeTeamId: body.homeTeamId,
@@ -380,7 +414,11 @@ export default class GameController {
 
     const updaterType = await getUpdaterType(repo, user, game!);
 
-    //TODO: there may still be conflict in time/location
+    const message = await this._checkConflict(game.homeTeam.id, game.awayTeam.id, body.start);
+    if (message) {
+      res.send({ok: false, reason: message});
+      return;
+    }
 
     await this.repository.editGame({
       id: game.id,
