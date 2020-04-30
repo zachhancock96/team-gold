@@ -1,78 +1,133 @@
-import React from 'react';
-import $ from 'jquery';
+import React from "react";
+import $ from "jquery";
 
 export class View extends React.Component {
- componentWillMount() {
-    $('head').append(`<style id="styles-login">${css}</style>`)
+  componentWillMount() {
+    $("head").append(`<style id="styles-login">${css}</style>`);
   }
 
   componentWillUnmount() {
-    $('#styles-login').remove();
+    $("#styles-login").remove();
   }
 
   componentDidMount() {
     // Label effect
-    $('.m-login input').focus(function () {
-      $(this).siblings('label').addClass('active');
+    $(".m-login input").focus(function () {
+      $(this).siblings("label").addClass("active");
     });
 
-    // Form validation
-    $('.m-login input').blur(function () {
+    // //Preloader
+    $("#bg").delay(2000).slideToggle("slow");
+    $("#outer-bg").delay(2000).slideToggle("slow");
 
+    // Form validation
+    $(".m-login input").blur(function () {
       // User Name
-      if ($(this).hasClass('name')) {
+      if ($(this).hasClass("name")) {
         if ($(this).val().length === 0) {
-          $(this).siblings('span.error').text('Please type your full name').fadeIn().parent('.form-group').addClass('hasError');
+          $(this)
+            .siblings("span.error")
+            .text("Please type your full name")
+            .fadeIn()
+            .parent(".form-group")
+            .addClass("hasError");
         } else if ($(this).val().length > 1 && $(this).val().length <= 6) {
-          $(this).siblings('span.error').text('Please type at least 6 characters').fadeIn().parent('.form-group').addClass('hasError');
+          $(this)
+            .siblings("span.error")
+            .text("Please type at least 6 characters")
+            .fadeIn()
+            .parent(".form-group")
+            .addClass("hasError");
         } else {
-          $(this).siblings('.error').text('').fadeOut().parent('.form-group').removeClass('hasError');
+          $(this)
+            .siblings(".error")
+            .text("")
+            .fadeOut()
+            .parent(".form-group")
+            .removeClass("hasError");
         }
       }
       // Email
-      if ($(this).hasClass('email')) {
-        if ($(this).val().length == '') {
-          $(this).siblings('span.error').text('Please type your email address').fadeIn().parent('.form-group').addClass('hasError');
+      if ($(this).hasClass("email")) {
+        if ($(this).val().length == "") {
+          $(this)
+            .siblings("span.error")
+            .text("Please type your email address")
+            .fadeIn()
+            .parent(".form-group")
+            .addClass("hasError");
         } else {
-          $(this).siblings('.error').text('').fadeOut().parent('.form-group').removeClass('hasError');
+          $(this)
+            .siblings(".error")
+            .text("")
+            .fadeOut()
+            .parent(".form-group")
+            .removeClass("hasError");
         }
       }
 
-        // PassWord
-      if ($(this).hasClass('pass')) {
+      // PassWord
+      if ($(this).hasClass("pass")) {
         if ($(this).val().length < 8) {
-          $(this).siblings('span.error').text('Please type at least 8 charcters').fadeIn().parent('.form-group').addClass('hasError');
+          $(this)
+            .siblings("span.error")
+            .text("Please type at least 8 charcters")
+            .fadeIn()
+            .parent(".form-group")
+            .addClass("hasError");
         } else {
-          $(this).siblings('.error').text('').fadeOut().parent('.form-group').removeClass('hasError');
+          $(this)
+            .siblings(".error")
+            .text("")
+            .fadeOut()
+            .parent(".form-group")
+            .removeClass("hasError");
         }
       }
 
       // PassWord confirmation
-      if ($('.m-login .pass').val() !== $('.m-login .passConfirm').val()) {
-          $('.m-login .passConfirm').siblings('.error').text('Passwords don\'t match').fadeIn().parent('.form-group').addClass('hasError');
+      if ($(".m-login .pass").val() !== $(".m-login .passConfirm").val()) {
+        $(".m-login .passConfirm")
+          .siblings(".error")
+          .text("Passwords don't match")
+          .fadeIn()
+          .parent(".form-group")
+          .addClass("hasError");
       } else {
-          $('.m-login .passConfirm').siblings('.error').text('').fadeOut().parent('.form-group').removeClass('hasError');
+        $(".m-login .passConfirm")
+          .siblings(".error")
+          .text("")
+          .fadeOut()
+          .parent(".form-group")
+          .removeClass("hasError");
       }
 
       // label effect
       if ($(this).val().length > 0) {
-          $(this).siblings('label').addClass('active');
+        $(this).siblings("label").addClass("active");
       } else {
-          $(this).siblings('label').removeClass('active');
+        $(this).siblings("label").removeClass("active");
       }
     });
 
-
     // form switch
-    $('.m-login a.switch').click(function (e) {
-        $(this).toggleClass('active');
-        e.preventDefault();
+    $(".m-login a.switch").click(function (e) {
+      $(this).toggleClass("active");
+      e.preventDefault();
 
-        if ($('.m-login a.switch').hasClass('active')) {
-            $(this).parents('.form-peice').addClass('switched').siblings('.form-peice').removeClass('switched');
-        } else {
-            $(this).parents('.form-peice').removeClass('switched').siblings('.form-peice').addClass('switched');
-        }
+      if ($(".m-login a.switch").hasClass("active")) {
+        $(this)
+          .parents(".form-peice")
+          .addClass("switched")
+          .siblings(".form-peice")
+          .removeClass("switched");
+      } else {
+        $(this)
+          .parents(".form-peice")
+          .removeClass("switched")
+          .siblings(".form-peice")
+          .addClass("switched");
+      }
     });
   }
 
@@ -83,12 +138,20 @@ export class View extends React.Component {
     if (props.shouldAnimateEnd && !this.endAnimating) {
       this.endAnimating = true;
 
-      $('.m-login .signup,.m-login .login').addClass('switched');
+      $(".m-login .signup,.m-login .login").addClass("switched");
 
-      setTimeout(() => { $('.m-login .signup,.m-login .login').hide(); }, 700);
-      setTimeout(() => { $('.m-login .brand').addClass('active'); }, 300);
-      setTimeout(() => { $('.m-login .heading').addClass('active'); }, 600);
-      setTimeout(() => { $('.m-login .form').hide(); }, 700);
+      setTimeout(() => {
+        $(".m-login .signup,.m-login .login").hide();
+      }, 700);
+      setTimeout(() => {
+        $(".m-login .brand").addClass("active");
+      }, 300);
+      setTimeout(() => {
+        $(".m-login .heading").addClass("active");
+      }, 600);
+      setTimeout(() => {
+        $(".m-login .form").hide();
+      }, 700);
 
       setTimeout(props.onEndAnimationEnded, 1800);
     }
@@ -97,135 +160,203 @@ export class View extends React.Component {
   render() {
     const m = this.props;
     const { login, signup, schools, roles } = m;
-    
+
     return (
-      <div className="m-login container">
-      <section id="formHolder">
-  
-        <div className="row">
-  
+      <div className="outer-container">
+      <div id="outer-bg">
+        <div id="bg">
+          <img src="img/team_gold_logo.png"></img>
+        </div>
+      </div>
+
+        <div className="m-login container">
+          <section id="formHolder">
+          <div className="row">
             {/* <!-- Brand Box --> */}
             <div className="col-sm-6 brand">
-              <a href="#" className="logo">TG <span>.</span></a>
-  
+              <a href="#" className="logo">
+                TG <span>.</span>
+              </a>
+
               <div className="heading">
-                  <h2>TEAM GOLD</h2>
-                  <p>Your Right Choice</p>
+                <h2>TEAM GOLD</h2>
+                <p>Soccer Calender</p>
               </div>
             </div>
-  
-  
+
             {/* <!-- Form Box --> */}
             <div className="col-sm-6 form">
-  
               {/* <!-- Signup Form --> */}
               <div className="signup form-peice switched">
-                  <form className="signup-form" onSubmit={e => { e.preventDefault(); m.onSignupSubmit(); }}>
-  
-                    <h2 className="welcome">New User?</h2>
-                    <h6 className="signup-heading">Sign Up</h6>
+                <form
+                  className="signup-form"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    m.onSignupSubmit();
+                  }}
+                >
+                  <h2 className="welcome">New User?</h2>
+                  <h6 className="signup-heading">Sign Up</h6>
 
-                    <div className="form-group">
-                        <label htmlFor="name">Name</label>
-                        <input type="text" name="name" id="name" className="name"
-                          onChange={e => m.onSignupNameChange(e.target.value)}
-                          value={signup.name}/>
-                        <span className="error"></span>
-                    </div>
-  
-                    <div className="form-group">
-                        <label htmlFor="email">Email Address</label>
-                        <input type="email" name="emailAdress" id="email" className="email"
-                          onChange={e => m.onSignupEmailChange(e.target.value)}
-                          value={signup.email}/>
-                        <span className="error"></span>
-                    </div>
-  
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input type="password" name="password" id="password" className="pass"
-                          onChange={e => m.onSignupPasswordChange(e.target.value)}
-                          value={signup.password} />
-                        <span className="error"></span>
-                    </div>
-  
-                    <div className="form-group">
-                        <label htmlFor="passwordCon">Confirm Password</label>
-                        <input type="password" name="passwordCon" id="passwordCon" className="passConfirm"
-                          value={signup.confirmPassword}
-                          onChange={e => m.onSignupConfirmPasswordChange(e.target.value) } />
-                        <span className="error"></span>
-                    </div>
-
-                    <br />
-  
-                    <div className="form-group">
-                      <select className="select" 
-                        value={signup.schoolId}
-                        onChange={e => m.onSignupSchoolChange(parseInt(e.target.value))}>
-                        {
-                          schools.map(s => (<option key={s.value} value={s.value}>{s.label}</option>))
-                        }
-                      </select>
-                      <span className="error"></span>
-                  </div>
-  
                   <div className="form-group">
-                    <select className="select" 
-                      value={signup.role}
-                      onChange={e => m.onSignupRoleChange(e.target.value)}>
-                      {
-                        roles.map(r => (<option key={r.value} value={r.value}>{r.label}</option>))
+                    <label htmlFor="name">Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      className="name"
+                      onChange={(e) => m.onSignupNameChange(e.target.value)}
+                      value={signup.name}
+                    />
+                    <span className="error"></span>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="email">Email Adderss</label>
+                    <input
+                      type="email"
+                      name="emailAdress"
+                      id="email"
+                      className="email"
+                      onChange={(e) => m.onSignupEmailChange(e.target.value)}
+                      value={signup.email}
+                    />
+                    <span className="error"></span>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <input
+                      type="password"
+                      name="password"
+                      id="password"
+                      className="pass"
+                      onChange={(e) => m.onSignupPasswordChange(e.target.value)}
+                      value={signup.password}
+                    />
+                    <span className="error"></span>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="passwordCon">Confirm Password</label>
+                    <input
+                      type="password"
+                      name="passwordCon"
+                      id="passwordCon"
+                      className="passConfirm"
+                      value={signup.confirmPassword}
+                      onChange={(e) =>
+                        m.onSignupConfirmPasswordChange(e.target.value)
                       }
+                    />
+                    <span className="error"></span>
+                  </div>
+
+                  <br />
+
+                  <div className="form-group">
+                    <select
+                      className="select"
+                      value={signup.schoolId}
+                      onChange={(e) =>
+                        m.onSignupSchoolChange(parseInt(e.target.value))
+                      }
+                    >
+                      {schools.map((s) => (
+                        <option key={s.value} value={s.value}>
+                          {s.label}
+                        </option>
+                      ))}
                     </select>
                     <span className="error"></span>
-                </div>
-  
-                    <div className="CTA">
-                        <input type="submit" value="Sign up"/>
-                        <a href="#" className="switch">I have an account</a>
-                    </div>
-                  </form>
+                  </div>
+
+                  <div className="form-group">
+                    <select
+                      className="select"
+                      value={signup.role}
+                      onChange={(e) => m.onSignupRoleChange(e.target.value)}
+                    >
+                      {roles.map((r) => (
+                        <option key={r.value} value={r.value}>
+                          {r.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="error"></span>
+                  </div>
+
+                  <div className="CTA">
+                    <input type="submit" value="Sign up" />
+                    <a href="#" className="switch">
+                      I have an account
+                    </a>
+                  </div>
+                </form>
               </div>
               {/* <!-- End Signup Form --> */}
-  
-  
-                {/* <!-- Login Form --> */}
-                <div className="login form-peice ">
-                  <form className="login-form" onSubmit={e => { e.preventDefault(); m.onLoginSubmit(); }}>
-                    <h2 className="welcome">Welcome Back!</h2>
-                    <h3 className="SignIN">Sign In</h3>
-                    <div className="form-group">
-                        <label htmlFor="loginemail">Email Adderss</label>
-                        <input type="email" name="loginemail" id="loginemail" 
-                          onChange={e => m.onLoginEmailChange(e.target.value)} 
-                          value={login.email} required/>
-                    </div>
-  
-                    <div className="form-group">
-                        <label htmlFor="loginPassword">Password</label>
-                        <input type="password" name="loginPassword" id="loginPassword" 
-                          onChange={e => m.onLoginPasswordChange(e.target.value)} 
-                          value={login.password} required/>
-                    </div>
-  
-                    <div className="CTA">
-                        <input type="submit" value="Login" disabled={!login.canSubmit}/>
-                        <a href="#" className="switch">I am a New User</a>
-                    </div>
-                  </form>
+
+              {/* <!-- Login Form --> */}
+              <div className="login form-peice ">
+                <form
+                  className="login-form"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    m.onLoginSubmit();
+                  }}
+                >
+                  <h2 className="welcome">Welcome Back!</h2>
+                  <h3 className="SignIN">Sign In</h3>
+                  <div className="form-group">
+                    <label htmlFor="loginemail">Email Adderss</label>
+                    <input
+                      type="email"
+                      name="loginemail"
+                      id="loginemail"
+                      onChange={(e) => m.onLoginEmailChange(e.target.value)}
+                      value={login.email}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="loginPassword">Password</label>
+                    <input
+                      type="password"
+                      name="loginPassword"
+                      id="loginPassword"
+                      onChange={(e) => m.onLoginPasswordChange(e.target.value)}
+                      value={login.password}
+                      required
+                    />
+                  </div>
+
+                  <div className="CTA">
+                    <input
+                      type="submit"
+                      value="Login"
+                      disabled={!login.canSubmit}
+                    />
+                    <a href="#" className="switch">
+                      I am a New User
+                    </a>
+                  </div>
+                </form>
               </div>
               {/* <!-- End Login Form --> */}
-  
             </div>
-        </div>
-      </section>
-      <footer>
-        <p>
-            <a href="#" target="_blank">TEAMGOLD © 2020</a>
-        </p>
-      </footer>
-    </div>);
+          </div>
+        </section>
+        <footer>
+          <p>
+            <a href="#" target="_blank">
+              TEAMGOLD © 2020
+            </a>
+          </p>
+        </footer>
+      </div>
+      </div>
+    );
   }
 }
 
@@ -554,7 +685,7 @@ body {
       heigh: auto;
       min-height: 600px;
       margin-left: 10vw;
-      min-width: 400px;
+      min-width: 80%;
   }
   .m-login section#formHolder .form .form-peice {
       margin: 0;
@@ -581,9 +712,7 @@ body {
 
 @media (max-width: 501px) {
   .m-login section#formHolder .form {
-      // width: 100vw;
-      // margin-left: 0;
-      width: 80%;
+      width: 90%;
       margin-left: 10px;
   }
   .m-login h2 {
@@ -607,7 +736,6 @@ body {
   margin-bottom: -20px;
 }
 
-
 /* SELECT OPTION CSS STARTS */
 
 .m-login .select {
@@ -625,12 +753,66 @@ body {
 	box-shadow: 0 1px 0 1px rgba(0,0,0,.04);
 	border-radius: 5px;
 	-moz-appearance: none;
-	/* appearance: none; */
 	background-color: #fff;
-	/* background: linear-gradient(to bottom, #ffffff 0%,#e5e5e5 100%); */
 	background-repeat: no-repeat, repeat;
 	background-position: right .7em top 50%, 0 0;
   background-size: .65em auto, 100%;
   padding: 8px;
   margin-top: 10px;
-}`;
+}
+
+/* PRELOADER CSS GOES HERE */
+/* PRELOADER CSS GOES HERE */
+/* PRELOADER CSS GOES HERE */
+
+// .loader {
+//   position: fixed;
+//   height: 100%;
+//   width: 100%;
+//   background: linear-gradient(180deg, rgba(205,184,183,1) 16%, rgba(147,116,116,1) 46%, rgba(88,81,73,1) 80%);
+//   margin-right: 0px;
+//   z-index: 99999;
+
+
+//   img/team_gold_logo.png
+// }
+
+// .logo {
+//   display: block;
+//   margin-left: auto;
+//   margin-right: auto;
+//   margin-top: 100px;
+
+// }
+
+#bg {
+  position: fixed; 
+  top: -50%; 
+  left: -50%; 
+  width: 200%; 
+  height: 200%;
+  z-index: 99999;
+}
+#bg img {
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  margin: auto; 
+  height: 300px;
+}
+
+#outer-bg {
+  position: absolute;
+  background: linear-gradient(180deg, rgba(250,235,215,1) 0%, rgba(191,179,163,1) 35%, rgba(77,74,71,1) 100%);
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  margin: auto;   
+  z-index: 99999;
+
+}
+
+`;

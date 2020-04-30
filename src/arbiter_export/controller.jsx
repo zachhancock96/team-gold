@@ -88,6 +88,8 @@ export class ArbiterExport extends React.Component {
           height: '100%',
           padding: '20px',
           backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2)'
         }}>
           <First />
           <CreateExport 

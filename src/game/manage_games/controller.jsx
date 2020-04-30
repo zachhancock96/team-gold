@@ -175,19 +175,25 @@ const DesktopLayout = ({ children }) => {
     }}>
       <div style={{
         width: '400px',
-        height: '100vh',
+        height: '700px',
         backgroundColor: 'white',
-        overflowY: 'scroll',
+        overflowY: 'auto',
         overflowX: 'hidden',
+        borderRadius: '8px',
+        boxShadow: '0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2)'
+
+
       }}>
         {left}
       </div>
       <div style={{
         marginLeft: '20px',
         flex: 1,
+        height: '700px',
         backgroundColor: 'white',
-        overflowY: 'scroll',
-        height: '100vh'
+        overflowY: 'auto',
+        borderRadius: '8px',
+        boxShadow: '0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2)'
       }}>
         {right}
       </div>

@@ -135,9 +135,13 @@ const DesktopLayout = ({ children }) => {
       <div style={{
         width: '400px',
         backgroundColor: 'white',
-        overflowY: 'scroll',
+        overflowY: 'auto',
         overflowX: 'hidden',
-        height: '100vh'
+        height: '700px',
+        marginTop: '15px',
+        borderRadius: '8px',
+        boxShadow: '0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2)'
+
       }}>
         {left}
       </div>
@@ -145,8 +149,12 @@ const DesktopLayout = ({ children }) => {
         marginLeft: '20px',
         flex: 1,
         backgroundColor: 'white',
-        overflowY: 'scroll',
-        height: '100vh'
+        overflowY: 'auto',
+        height: '700px',
+        marginTop: '15px',
+        borderRadius: '8px',
+        boxShadow: '0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2)'
+
       }}>
         {right}
       </div>

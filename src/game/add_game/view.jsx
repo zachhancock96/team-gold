@@ -13,7 +13,9 @@ const Layout = ({children}) => {
   return (
     <div style={{
       backgroundColor: 'white',
-      padding: '8px'
+      padding: '8px',
+      borderRadius: '8px'
+
     }}>
       <h1 style={{
         fontSize: '1.4rem',

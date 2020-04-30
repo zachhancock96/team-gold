@@ -14,6 +14,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
     "@fortawesome/react-fontawesome": "^0.1.9",
     "@khanacademy/react-multi-select": "^0.3.3",
+    "codemirror": "^5.53.2",
     "eslint": "^6.8.0",
     "feather-route-matcher": "^3.1.0",
     "jquery": "^3.5.0",
