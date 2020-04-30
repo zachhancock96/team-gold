@@ -173,6 +173,8 @@ export default class SchoolController {
       return;
     }
 
+    console.log(rep);
+
     const error = checkRemoveRep(req.user!, school, rep);
     if (error) {
       res.send({ok: false, reason: error});
@@ -217,7 +219,7 @@ export default class SchoolController {
         return acc;
     }, []);
 
-    res.send({ok: true, schoolAdmins: users} as ApiSchema.Schools_Id_SchoolAdmin_GET_RES);
+    res.send({ok: true, schoolAdmins: users.map(u => u.toApi())} as ApiSchema.Schools_Id_SchoolAdmin_GET_RES);
   }
 
   //school reps that are either pending or accepted
