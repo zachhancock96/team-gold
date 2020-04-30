@@ -5,7 +5,8 @@ import { Login } from '../login';
 import { School } from '../school';
 import { Game } from '../game';
 import { Calendar } from '../calendar';
-import { ArbiterExport } from '../arbiter-export';
+import { SqlExecute } from '../sql_execute';
+import { ArbiterExport } from '../arbiter_export';
 import { Navbar } from '../navbar';
 import { Loading } from '../loading';
 import { Toast } from '../toast';
@@ -15,7 +16,8 @@ const componentMap = {
   School,
   Game,
   ArbiterExport,
-  Calendar
+  Calendar,
+  SqlExecute
 };
 
 export const Root = ({ state, actions }) => {

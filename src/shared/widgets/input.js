@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { Form } from 'react-bootstrap';
 import  ReactMultiSelect from '@khanacademy/react-multi-select';
 import ReactTimePicker from 'react-time-picker';
-import ReactDatePicker from 'react-date-picker'
-import ReactSelect from 'react-select'
+import ReactDatePicker from 'react-date-picker';
+import ReactSelect from 'react-select';
 import './input.css';
 
 

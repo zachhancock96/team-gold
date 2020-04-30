@@ -29,7 +29,7 @@ const filterGamesByRoutingState = (games, routing) => {
     : s === 'ApprovedGames'
       ? g => g.status === 'accepted'
       : s === 'PendingGames'
-        ? g => ['pending_home', 'pending_assignor', 'pending_away'].indexOf(g.status) >= 0
+        ? g => ['pending_home_team', 'pending_assignor', 'pending_away_team'].indexOf(g.status) >= 0
         : g => g.status === 'rejected';
 
   return games.filter(filterFn);
@@ -54,6 +54,7 @@ export class ManageGames extends React.Component {
     m.actions.showLoading('ManageGames');
     api.getMyGames()
       .then(games => {
+        console.log(games);
         this.setState({games});
       })
       .finally(() => {
@@ -149,7 +150,8 @@ const MobileLayout = ({ children }) => {
       backgroundColor: 'white',
       overflowY: 'scroll',
       overflowX: 'hidden',
-      flex: 1
+      flex: 1,
+      height: '100vh'
     }}>
       {children}
     </div>
@@ -173,10 +175,10 @@ const DesktopLayout = ({ children }) => {
     }}>
       <div style={{
         width: '400px',
-        height: '100%',
+        height: '100vh',
         backgroundColor: 'white',
         overflowY: 'scroll',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
       }}>
         {left}
       </div>
@@ -184,7 +186,8 @@ const DesktopLayout = ({ children }) => {
         marginLeft: '20px',
         flex: 1,
         backgroundColor: 'white',
-        overflowY: 'scroll'
+        overflowY: 'scroll',
+        height: '100vh'
       }}>
         {right}
       </div>

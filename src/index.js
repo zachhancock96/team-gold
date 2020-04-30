@@ -21,7 +21,6 @@ createApp()
     const ViewWithTracer_ = ViewWithTracer(states);
 
     states.map(state => {
-      console.log(state);
       const View = withTracer? ViewWithTracer_: ViewWithoutTracer;
       ReactDOM.render(View({app, state, actions}), root);
 

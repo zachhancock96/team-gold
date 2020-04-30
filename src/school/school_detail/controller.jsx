@@ -4,17 +4,7 @@ import { View } from './view';
 import { api } from 'shared';
 
 /*
-  type User = {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-    status: string;
-    schoolId: number
-  }
-
-  when doing getSchool
-    {
+    interface School {
       id: number;
       name: string;
       isLhsaa: boolean;
@@ -40,12 +30,6 @@ import { api } from 'shared';
         name: string
       } | null;
     }
-
-  when doing getSchoolAdminsOfSchool
-  Array<User>
-
-  when doing getSchoolRepsOfSchool
-  Array<{ rep: User, teamIds: number[] }>
 */
 const load = async schoolDetailid => {
   const school = await api.getSchool(schoolDetailid);
@@ -120,28 +104,86 @@ export class SchoolDetail extends Component {
     }
   }
 
-  // handleEdit = id => {
-  //   this.props.onEdit(id);
-  // }
+  sl = () => {
+    const { actions } = this.props;
+    actions.showLoading('school_detail');
+  }
+  
+  hl = () => {
+    const { actions } = this.props;
+    actions.hideLoading('school_detail');
+  }
 
-  // handleEditSchool = id => {
-  //   this.props.onEdit(id);
-  // }
+  handleRepEdit = async (schoolId, repId, teamIds) => {
+    this.sl();
+    
+    await api.editSchoolRep(schoolId, repId, teamIds);
+    this._load(schoolId);
 
-  // handleAccept = async id => {
-  //   await api.acceptGame(id);
-  //   this._loadGame(id);
-  // }
+    this.hl();
+    this.success('Edited like a true editor.');
+  }
 
-  // handleReject = async id => {
-  //   const { actions } = this.props;
-  //   api.rejectGame(id)
-  //     .then(() => {
-  //       actions.showSuccess('Game Rejected succesfully');
-  //       this._loadGame(id);
-  //     })
-  //     .catch(err => actions.showError(err.message || err));
-  // }
+  success = s => {
+    const { actions } = this.props;
+    actions.showSuccess(s);
+  }
+
+  success = s => {
+    const { actions } = this.props;
+    actions.showError(s);
+  }  
+
+  handleAccept = async (schoolId, userId, userType) => {
+    this.sl();
+
+    if (userType === 'school_admin'){
+      await api.acceptSchoolAdmin(schoolId, userId).catch(err => this.error(err));
+      this._load(schoolId);
+      this.success('User has been accepted.')
+    }
+    else if (userType === 'school_rep'){
+      await api.acceptSchoolRep(schoolId, userId).catch(err => this.error(err));
+      this._load(schoolId);
+      this.success('User has been accepted.')
+    }
+
+    this.hl();
+  }
+
+  handleReject = async (schoolId, userId, userType) => {
+    this.sl();
+
+    if (userType === 'school_admin'){
+      await api.rejectSchoolAdmin(schoolId, userId);
+      this._load(schoolId);
+      this.success('User has been rejected.')
+    }
+    else if (userType === 'school_rep'){
+      await api.rejectSchoolRep(schoolId, userId);
+      this._load(schoolId);
+      this.success('User has been rejected.')
+    }
+
+    this.hl();
+  }
+
+  handleDelete = async (schoolId, userId, userType) => {
+    this.sl();
+
+    if (userType === 'school_admin'){
+      await api.removeSchoolAdmin(schoolId, userId);
+      this._load(schoolId);
+      this.success('User has been deleted.')
+    }
+    else if (userType === 'school_rep'){
+      await api.removeSchoolRep(schoolId, userId);
+      this._load(schoolId);
+      this.success('User has been deleted.')
+    }
+
+    this.hl();
+  }
 
   render() {
     const { ready, school, schoolAdmins, schoolReps } = this.state;
@@ -153,7 +195,8 @@ export class SchoolDetail extends Component {
           schoolDetail={school}
           onAccept={this.handleAccept}
           onReject={this.handleReject}
-          onEdit={this.handleEdit}
+          onDelete={this.handleDelete}
+          onEdit={this.handleRepEdit}
           onEditSchool={this.handleEditSchool} />)
       : null;
   }

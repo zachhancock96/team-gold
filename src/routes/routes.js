@@ -2,8 +2,11 @@ import { createRouteSegments } from 'meiosis-routing/state';
 
 export const Route = createRouteSegments([
   "Login",
-  "School",
   "Calendar",
+  "SqlExecute",
+
+  "School",
+  "SchoolDetail",
 
   "Game",
   "AddGame",
@@ -23,12 +26,20 @@ export const Route = createRouteSegments([
 export const routeConfig = {
   Login: "/login",
   School: "/school/:id",
+  SqlExecute: "/sql-execute",
 
   ArbiterExport: [
     "/arbiter-export?just_added",
     {
       EditArbiterExport: "/edit/:id",
       CreateArbiterExprot: "/create"
+    }
+  ],
+
+  School: [
+    "/school",
+    {
+      SchoolDetail: '/:id',
     }
   ],
 

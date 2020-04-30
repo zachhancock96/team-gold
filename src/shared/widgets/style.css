@@ -1,0 +1,25 @@
+.filter-component {
+  border-radius: 4px;
+  padding: 8px; 
+  background-color: white;
+  width: 450px;
+  box-shadow: 0 6px 20px 0 rgba(0,0,0,.19), 0 8px 17px 0 rgba(0,0,0,.2);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.filter-component *,
+.filter-component .multi-select input {
+  font-size: .9rem;
+}
+
+.filter-component .multi-select .dropdown-heading {
+  height: 30px !important;
+}
+
+.filter-component .font-sm {
+  font-size: .9em;
+}
+
+.ReactCollapse--collapse {
+  transition: height 200ms;
+}

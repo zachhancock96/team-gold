@@ -32,7 +32,7 @@ export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
 
   const gameHistory = displayHistory(history);
 
-  // const status = formatStatus(gameDetail.game.status)
+  const status = formatStatus(gameDetail.game.status)
 
   return (
     <div className='game-detail'>
@@ -58,7 +58,7 @@ export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
       </div>
       <div>
         <p className='game-detail-header'>Status</p>
-        <p style={{ paddingTop: '15px', paddingBottom: '10px' }}>{gameDetail.game.status}</p>
+        <p style={{ paddingTop: '15px', paddingBottom: '10px' }}>{status}</p>
         <hr />
       </div>
       <div style={{
@@ -126,8 +126,11 @@ const prettyHistory = gameDetail => {
 }
 
 const title = game => {
-  return game.homeTeam.school.name + ' ' + game.homeTeam.teamKind + ' vs '
-    + game.awayTeam.school.name + ' ' + game.awayTeam.teamKind;
+  const hTeamKind = formatTeamKind(game.homeTeam.teamKind)
+  const aTeamKind = formatTeamKind(game.awayTeam.teamKind)
+
+  return game.homeTeam.school.name + ' ' + hTeamKind + ' vs '
+    + game.awayTeam.school.name + ' ' + aTeamKind;
 }
 
 const displayHistory = history => {
@@ -161,3 +164,36 @@ const displayHistory = history => {
   return historyList;
 }
 
+const formatStatus = status =>{
+  if (status === 'pending_away_team'){
+    return <span style={{fontWeight:'bold'}}>Pending (Away Team)</span>
+  }
+  else if (status === 'pending_home_team'){
+    return <span style={{fontWeight:'bold'}}>Pending (Home Team)</span>
+  }
+  else if (status === 'pending_assignor'){
+    return <span style={{fontWeight:'bold'}}>Pending (Assingor)</span>
+  }
+  else if (status === 'accepted'){
+    return <span style={{color: 'green', fontWeight:'bold'}}>Accepted</span>
+  }
+  else if (status === 'rejected'){
+    return <span style={{color:'red', fontWeight:'bold'}}>Rejected</span>
+  }
+
+}
+
+const formatTeamKind = TeamK =>{
+  if(TeamK == 'vg'){
+    return 'Varsity Girls'
+  }
+  else if(TeamK == 'vb'){
+    return 'Varsity Boys'
+  }
+  else if(TeamK == 'jvg'){
+    return 'JV Girls'
+  }
+  else{
+    return 'JV Boys'
+  }
+}
