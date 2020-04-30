@@ -6,6 +6,7 @@ import { getSchoolRepsOfSchool } from 'shared/api';
 import { api } from 'shared';
 import { API_DATE_FORMAT } from 'shared/moment';
 import { school } from 'school';
+import { MultiSelect } from 'shared/widgets';
 
 /*
   Edit button is commented out at the moment, need to create an api to edit the users for a school
@@ -21,6 +22,9 @@ const Header = ({ children }) => (
   </h3>
 );
 
+const jsonLog = user => {
+  console.log(JSON.stringify(user, null, 2));
+}
 //teams is like teams: Array<{ abbrevName: string, name: string, teamKind: string, id: number}>
 /*e.g.
   "abbrevName": "vb",
@@ -28,85 +32,29 @@ const Header = ({ children }) => (
   "id": 1,
   "teamKind": "vb" (i formatted this way in controller.jsx line 66)
 */
-class UserRow extends Component {
-  static defaultProps = {
-    schoolId: [],
-    id: [],
-    name: [],
-    email: [],
-    role: [],
-    teams: [],
-    status: [],
-    onAccept: () => {},
-    onReject: () => {},
-    onDelete: () => {},
-    onEdit: () => {}
-  };
-
-  render() {
-    const {
-      schoolId,
-      id,
-      name,
-      email,
-      role,
-      teams,
-      status,
-      onAccept,
-      onReject,
-      onDelete,
-      onEdit
-    } = this.props;
-
-    if (status === 'pending'){
-      return (<tr className='user-pending'>
-        <td>{name}</td>
-        <td>{email}</td>
-        <td>{teams}</td>
-        <td><button onClick={(e) => onAccept(schoolId, id, role)}>Accept</button><button onClick={(e) => onReject(schoolId, id, role)}>Reject</button></td>
-      </tr>);
-    }
-    else{
-      return (<tr className='user-accepted'>
-        <td>{name}</td>
-        <td>{email}</td>
-        <td>{teams}</td>
-        <td><button onClick={(e) => onEdit()}>Edit</button><button onClick={(e) => onDelete(id, schoolId, role)}>Delete</button></td>
-      </tr>);
-    }
-  }
-}
-
-// const fmTeams = teams =>{
-//   let t = teams.length
-//     ? teams.map(t => t.abbrevName).join(', ')
-//     : ''; 
-
-//   return <span>{t}</span>;
-// }
 
 export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onSubscribe, onDelete }) => {
   if (!schoolDetail) return <div className='school-detail-empty'></div>;
-
-    // Example of schoolDetail format
-    //
-    // assignor: {id: 2, name: "Sir Birtleby Assignor"}
-    // district: {id: 1, name: "District A"}
-    // id: 1
-    // isLhsaa: true
-    // name: "Acadiana HomeSchool"
-    // schoolAdmin: null
-    // schoolReps: []
-    // teams: Array(4)
-    // 0: {id: 1, name: "Acadiana HomeSchool - VB", teamKind: "vb"}
-    // 1: {id: 2, name: "Acadiana HomeSchool - VG", teamKind: "vg"}
-    // 2: {id: 3, name: "Acadiana HomeSchool - JVG", teamKind: "jvb"}
-    // 3: {id: 4, name: "Acadiana HomeSchool - JVB", teamKind: "jvg"}
   
-  const admins = checkAdmin(schoolDetail.id, schoolAdmins, onAccept, onReject, onEdit, onDelete);
+  const admins = createAdminView({
+    schoolId: schoolDetail.id,
+    schoolAdmins,
+    onAccept,
+    onReject,
+    onDelete
+  });
+
+  const reps = createRepView({
+    schoolId: schoolDetail.id,
+    schoolReps,
+    onAccept,
+    onReject,
+    onDelete,
+    onEdit
+  })
+
   const district = checkDistrict(schoolDetail.district);
   const assignor = checkAssignor(schoolDetail.assignor);
-  const reps = checkReps(schoolDetail.id, schoolReps, onAccept, onReject, onEdit, onDelete);
   const teams = checkTeams(schoolDetail.teams);
   
   return (
@@ -122,15 +70,6 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
                   onClick={null}>Subscribe</CurvedButton>
           <Header>{schoolDetail.name}</Header>
         </div>
-        {/* <div>
-          {
-            schoolDetail.actions.indexOf('edit') >= 0
-              ? <CurvedButton
-                style={{ paddingLeft: '20px', paddingRight: '20px', margin: '8px' }}
-                onClick={null}>Edit</CurvedButton>
-              : null
-          }
-        </div> */}
       </div>
       <div>
         <p className='game-detail-header'>General</p>
@@ -160,68 +99,175 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
 
 }
 
-const checkReps = (schoolId, schoolReps, onAccept, onReject, onEdit, onDelete) => {
+
+
+
+
+class RepRow extends Component {
+  state = {
+    isEditing: false,
+    editTeamForm: []
+  }
+
+  cancelEditing = () => {
+    this.setState({
+      editTeamForm: [],
+      isEditing: false
+    })
+  }
+
+  confirmEditing = () => {
+
+  }
+
+  startEditing = () => {
+    const m = this.props;
     
-    const header = ['Name', 'Email', 'Teams', 'Options'];
-    
-    return <Table>
-              <thead>
-                <tr>
-                  {header.map((title) => (
-                    <th>{title}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {schoolReps.map(user =>{
-                    return <UserRow
-                    id={user.rep.id}
-                    name={user.rep.name}
-                    email={user.rep.email}
-                    role={user.rep.role}
-                    teams={user.teamIds}
-                    status={user.rep.status}
-                    buttons={ [] }
-                    onAccept={onAccept}
-                    onReject={onReject}
-                    onEdit={onEdit}
-                    onDelete={onDelete}
-                    schoolId={schoolId} />
-                  })}
-              </tbody>
-           </Table>
-  
+    this.setState({
+      isEditing: true,
+      editTeamForm: [...m.teams]
+    })
+  }
+
+  render() {
+    const m = this.props;
+    const { user, teams, schoolId } = m;
+
+    const teams_ = teams.map(t => t.abbrevName).join(' , ');
+
+    if (user.status === 'pending'){
+      return (<tr className='user-pending'>
+        <td>{user.name}</td>
+        <td>{user.email}</td>
+        <td>{teams_}</td>
+        <td>
+          <button onClick={() => m.onAccept(schoolId, user.id, user.role)}>Accept</button>
+          <button onClick={() => m.onReject(schoolId, user.id, user.role)}>Reject</button>
+        </td>
+      </tr>);
+    }
+    else {
+      const teamsRow = this.state.isEditing?  <div style={{width: '175px'}}><MultiSelect /></div>: teams_;
+      const buttons = this.state.isEditing? (
+        <>
+          <button onClick={this.confirmEditing}>Confirm</button>  
+          <button onClick={this.cancelEditing}>Cancel</button>
+        </>
+      ): (
+        <>
+        <button onClick={this.startEditing}>Edit</button>  
+        <button onClick={() => m.onDelete(schoolId, user.id, user.role)}>Delete</button>  
+        </>
+      )
+      return (<tr className='user-accepted'>
+        <td>{user.name}</td>
+        <td>{user.email}</td>
+        <td>{teamsRow}</td>
+        <td>
+          {buttons}
+        </td>
+      </tr>);
+    }
+  }
 }
 
-const checkAdmin = (schoolId, schoolAdmins, onAccept, onReject, onEdit, onRemove) => {
+const createRepView = ({
+  schoolId,
+  schoolReps,
+  onAccept,
+  onReject,
+  onDelete,
+  onEdit,
+}) => {
     
-    const header = ['Name', 'Email', 'Options'];
+  const header = ['Name', 'Email', 'Teams', 'Options'];
+  return (
+    <Table>
+      <thead>
+        <tr>
+          {header.map((title) => (
+            <th>{title}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {schoolReps.map(r =>{
+            return <RepRow
+              user={r}
+              teams={r.teams}
+              schoolId={schoolId}
+              onAccept={onAccept}
+              onReject={onReject}
+              onEdit={onEdit}
+              onDelete={onDelete} />
+          })}
+      </tbody>
+    </Table>);  
+}
 
-    return <Table>
-              <thead>
-                <tr>
-                  {header.map((title) => (
-                    <th>{title}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {schoolAdmins.map(user =>{
-                    return <UserRow
-                    id={user.o.id}
-                    name={user.o.name}
-                    email={user.o.email}
-                    role={user.o.role}
-                    status={user.o.status}
-                    buttons={ [] }
-                    onAccept={onAccept}
-                    onReject={onReject}
-                    onEdit={onEdit}
-                    onRemove={onRemove}
-                    schoolId={schoolId} />
-                  })}
-              </tbody>
-           </Table>
+class AdminRow extends Component {
+  static defaultProps = {
+    user: {
+      id: -1,
+      name: '',
+      email: '',
+      role: '',
+      status: ''
+    },
+    onAccept: (() => {}),
+    onReject: (() => {}),
+    onDelete: (() => {}),
+    schoolId: -1 
+  };
+
+  render() {
+    const { schoolId, user } = this.props;
+    const m = this.props;
+
+    if (user.status === 'pending'){
+      return (<tr className='user-pending'>
+        <td>{user.name}</td>
+        <td>{user.email}</td>
+        <td>
+          <button onClick={() => m.onAccept(schoolId, user.id, user.role)}>Accept</button>
+          <button onClick={() => m.onReject(schoolId, user.id, user.role)}>Reject</button>
+        </td>
+      </tr>);
+    }
+    else {
+      return (<tr className='user-accepted'>
+        <td>{user.name}</td>
+        <td>{user.email}</td>
+        <td>
+          <button onClick={() => m.onDelete(schoolId, user.id, user.role)}>Delete</button>
+        </td>
+      </tr>);
+    }
+  }
+}
+
+const createAdminView = ({schoolId, schoolAdmins, onAccept, onReject, onDelete}) => {
+  const header = ['Name', 'Email', 'Options'];
+  return (
+    <Table>
+      <thead>
+        <tr>
+          {header.map((title) => (
+            <th>{title}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {schoolAdmins.map(user =>{
+            return <AdminRow
+            user={user}
+            onAccept={onAccept}
+            onReject={onReject}
+            onDelete={onDelete}
+            schoolId={schoolId} />
+          })}
+      </tbody>
+    </Table>);
 } 
 
 const checkDistrict = district => {

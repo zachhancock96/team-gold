@@ -21,6 +21,9 @@ input {
 .flex-1 {
   flex: 1;
 }
+.d-flex {
+  display: flex;
+}
 
 /*Container bootstrap wrapper BEGIN
 */ 

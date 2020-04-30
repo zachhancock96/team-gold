@@ -34,7 +34,27 @@ import { api } from 'shared';
 const load = async schoolDetailid => {
   const school = await api.getSchool(schoolDetailid);
   const schoolAdmins = await api.getSchoolAdminsOfSchool(schoolDetailid);
-  const schoolReps = await api.getSchoolRepsOfSchool(schoolDetailid);
+  let schoolReps = await api.getSchoolRepsOfSchool(schoolDetailid);
+
+  /*
+  formatting the return of getSchoolRepsOfSchool to
+  Array<{
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+    status: string;
+    schoolId: number
+    teams: Array<{ abbrevName: string, name: string, teamKind: string, id: number}>
+  */
+  schoolReps = schoolReps.map(({ rep, teamIds }) => {
+    const teams = school
+      .teams
+      .filter(t => teamIds.indexOf(t.id) >= 0)
+      .map(t => ({ abbrevName: t.teamKind, name: t.name, id: t.id, teamKind: t.teamKind}));
+    rep.teams = teams;
+    return rep;
+  });
 
   return {
     school,
@@ -93,6 +113,8 @@ export class SchoolDetail extends Component {
   // }
 
   handleAccept = async (schoolId, userId, userType) => {
+    console.log(schoolId, userId, userType);
+    return;
     if (userType === 'school_admin'){
       await api.acceptSchoolAdmin(schoolId, userId);
       this._load(schoolId);
@@ -109,6 +131,8 @@ export class SchoolDetail extends Component {
   }
 
   handleReject = async (schoolId, userId, userType) => {
+    console.log(schoolId, userId, userType);
+    return;
     if (userType === 'school_admin'){
       await api.rejectSchoolAdmin(schoolId, userId);
       this._load(schoolId);
@@ -125,6 +149,8 @@ export class SchoolDetail extends Component {
   }
 
   handleDelete = async (schoolId, userId, userType) => {
+    console.log(schoolId, userId, userType);
+    return;
     if (userType === 'school_admin'){
       await api.removeSchoolAdmin(schoolId, userId);
       this._load(schoolId);

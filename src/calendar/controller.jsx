@@ -40,16 +40,19 @@ export class Calendar extends Component {
   }
 
   componentDidMount() {
-    //actions.showLoading('Calendar');
+    const { actions } = this.props;
+    actions.showLoading('Calendar');
     api.getSchools()
       .then(schools => {
-        api.getGames()
+        return api.getGames()
           .then(games => {
             const labels = games.map(g => ({ id: g.id, color: gameColor(g), at: g.start }));
             this.setState({ games, labels, schools });
           })
       })
-    //actions.showLoading('Calendar');
+      .then(() => {
+        actions.hideLoading('Calendar');
+      });
   }
 
   //after label changes, calendar triggers calendar change
@@ -85,18 +88,32 @@ export class Calendar extends Component {
     const { labels, schools, calendarListState: cls } = this.state;
     const m = this.props;
     const isDesktop = m.state.device === 'desktop';
+    
+    const calendarMain = <CalendarMain
+      schools={schools}
+      onFilterFnChanged={this.filterGames}
+      labels={labels}
+      onChange={this.calendarChange} />;
 
+    const calendarList = <CalendarList
+      actions={m.actions}
+      shouldHide={cls.games.length == 0}
+      start={cls.start}
+      end={cls.end}
+      games={cls.games} />
     const desktopView = (
-      <div style={{ display: 'flex', height: '100%', justifyContent: 'space-around' }}>
+      <div style={{ 
+        display: 'flex', 
+        height: '100%', 
+        justifyContent: 'space-around',
+        paddingTop: '20px',
+        paddingBottom: '20px'
+        }}>
         <div style={{ flex: 1, maxWidth: '800px' }}>
-          <CalendarMain
-            schools={schools}
-            onFilterFnChanged={this.filterGames}
-            labels={labels}
-            onChange={this.calendarChange} />
+          {calendarMain}
         </div>
         <CalendarList
-          onFilter
+          actions={m.actions}
           shouldHide={cls.games.length == 0}
           start={cls.start}
           end={cls.end}
@@ -105,39 +122,20 @@ export class Calendar extends Component {
     );
 
     const mobileView = (
-      <div style={{ height: '100%' }}>
-
-        <div style={{ height: '80%' }}>
+      <div className='mobile' style={{
+        paddingTop: '20px',
+        paddingBottom: '20px'
+      }}>
+        <div style={{ height: '680px' }}>
           <CalendarMain
+            schools={schools}
+            onFilterFnChanged={this.filterGames}
             labels={labels}
             onChange={this.calendarChange} />
         </div>
-
-        <CalendarList
-          shouldHide={cls.games.length == 0}
-          start={cls.start}
-          end={cls.end}
-          games={cls.games} />
+        {calendarList}
       </div>
-    )
-
-    // const mobileView = (
-    //   <div style={{display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-around'}}>
-    //   <div style={{flex: 1, maxWidth: '800px'}}>
-    //     <CalendarMain
-    //         labels={labels}
-    //         onChange={this.calendarChange} />
-    //   </div>
-    //   <CalendarList
-    //     shouldHide={cls.games.length == 0}
-    //     start={cls.start}
-    //     end={cls.end}
-    //     games={cls.games} />
-    // </div>
-    //   <CalendarMain
-    //       labels={labels}
-    //       onChange={this.calendarChange} />);
-
+    );
     return isDesktop ? desktopView : mobileView;
   }
 }
@@ -148,17 +146,71 @@ class CalendarList extends Component {
     ref: React.createRef()
   }
 
+  exportCsv = async () => {
+    const { games, actions } = this.props;
+    
+    const gameIds = games.map(g => g.id);
+
+    actions.showLoading('exporting');
+    await api.createArbiterExport({gameIds})
+      .then(exportId => {
+        actions.showSuccess('Export created');
+        return api.getArbiterExport(exportId)
+          .then(ex => {
+            const a = document.createElement('a')
+            a.setAttribute('download', true);
+            a.href = ex.downloadUrl;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          })
+      })
+      .catch(err => { actions.showError(err) })
+
+    
+    actions.hideLoading('exporting');
+  }
+
   show({ start, end, games }) {
-    $('#calendarList')
+    const items = games.map(g => `
+      <div class="items-body-content">
+        <div class="d-flex">
+          <div class="border ${gameColor(g)}"></div>
+          <div class="flex-1">
+            <div>${g.homeTeam.name}</div>
+            <div>${g.awayTeam.name}</div>
+            <div>${prettyDateTime(g.start)} @ ${g.location}</div>
+          </div>                  
+        </div>
+      </div>
+    `).join('');
+
+    const el = `
+    <div class="cal-list">
+    <div class="items">
+      <div class="items-head">
+         <div class="horny-tamer">
+          <p class="date">${prettyDate(start)}/${prettyDate(end)}</p>
+          <p class="games">14 games</p>
+           ${hornyDownloadBtn}           
+        </div>
+        <hr>
+      </div>
+      
+      <div class="items-body">
+        ${items}  
+      </div>
+      </div>
+    </div>
+  </div>`;
+
+
+  $('#calendarList')
       .empty()
-      .append(`
-        <div>${start.toISOString()} - ${end.toISOString()}</div>
-        <ul>
-          ${
-        games.map(g => `<li>${g.homeTeam.name}</li>`).join('')
-        }
-        </ul>`)
+      .append(el)
       .show(500);
+
+    $('#horny-download').on('click', this.exportCsv);
   }
 
   hide() {
@@ -289,3 +341,14 @@ Calendar.showNavbar = true;
 const filterBtn = `<button aria-label="" class="filter" type="button">
   <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="filter" class="svg-inline--fa fa-filter fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"></path></svg>
 </button>`;
+
+
+const prettyDate = date => {
+  return moment(date).format('MMMM D');
+}
+
+const prettyDateTime = date => {
+  return moment(date).format('MMMM D, hh:mm a');
+}
+
+const hornyDownloadBtn = `<span id="horny-download" class="horny-download"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="download" class="svg-inline--fa fa-download fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"></path></svg></span>`

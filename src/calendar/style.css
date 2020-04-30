@@ -131,3 +131,158 @@
 .main-calendar .react-calendar--selectRange .react-calendar__tile--hover {
   background-color: #e6e6e6;
 }
+
+
+
+
+.cal-list, .cal-list * {
+  font-family: 'Rubik', sans-serif;
+}
+
+.cal-list {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0,0.23);
+  height: 100%;
+  width: 350px;
+  background: #fffffe;
+}
+
+.mobile .cal-list {
+  margin-top: 20px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cal-list .items {
+  border-top: 10px solid #462c2cc7;
+}
+
+.cal-list .items-head p.date{
+  color: #462c2cc7;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.cal-list .items-head > div {
+  padding: 5px 20px;
+  margin: 10px;
+}
+
+.cal-list .items-head hr {
+  width: 80%;
+  margin: 0px 30px;
+  border: 1px solid #462c2cc7;
+}
+
+.cal-list .items-body {
+  padding: 10px;
+  margin: 10px;
+  display: grid;
+  grid-gap: 10px;
+  max-height: 700px;
+  overflow: auto;
+}
+
+.mobile .items-body {
+  height: 100%;
+  max-height: none;
+}
+
+.cal-list .items-body-content {
+  padding: 10px 10px 10px 4px;
+  padding-right: 0px;
+  display: grid;
+  grid-template-columns: 10fr 1fr;
+  font-size: 15px;
+  grid-gap: 10px;
+  border: 1px solid transparent;
+}
+
+.cal-list .horny-tamer {
+  position: relative;
+}
+
+.cal-list .horny-download {
+  position: absolute;
+  right: 18px;
+  top: 4px;
+  color: #462c2cc7;  
+  width: 20px;
+}
+
+.cal-list .horny-download:hover {
+  cursor: pointer;
+}
+
+.cal-list .border {
+  padding: 4px;
+  margin-right: 4px;
+}
+.cal-list .border.green {
+  background-color: #06d6a0;  
+}
+.cal-list .border.yellow {
+  background-color: #ffd166;  
+}
+.cal-list .border.red {
+  background-color: #ef476f;  
+}
+
+
+
+/*
+
+<div class="cal-list">
+  <div class="items">
+    <div class="items-head">
+       <div class="horny-tamer">
+        <p class="date">March 24/March 26</p>
+        <p class="games">14 games</p>
+         <span class="horny-download"><i class="fa fa-download" aria-hidden="true"></i></span>
+         
+      </div>
+      <hr>
+    </div>
+    
+    <div class="items-body">
+
+      <div class="items-body-content">
+        <div class="d-flex">
+          <div class="border green"></div>
+          <div class="flex-1">
+            <div>Acadiana HomeSchool - VB</div>
+            <div>Acadiana HomeSchool - VB</div>
+            <div>@ WMHS</div>
+          </div>                  
+        </div>
+      </div>
+      
+      
+       <div class="items-body-content">
+        <div class="d-flex">
+          <div class="border yellow"></div>
+          <div class="flex-1">
+            <div>Acadiana HomeSchool - VB</div>
+            <div>Acadiana HomeSchool - VB</div>
+            <div>@ WMHS</div>
+          </div>                  
+        </div>
+      </div>
+      
+            <div class="items-body-content">
+        <div class="d-flex">
+          <div class="border red"></div>
+          <div class="flex-1">
+            <div>Acadiana HomeSchool - VB</div>
+            <div>Acadiana HomeSchool - VB</div>
+            <div>@ WMHS</div>
+          </div>                  
+        </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+*/
