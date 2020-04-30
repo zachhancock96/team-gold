@@ -149,7 +149,8 @@ const MobileLayout = ({ children }) => {
       backgroundColor: 'white',
       overflowY: 'scroll',
       overflowX: 'hidden',
-      flex: 1
+      flex: 1,
+      height: '100vh'
     }}>
       {children}
     </div>
@@ -173,10 +174,10 @@ const DesktopLayout = ({ children }) => {
     }}>
       <div style={{
         width: '400px',
-        height: '100%',
+        height: '100vh',
         backgroundColor: 'white',
         overflowY: 'scroll',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
       }}>
         {left}
       </div>
@@ -184,7 +185,8 @@ const DesktopLayout = ({ children }) => {
         marginLeft: '20px',
         flex: 1,
         backgroundColor: 'white',
-        overflowY: 'scroll'
+        overflowY: 'scroll',
+        height: '100vh'
       }}>
         {right}
       </div>

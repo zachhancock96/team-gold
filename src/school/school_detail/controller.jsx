@@ -96,12 +96,12 @@ export class SchoolDetail extends Component {
     if (userType === 'school_admin'){
       await api.acceptSchoolAdmin(schoolId, userId);
       this._load(schoolId);
-      alert('User has been accepted.')
+      alert('User has been accepted.');
     }
     else if (userType === 'school_rep'){
       await api.acceptSchoolRep(schoolId, userId);
       this._load(schoolId);
-      alert('User has been accepted.')
+      alert('User has been accepted.');
     }
     else{
       alert('Accept failed, user role not set');
@@ -112,12 +112,12 @@ export class SchoolDetail extends Component {
     if (userType === 'school_admin'){
       await api.rejectSchoolAdmin(schoolId, userId);
       this._load(schoolId);
-      alert('User has been rejected.')
+      alert('User has been rejected.');
     }
     else if (userType === 'school_rep'){
       await api.rejectSchoolRep(schoolId, userId);
       this._load(schoolId);
-      alert('User has been rejected.')
+      alert('User has been rejected.');
     }
     else{
       alert('Reject failed, user role not set');
@@ -128,15 +128,15 @@ export class SchoolDetail extends Component {
     if (userType === 'school_admin'){
       await api.removeSchoolAdmin(schoolId, userId);
       this._load(schoolId);
-      alert('User has been deleted.')
+      alert('User has been deleted.');
     }
     else if (userType === 'school_rep'){
       await api.removeSchoolRep(schoolId, userId);
       this._load(schoolId);
-      alert('User has been deleted.')
+      alert('User has been deleted.');
     }
     else{
-      alert('Removal failed, user role not set.')
+      alert('Removal failed, user role not set.');
     }
   }
 

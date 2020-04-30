@@ -58,11 +58,12 @@ class UserRow extends Component {
       onEdit
     } = this.props;
 
+
     if (status === 'pending'){
       return (<tr className='user-pending'>
         <td>{name}</td>
         <td>{email}</td>
-        <td>{teams}</td>
+        <td>{fmTeams(teams)}</td>
         <td><button onClick={(e) => onAccept(schoolId, id, role)}>Accept</button><button onClick={(e) => onReject(schoolId, id, role)}>Reject</button></td>
       </tr>);
     }
@@ -70,20 +71,20 @@ class UserRow extends Component {
       return (<tr className='user-accepted'>
         <td>{name}</td>
         <td>{email}</td>
-        <td>{teams}</td>
-        <td><button onClick={(e) => onEdit()}>Edit</button><button onClick={(e) => onDelete(id, schoolId, role)}>Delete</button></td>
+        <td>{fmTeams(teams)}</td>
+        <td><button onClick={(e) => onEdit()}>Edit</button><button onClick={(e) => onDelete(schoolId, id, role)}>Delete</button></td>
       </tr>);
     }
   }
 }
 
-// const fmTeams = teams =>{
-//   let t = teams.length
-//     ? teams.map(t => t.abbrevName).join(', ')
-//     : ''; 
+const fmTeams = teams =>{
+  let t = teams.length
+    ? teams.map(t => t.abbrevName).join(', ')
+    : ''; 
 
-//   return <span>{t}</span>;
-// }
+  return <span>{t}</span>;
+}
 
 export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onSubscribe, onDelete }) => {
   if (!schoolDetail) return <div className='school-detail-empty'></div>;
@@ -193,9 +194,9 @@ const checkReps = (schoolId, schoolReps, onAccept, onReject, onEdit, onDelete) =
   
 }
 
-const checkAdmin = (schoolId, schoolAdmins, onAccept, onReject, onEdit, onRemove) => {
+const checkAdmin = (schoolId, schoolAdmins, onAccept, onReject, onEdit, onDelete) => {
     
-    const header = ['Name', 'Email', 'Options'];
+    const header = ['Name', 'Email', 'Teams', 'Options'];
 
     return <Table>
               <thead>
@@ -213,11 +214,10 @@ const checkAdmin = (schoolId, schoolAdmins, onAccept, onReject, onEdit, onRemove
                     email={user.o.email}
                     role={user.o.role}
                     status={user.o.status}
-                    buttons={ [] }
                     onAccept={onAccept}
                     onReject={onReject}
                     onEdit={onEdit}
-                    onRemove={onRemove}
+                    onDelete={onDelete}
                     schoolId={schoolId} />
                   })}
               </tbody>
