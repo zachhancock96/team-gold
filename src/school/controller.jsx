@@ -137,7 +137,7 @@ const DesktopLayout = ({ children }) => {
         backgroundColor: 'white',
         overflowY: 'auto',
         overflowX: 'hidden',
-        height: '700px',
+        height: '750px',
         marginTop: '15px',
         borderRadius: '8px',
         boxShadow: '0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2)'
@@ -150,7 +150,7 @@ const DesktopLayout = ({ children }) => {
         flex: 1,
         backgroundColor: 'white',
         overflowY: 'auto',
-        height: '700px',
+        height: '750px',
         marginTop: '15px',
         borderRadius: '8px',
         boxShadow: '0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2)'

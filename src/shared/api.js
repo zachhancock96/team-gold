@@ -104,8 +104,13 @@ export function addNonLhsaaSchool(o) {
     .then(response => response.schoolId);
 }
 
-export function createArbiterExport(o) {
-  return authPost(API_URLS.CREATE_CSV_EXPORT, o)
+export function createArbiterExport({ gameIds }) {
+  return authPost(API_URLS.CREATE_CSV_EXPORT, { gameIds })
+    .then(response => response.exportId);
+}
+
+export function createArbiterExportAndAccept({ gameIds }) {
+  return authPost(API_URLS.CREATE_CSV_EXPORT, { gameIds, shouldApprovePendingGames: true })
     .then(response => response.exportId);
 }
 

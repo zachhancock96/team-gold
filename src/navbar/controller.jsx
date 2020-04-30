@@ -5,7 +5,6 @@ import { NavbarView } from './view';
 
 const links = [
   {id: Route.Game().id, align: 'left', name: 'Game'},
-  {id: Route.ArbiterExport().id, align: 'left', name: 'Arbiter'},
   {id: Route.School().id, align: 'left', name: 'School'},
   {id: Route.Calendar().id, align: 'left', name: 'Calendar'},
   {id: 'logout', align: 'right', name: 'Logout' }
@@ -13,10 +12,17 @@ const links = [
 
 const adminLinks = [
   {id: Route.Game().id, align: 'left', name: 'Game'},
-  {id: Route.ArbiterExport().id, align: 'left', name: 'Arbiter'},
   {id: Route.School().id, align: 'left', name: 'School'},
   {id: Route.Calendar().id, align: 'left', name: 'Calendar'},
   {id: Route.SqlExecute().id, align: 'left', name: 'Execute sql'},
+  {id: 'logout', align: 'right', name: 'Logout' }
+];
+
+const assignorLinks = [
+  {id: Route.Game().id, align: 'left', name: 'Game'},
+  {id: Route.School().id, align: 'left', name: 'School'},
+  {id: Route.ArbiterExport().id, align: 'left', name: 'Arbiter'},
+  {id: Route.Calendar().id, align: 'left', name: 'Calendar'},
   {id: 'logout', align: 'right', name: 'Logout' }
 ];
 
@@ -31,6 +37,8 @@ const idToRouteMap = {
 export const Navbar = ({ state, actions, routing }) => {
   const ls = state && state.user.role === 'admin'
     ? adminLinks
+    : state.user.role === 'assignor'
+    ? assignorLinks
     : links;
 
   return <NavbarView

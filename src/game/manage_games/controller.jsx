@@ -175,7 +175,7 @@ const DesktopLayout = ({ children }) => {
     }}>
       <div style={{
         width: '400px',
-        height: '700px',
+        height: '750px',
         backgroundColor: 'white',
         overflowY: 'auto',
         overflowX: 'hidden',
@@ -189,7 +189,7 @@ const DesktopLayout = ({ children }) => {
       <div style={{
         marginLeft: '20px',
         flex: 1,
-        height: '700px',
+        height: '750px',
         backgroundColor: 'white',
         overflowY: 'auto',
         borderRadius: '8px',

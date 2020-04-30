@@ -36,7 +36,8 @@ export class Calendar extends Component {
     games: [],
     schools: [],
     labels: [],
-    calendarListState: { start: null, end: null, games: [] }
+    calendarListState: { start: null, end: null, games: [] },
+    filterFn: g => g
   }
 
   componentDidMount() {
@@ -55,10 +56,48 @@ export class Calendar extends Component {
       });
   }
 
+  refreshGames = () => {
+    const { actions } = this.props;
+    actions.showLoading('Calendar');
+
+    return api.getGames()
+      .then(games => {
+        const fn = this.state.filterFn;
+
+        const labels = games
+          .filter(g => fn(g))
+          .map(g => ({ id: g.id, color: gameColor(g), at: g.start }));
+
+        const calendarListState = this.state.calendarListState;
+        const gameIds = calendarListState.games.map(g => g.id);
+        const games_ = games
+          .filter(g => gameIds.indexOf(g.id) >= 0)
+          .filter(g => fn(g));
+
+        console.log(calendarListState);
+          
+        this.setState({
+          calendarListState: {
+            start: calendarListState.start,
+            end: calendarListState.end,
+            games: games_
+          },
+
+          labels,
+
+          games
+        });
+
+        this.setState({ games, labels });
+      })
+      .catch(err => { console.log(err)})
+      .finally(() => { actions.hideLoading('Calendar')});
+  }
+
   //after label changes, calendar triggers calendar change
   //and this clears calendar list as well
-  //so it all works out in the end. i you tell me how ugly this is,
-  //preaching to the preacher that would be
+  //so it all works out in the end. you tell me how ugly this is eh, well i gotta tell you that would be
+  //preaching to the preacher
   calendarChange = (o) => {
     const { games } = this.state;
 
@@ -72,6 +111,8 @@ export class Calendar extends Component {
       games: games_
     }) : { start: null, end: null, games: [] };
 
+    console.log(calendarListState);
+
     this.setState({ calendarListState });
   }
 
@@ -81,7 +122,7 @@ export class Calendar extends Component {
       .filter(g => fn(g))
       .map(g => ({ id: g.id, color: gameColor(g), at: g.start }));
     
-    this.setState({ labels });
+    this.setState({ labels, filterFn: fn });
   }
 
   render() {
@@ -96,11 +137,14 @@ export class Calendar extends Component {
       onChange={this.calendarChange} />;
 
     const calendarList = <CalendarList
+      user={m.state.user}
       actions={m.actions}
       shouldHide={cls.games.length == 0}
       start={cls.start}
       end={cls.end}
+      refreshGames={this.refreshGames}
       games={cls.games} />
+
     const desktopView = (
       <div style={{ 
         display: 'flex', 
@@ -112,12 +156,7 @@ export class Calendar extends Component {
         <div style={{ flex: 1, maxWidth: '800px' }}>
           {calendarMain}
         </div>
-        <CalendarList
-          actions={m.actions}
-          shouldHide={cls.games.length == 0}
-          start={cls.start}
-          end={cls.end}
-          games={cls.games} />
+          {calendarList}
       </div>
     );
 
@@ -127,11 +166,7 @@ export class Calendar extends Component {
         paddingBottom: '20px'
       }}>
         <div style={{ height: '680px' }}>
-          <CalendarMain
-            schools={schools}
-            onFilterFnChanged={this.filterGames}
-            labels={labels}
-            onChange={this.calendarChange} />
+          {calendarMain}
         </div>
         {calendarList}
       </div>
@@ -157,17 +192,28 @@ class CalendarList extends Component {
         actions.showSuccess('Export created');
         return api.getArbiterExport(exportId)
           .then(ex => {
-            const a = $(`<a id="shy-horny-download" href="${ex.downloadUrl}" download></a>`);
-            $('body').append(a);
-            const a_ = document.getElementById('shy-horny-download');
-            a_.click();
-            a.remove();            
-            // document.createElement('a');
-            // a.setAttribute('download', true);
-            // a.href = ex.downloadUrl;
-            // document.body.appendChild(a);
-            // a.click();
-            // document.body.removeChild(a);
+            download(ex.downloadUrl);
+          })
+      })
+      .catch(err => { actions.showError(err) })
+
+    
+    actions.hideLoading('exporting');
+  }
+
+  exportAndApprove = async () => {
+    const { games, actions } = this.props;
+    
+    const gameIds = games.map(g => g.id);
+
+    actions.showLoading('exporting');
+    await api.createArbiterExportAndAccept({gameIds})
+      .then(exportId => {
+        actions.showSuccess('Exported and approved any pendings');
+        return api.getArbiterExport(exportId)
+          .then(ex => {
+            download(ex.downloadUrl);
+            this.props.refreshGames();
           })
       })
       .catch(err => { actions.showError(err) })
@@ -177,6 +223,8 @@ class CalendarList extends Component {
   }
 
   show({ start, end, games }) {
+    const isAssignor = this.props.user.role === 'assignor';
+
     const items = games.map(g => `
       <div class="items-body-content">
         <div class="d-flex">
@@ -197,7 +245,8 @@ class CalendarList extends Component {
          <div class="horny-tamer">
           <p class="date">${prettyDate(start)}/${prettyDate(end)}</p>
           <p class="games">${games.length} games</p>
-           ${hornyDownloadBtn}           
+           ${hornyDownloadBtn}
+           ${isAssignor? hornyDownloadRedBtn: ''}
         </div>
         <hr>
       </div>
@@ -216,6 +265,7 @@ class CalendarList extends Component {
       .show(500);
 
     $('#horny-download').on('click', this.exportCsv);
+    $('#horny-download-red').on('click', this.exportAndApprove);
   }
 
   hide() {
@@ -224,7 +274,7 @@ class CalendarList extends Component {
 
   componentDidUpdate() {
     const { shouldHide, start, end, games } = this.props;
-
+    
     if (shouldHide) {
       this.hide();
       return;
@@ -356,4 +406,13 @@ const prettyDateTime = date => {
   return moment(date).format('MMMM D, hh:mm a');
 }
 
-const hornyDownloadBtn = `<span id="horny-download" class="horny-download"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="download" class="svg-inline--fa fa-download fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"></path></svg></span>`
+const download = url => {
+  const a = $(`<a id="shy-horny-download" href="${url}" download></a>`);
+  $('body').append(a);
+  const a_ = document.getElementById('shy-horny-download');
+  a_.click();
+  a.remove();
+}
+
+const hornyDownloadBtn = `<span id="horny-download" class="horny-download"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="download" class="svg-inline--fa fa-download fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"></path></svg></span>`;
+const hornyDownloadRedBtn = `<span id="horny-download-red" class="horny-download horny-download-red"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="download" class="svg-inline--fa fa-download fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24zm296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24zm-124 88c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20zm64 0c0-11-9-20-20-20s-20 9-20 20 9 20 20 20 20-9 20-20z"></path></svg></span>`;

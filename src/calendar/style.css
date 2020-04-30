@@ -214,6 +214,11 @@
   cursor: pointer;
 }
 
+.cal-list .horny-download-red {
+  right: 60px;
+  color: red;
+}
+
 .cal-list .border {
   padding: 4px;
   margin-right: 4px;

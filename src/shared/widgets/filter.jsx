@@ -381,7 +381,7 @@ const FilterContainer = ({ children }) => {
 }
 
 const Label = ({ children }) => {
-  return <label style={{ display: 'block' }}>{children}</label>
+  return <label style={{ display: 'block', fontWeight: 'bold' }}>{children}</label>
 }
 
 const MRow = ({ children, md }) => {
