@@ -46,6 +46,7 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
 
   const reps = createRepView({
     schoolId: schoolDetail.id,
+    schoolTeams: schoolDetail.teams,
     schoolReps,
     onAccept,
     onReject,
@@ -99,33 +100,53 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
 
 }
 
-
-
-
-
 class RepRow extends Component {
   state = {
     isEditing: false,
-    editTeamForm: []
+    options: [],
+    selected: [],
+    canConfirm: false    
   }
 
   cancelEditing = () => {
     this.setState({
       editTeamForm: [],
-      isEditing: false
+      isEditing: false,
+      options: [],
+      selected: [],
+      canConfirm: false
     })
   }
 
   confirmEditing = () => {
+    const { canConfirm } = this.state;
+    if (!canConfirm) return;
 
+    const { selected } = this.state;
+    const { schoolId, user  } = this.props;
+
+    const teamIds = [...selected];
+    const repId = user.id;
+    
+    this.props.onEdit(schoolId, repId, teamIds);
+    this.cancelEditing();
+  }
+
+  changeTeamSelected = selected => {
+    const canConfirm = selected.length > 0;
+    this.setState({selected, canConfirm});
   }
 
   startEditing = () => {
     const m = this.props;
-    
+    const options = m.schoolTeams.map(t => ({label: t.teamKind, value: t.id}));
+    const selected = m.teams.map(t => t.id);
+
     this.setState({
       isEditing: true,
-      editTeamForm: [...m.teams]
+      options,
+      selected,
+      canConfirm: true
     })
   }
 
@@ -147,10 +168,12 @@ class RepRow extends Component {
       </tr>);
     }
     else {
-      const teamsRow = this.state.isEditing?  <div style={{width: '175px'}}><MultiSelect /></div>: teams_;
+      const { options, selected, canConfirm } = this.state;
+      const teamsRow = this.state.isEditing?  <div style={{width: '175px'}}><MultiSelect onSelectedChanged={this.changeTeamSelected} itemType='team' options={options} selected={selected} /></div>: teams_;
+
       const buttons = this.state.isEditing? (
         <>
-          <button onClick={this.confirmEditing}>Confirm</button>  
+          <button disabled={!canConfirm} onClick={this.confirmEditing}>Confirm</button>  
           <button onClick={this.cancelEditing}>Cancel</button>
         </>
       ): (
@@ -173,6 +196,7 @@ class RepRow extends Component {
 
 const createRepView = ({
   schoolId,
+  schoolTeams,
   schoolReps,
   onAccept,
   onReject,
@@ -195,6 +219,7 @@ const createRepView = ({
             return <RepRow
               user={r}
               teams={r.teams}
+              schoolTeams={schoolTeams}
               schoolId={schoolId}
               onAccept={onAccept}
               onReject={onReject}

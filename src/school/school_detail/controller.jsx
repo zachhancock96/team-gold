@@ -104,66 +104,81 @@ export class SchoolDetail extends Component {
     }
   }
 
-  // handleEdit = id => {
-  //   this.props.onEdit(id);
-  // }
+  sl = () => {
+    const { actions } = this.props;
+    actions.showLoading('school_detail');
+  }
+  
+  hl = () => {
+    const { actions } = this.props;
+    actions.hideLoading('school_detail');
+  }
 
-  // handleEditSchool = id => {
-  //   this.props.onEdit(id);
-  // }
+  handleRepEdit = async (schoolId, repId, teamIds) => {
+    this.sl();
+    
+    await api.editSchoolRep(schoolId, repId, teamIds);
+    this._load(schoolId);
+
+    this.hl();
+    this.success('Edited like a true editor.');
+  }
+
+  success = s => {
+    const { actions } = this.props;
+    actions.showSuccess(s);
+  }
+  
 
   handleAccept = async (schoolId, userId, userType) => {
-    console.log(schoolId, userId, userType);
-    return;
+    this.sl();
+
     if (userType === 'school_admin'){
       await api.acceptSchoolAdmin(schoolId, userId);
       this._load(schoolId);
-      alert('User has been accepted.')
+      this.success('User has been accepted.')
     }
     else if (userType === 'school_rep'){
       await api.acceptSchoolRep(schoolId, userId);
       this._load(schoolId);
-      alert('User has been accepted.')
+      this.success('User has been accepted.')
     }
-    else{
-      alert('Accept failed, user role not set');
-    }
+
+    this.hl();
   }
 
   handleReject = async (schoolId, userId, userType) => {
-    console.log(schoolId, userId, userType);
-    return;
+    this.sl();
+
     if (userType === 'school_admin'){
       await api.rejectSchoolAdmin(schoolId, userId);
       this._load(schoolId);
-      alert('User has been rejected.')
+      this.success('User has been rejected.')
     }
     else if (userType === 'school_rep'){
       await api.rejectSchoolRep(schoolId, userId);
       this._load(schoolId);
-      alert('User has been rejected.')
+      this.success('User has been rejected.')
     }
-    else{
-      alert('Reject failed, user role not set');
-    }
+
+    this.hl();
   }
 
   handleDelete = async (schoolId, userId, userType) => {
-    console.log(schoolId, userId, userType);
-    return;
+    this.sl();
+
     if (userType === 'school_admin'){
       await api.removeSchoolAdmin(schoolId, userId);
       this._load(schoolId);
-      alert('User has been deleted.')
+      this.success('User has been deleted.')
     }
     else if (userType === 'school_rep'){
       await api.removeSchoolRep(schoolId, userId);
       this._load(schoolId);
-      alert('User has been deleted.')
+      this.success('User has been deleted.')
     }
-    else{
-      alert('Removal failed, user role not set.')
-    }
+
+    this.hl();
   }
 
   render() {
@@ -177,7 +192,7 @@ export class SchoolDetail extends Component {
           onAccept={this.handleAccept}
           onReject={this.handleReject}
           onDelete={this.handleDelete}
-          onEdit={this.handleEdit}
+          onEdit={this.handleRepEdit}
           onEditSchool={this.handleEditSchool} />)
       : null;
   }
