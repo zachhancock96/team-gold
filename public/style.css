@@ -91,6 +91,7 @@ input {
 .game-detail{
   padding: 16px;
 }
+
 /* .game-detail-header{
   font-weight: bold;
   font-size: large;
@@ -101,7 +102,7 @@ input {
 
 .game-detail-header{
   border-radius: 5px;
-  background-color: rgb(19, 70, 129);
+  background-image: linear-gradient(rgb(133, 109, 57),rgb(114, 92, 44));
   color: white;
   text-align: center;
   font-weight: bold;
@@ -262,9 +263,15 @@ a.right{
 }
 
 .user-pending{
-  background-color: rgb(196, 196, 196);
+  border-bottom: 3px;
+  background-image: linear-gradient(rgb(235, 232, 232),rgb(212, 212, 212));
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(114, 113, 113, 0.19);
 }
 
+.user-accepted{
+  border-bottom: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(117, 117, 117, 0.19);
+}
 
 /* LOGIN CSS STARTS*/
 

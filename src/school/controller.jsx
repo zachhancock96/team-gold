@@ -46,6 +46,7 @@ export class School extends React.Component {
     const { actions, routing } = this.props;
     const r = routing.next().childRoute(Route.SchoolDetail({id}));
     actions.navigateTo(r);
+    this.refreshSchools();
   }
 
   getSchoolDetail = id => {
@@ -94,7 +95,8 @@ export class School extends React.Component {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        height: '50%'
+        marginTop: '20px',
+        height: '100%',
       }}>
         {
           m.state.device === 'mobile' ?
@@ -121,7 +123,7 @@ const MobileLayout = ({ children }) => {
       backgroundColor: 'white',
       overflowY: 'scroll',
       overflowX: 'hidden',
-      flex: 1
+      flex: 1,
     }}>
       {children}
     </div>
@@ -148,7 +150,7 @@ const DesktopLayout = ({ children }) => {
         backgroundColor: 'white',
         overflowY: 'scroll',
         overflowX: 'hidden',
-        height: '550px'
+        height: '100vh'
       }}>
         {left}
       </div>
@@ -157,7 +159,7 @@ const DesktopLayout = ({ children }) => {
         flex: 1,
         backgroundColor: 'white',
         overflowY: 'scroll',
-        height: '550px'
+        height: '100vh'
       }}>
         {right}
       </div>

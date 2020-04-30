@@ -134,7 +134,7 @@ export class View extends React.Component {
                     </div>
   
                     <div className="form-group">
-                        <label htmlFor="email">Email Adderss</label>
+                        <label htmlFor="email">Email Address</label>
                         <input type="email" name="emailAdress" id="email" className="email"
                           onChange={e => m.onSignupEmailChange(e.target.value)}
                           value={signup.email}/>
