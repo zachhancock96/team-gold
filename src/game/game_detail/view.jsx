@@ -126,8 +126,11 @@ const prettyHistory = gameDetail => {
 }
 
 const title = game => {
-  return game.homeTeam.school.name + ' ' + game.homeTeam.teamKind + ' vs '
-    + game.awayTeam.school.name + ' ' + game.awayTeam.teamKind;
+  const hTeamKind = formatTeamKind(game.homeTeam.teamKind)
+  const aTeamKind = formatTeamKind(game.awayTeam.teamKind)
+
+  return game.homeTeam.school.name + ' ' + hTeamKind + ' vs '
+    + game.awayTeam.school.name + ' ' + aTeamKind;
 }
 
 const displayHistory = history => {
@@ -176,5 +179,21 @@ const formatStatus = status =>{
   }
   else if (status === 'rejected'){
     return <span style={{color:'red', fontWeight:'bold'}}>Rejected</span>
+  }
+
+}
+
+const formatTeamKind = TeamK =>{
+  if(TeamK == 'vg'){
+    return 'Varsity Girls'
+  }
+  else if(TeamK == 'vb'){
+    return 'Varsity Boys'
+  }
+  else if(TeamK == 'jvg'){
+    return 'JV Girls'
+  }
+  else{
+    return 'JV Boys'
   }
 }
