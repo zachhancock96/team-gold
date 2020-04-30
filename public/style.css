@@ -188,7 +188,6 @@ input {
   font-size: 18px;
   padding: 0px;
   margin: 0;
-  margin-bottom: 5px;
 }
 
 .game-list-item p {
@@ -219,11 +218,6 @@ input {
 .game-list-item .school-type{
   font-weight: 300;
   font-size: 15px;
-  padding: 0px;
-  margin: 0;
-  margin-bottom: 5px;
-  margin-top: 5px;
-
 }
 .game-list-item .game-box {
   display: flex;
