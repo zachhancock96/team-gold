@@ -191,7 +191,7 @@ class CalendarList extends Component {
       <div class="items-head">
          <div class="horny-tamer">
           <p class="date">${prettyDate(start)}/${prettyDate(end)}</p>
-          <p class="games">14 games</p>
+          <p class="games">${games.length} games</p>
            ${hornyDownloadBtn}           
         </div>
         <hr>

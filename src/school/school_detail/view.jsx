@@ -89,7 +89,6 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
         <hr />
       </div>
       <div style={{
-        borderBottom: brownBorder,
         marginBottom: '8px',
       }}>
         <p className='game-detail-header'>Users</p>

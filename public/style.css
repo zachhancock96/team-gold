@@ -232,29 +232,9 @@ input {
 
 /* NAVBAR CSS STARTS*/
 
-.m-navbar{
-  background-color: rgb(65, 43, 25);
-  font-size: large;
-  color: white;
-  padding: 20px;
-}
+/* these are game page*/
 
-a.left-active{
-  color: antiquewhite;
-  padding: 15px;
-}
-
-a.left{
-  color: white;
-  float: left, center;
-  padding: 15px;
-}
-
-a.right{
-  color: white;
-  float: right;
-}
-
+/*game page navbar begins*/
 .nav1{
   padding: 10px;
   font-size: .9em;
@@ -264,6 +244,51 @@ a.right{
   padding: 10px;
   font-size: .9em;
 }
+/*game page navbar ends*/
+
+.m-navbar{
+  background-color: rgb(65, 43, 25);
+  color: white;
+}
+
+.m-navbar a {
+  display: block;
+  text-align: center;
+  color: white;
+  padding: 8px;
+  font-size: 1rem;
+}
+
+.m-navbar a:hover {
+  background-color: rgb(128, 92, 63);
+}
+
+a.left-active{
+  color: antiquewhite;
+}
+ 
+@media only screen and (min-width: 750px) {
+  .m-navbar a {
+    display: inline-block;
+    padding: 15px;
+    font-size: 1.1rem;
+  }
+
+  .m-navbar a:hover {
+    background-color: transparent;
+  }
+
+  .m-navbar a.left {
+    float: left, center;
+  }
+
+  .m-navbar a.right {
+    float: right;
+  }
+} 
+
+
+
 
 .user-pending{
   border-bottom: 3px;

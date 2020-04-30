@@ -128,18 +128,22 @@ export class SchoolDetail extends Component {
     const { actions } = this.props;
     actions.showSuccess(s);
   }
-  
+
+  success = s => {
+    const { actions } = this.props;
+    actions.showError(s);
+  }  
 
   handleAccept = async (schoolId, userId, userType) => {
     this.sl();
 
     if (userType === 'school_admin'){
-      await api.acceptSchoolAdmin(schoolId, userId);
+      await api.acceptSchoolAdmin(schoolId, userId).catch(err => this.error(err));
       this._load(schoolId);
       this.success('User has been accepted.')
     }
     else if (userType === 'school_rep'){
-      await api.acceptSchoolRep(schoolId, userId);
+      await api.acceptSchoolRep(schoolId, userId).catch(err => this.error(err));
       this._load(schoolId);
       this.success('User has been accepted.')
     }

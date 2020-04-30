@@ -8,6 +8,14 @@ const links = [
   {id: Route.ArbiterExport().id, align: 'left', name: 'Arbiter'},
   {id: Route.School().id, align: 'left', name: 'School'},
   {id: Route.Calendar().id, align: 'left', name: 'Calendar'},
+  {id: 'logout', align: 'right', name: 'Logout' }
+];
+
+const adminLinks = [
+  {id: Route.Game().id, align: 'left', name: 'Game'},
+  {id: Route.ArbiterExport().id, align: 'left', name: 'Arbiter'},
+  {id: Route.School().id, align: 'left', name: 'School'},
+  {id: Route.Calendar().id, align: 'left', name: 'Calendar'},
   {id: Route.SqlExecute().id, align: 'left', name: 'Execute sql'},
   {id: 'logout', align: 'right', name: 'Logout' }
 ];
@@ -21,9 +29,13 @@ const idToRouteMap = {
 };
 
 export const Navbar = ({ state, actions, routing }) => {
+  const ls = state && state.user.role === 'admin'
+    ? adminLinks
+    : links;
+
   return <NavbarView
     activeLinkId={routing.localSegment.id}
-    links={links}
+    links={ls}
     onLinkClick={linkId => {
       if (linkId == 'logout') {
         actions.logout();
