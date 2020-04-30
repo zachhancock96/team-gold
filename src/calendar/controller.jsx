@@ -157,12 +157,17 @@ class CalendarList extends Component {
         actions.showSuccess('Export created');
         return api.getArbiterExport(exportId)
           .then(ex => {
-            const a = document.createElement('a')
-            a.setAttribute('download', true);
-            a.href = ex.downloadUrl;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            const a = $(`<a id="shy-horny-download" href="${ex.downloadUrl}" download></a>`);
+            $('body').append(a);
+            const a_ = document.getElementById('shy-horny-download');
+            a_.click();
+            a.remove();            
+            // document.createElement('a');
+            // a.setAttribute('download', true);
+            // a.href = ex.downloadUrl;
+            // document.body.appendChild(a);
+            // a.click();
+            // document.body.removeChild(a);
           })
       })
       .catch(err => { actions.showError(err) })
