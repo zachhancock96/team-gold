@@ -33,7 +33,6 @@ export default class CsvExportController {
     const body = req.body as ApiSchema.CsvExport_POST_REQ;
 
     let games = await this.repository.getGames();
-    games = games.filter(g => g.status !== GameStatus.REJECTED);
 
     if (body.gameIds) {
       if (!Array.isArray(body.gameIds) || !body.gameIds.length) {
@@ -51,6 +50,7 @@ export default class CsvExportController {
       }
       games = games_ as Game[];
     }
+    games = games.filter(g => g.status !== GameStatus.REJECTED);
 
     const note = body.note || null;
     if (note && typeof note !== 'string') {
