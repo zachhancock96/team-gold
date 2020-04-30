@@ -5,8 +5,22 @@ import Team from '../src/team';
 import User from '../src/user';
 import School from '../src/school';
 import { GameStatus, TeamKind } from '../src/enums';
+import { async } from 'rxjs/internal/scheduler/async';
+
+/*
 
 
+
+describe: group of test
+it: individual test cases that make up the group
+expect: returns suspense object which has bunch of useful asssertion functions
+xdescribe: disables specs in its function body
+fdescribe: only run specs in funciton body below (there might be npm ERR! messages at end ignore those)
+beforeAll: run function body before any other specs execute in the describe scope
+afterAll: run function body after every other specs execute in the describe scope
+beforeEach: similar to beforeAll you know it
+afterEach: similar to afterAll you know it
+*/
 describe('Game should work', () => {
   const server = getServerInstance();
   const repo = server.repository;
@@ -33,8 +47,8 @@ describe('Game should work', () => {
       homeTeam = (await repo.getTeam(1))!;
       awayTeam = (await repo.getTeam(5))!;
       assignor = await repo.getAssignor();
-      homeRep = homeTeam.schoolReps[0];
-      awayRep = awayTeam.schoolReps[1];
+      homeRep = (await repo.getUser(3))!;
+      awayRep = (await repo.getUser(7))!;
       server = getServerInstance();
     })
   
@@ -54,12 +68,12 @@ describe('Game should work', () => {
     })
 
     it('should have 0 games', async () => {
-      const { body } = await withHeader(request(server.expressApp)
-        .get('/api/games'), homeRep.id)
-        .expect(200);
+      const response = await withHeader(
+        request(server.expressApp).get('/api/games'), homeRep.id
+      ).expect(200);
 
-      expect(body.ok).toBe(true);
-      expect(body.games.length).toBe(0);        
+      expect(response.body.ok).toBe(true);
+      expect(response.body.games.length).toBe(0);        
     })
 
     it('adding game as home team', async () => {
@@ -231,21 +245,176 @@ describe('Game should work', () => {
         .forEach((x, i) => { if (!x) { console.log(i); expect(x).toBeDefined() } });
     })
 
-    //Adding game with nonexisting homeTeamId should fail
-    //Adding game with nonexisting awayTeamId should fail
-    //Adding game with bad date format should fail
-    //Adding game with empty location should fail
-    //Adding game when my team is not home team should fail
-    //Adding game with good date format should succeed (note this gameId we will be using it in remaining tests)
-    //game should have pending_home status
-    //accepting game by home team should fail
-    //accepting game by away team should pass
-    //accepting game by away team again should pass
-    //bad edit date format should fail
-    //bad edit location format should fail
-    //good edit date format and locaiton succeed
-    //accepting by assignor
-    //assignor rejects
-    //assignor accepting should fail
+    it('Adding game with nonexisting homeTeamId should fail', async () => {
+      const { body } = await withHeader(request(server.expressApp)
+      .post('/api/games'), school1Rep.id)
+      .send({
+        homeTeamId: 51,
+        awayTeamId: school2.teams[0].id,
+        start: '2020-08-08T01:00:00',
+        location: 'loc'
+      });
+
+      expect(body.ok).toBe(false);
+      expect(body.gameId).toBeUndefined();
+    })
+
+    it('Adding game with nonexisting awayTeamId should fail', async () => {
+      const { body } = await withHeader(request(server.expressApp)
+      .post('/api/games'), school1Rep.id)
+      .send({
+        homeTeamId: school1.teams[0].id,
+        awayTeamId: 999,
+        start: '2020-08-08T01:00:00',
+        location: 'loc'
+      });
+
+      expect(body.ok).toBe(false);
+      expect(body.gameId).toBeUndefined();
+    })
+
+
+    it('Adding game with bad date format should fail', async () => {
+      const { body } = await withHeader(request(server.expressApp)
+      .post('/api/games'), school1Rep.id)
+      .send({
+        homeTeamId: school1.teams[0].id,
+        awayTeamId: school2.teams[0].id,
+        start: '2020-08-08T26:00:00',
+        location: 'loc'
+      });
+
+      expect(body.ok).toBe(false);
+      expect(body.gameId).toBeUndefined();
+    })
+
+    it('Adding game with empty location should fail', async () => {
+      const { body } = await withHeader(request(server.expressApp)
+      .post('/api/games'), school1Rep.id)
+      .send({
+        homeTeamId: school1.teams[0].id,
+        awayTeamId: school2.teams[0].id,
+        start: '2020-08-08T20:00:00',
+        location: ''
+      });
+
+      expect(body.ok).toBe(false);
+      expect(body.gameId).toBeUndefined();
+    })
+
+    //NOTE: abhaya this is a bug, fix this and open this test later
+    xit('Adding game when my team is not home team should fail', async () => {
+      const { body } = await withHeader(request(server.expressApp)
+      .post('/api/games'), school1Rep.id)
+      .send({
+        homeTeamId: school2.teams[0].id,
+        awayTeamId: school1.teams[0].id,
+        start: '2020-08-08T20:00:00',
+        location: 'location'
+      });
+
+      expect(body.ok).toBe(false);
+      expect(body.gameId).toBeUndefined();
+    })
+
+    // (note this gameId we will be using it in remaining tests)
+    
+    describe('Create game', () => {
+      let gameId;
+
+      beforeAll(async () => {
+        const { body }  = await withHeader(request(server.expressApp)
+          .post('/api/games'), school1Rep.id)
+          .send({
+            homeTeamId: school1Rep.id,
+            awayTeamId: school2Rep.id,
+            start: '2020-08-08T01:00:00',
+            location: 'location'
+          });
+
+        gameId = body.gameId;
+      })
+
+      it('game should have pending_away_team status', async () => {
+        const { body }  = await withHeader(request(server.expressApp)
+          .get(`/api/games/${gameId}`), school1Rep.id);
+
+        expect(body.game).toBeDefined();
+        expect(body.game.status).toBe('pending_away_team');
+      })
+
+      it('bad edit date format should fail', async () => {
+        const { body } = await withHeader(request(server.expressApp)
+          .post(`/api/games/${gameId}/edit`), school1Rep.id)
+          .send({
+            homeTeamId: school1Rep.id,
+            awayTeamId: school2Rep.id,
+            start: '2020-0808T01:00:00',
+            location: 'location'
+          });
+
+          expect(body.ok).toBe(false);
+      })
+
+      it('accepting game by home team should fail', async () => {
+        const { body } = await withHeader(request(server.expressApp)
+          .post(`/api/games/${gameId}/accept`), school1Rep.id)
+          
+          expect(body.ok).toBe(false);
+      })
+
+      it('accepting game by away team should pass', async () => {
+        const { body } = await withHeader(request(server.expressApp)
+          .post(`/api/games/${gameId}/accept`), school2Rep.id)
+          
+          expect(body.ok).toBe(true);
+      })
+
+      it('bad edit location format should fail', async () => {
+        const { body } = await withHeader(request(server.expressApp)
+        .post(`/api/games/${gameId}/edit`), school1Rep.id)
+        .send({
+          homeTeamId: school1Rep.id,
+          awayTeamId: school2Rep.id,
+          start: '2020-08-08T01:00:00',
+          location: ''
+        });
+          
+          expect(body.ok).toBe(false);
+      })
+
+      it('good edit date format and locaiton succeed', async () => {
+        const { body } = await withHeader(request(server.expressApp)
+        .post(`/api/games/${gameId}/edit`), school1Rep.id)
+        .send({
+          homeTeamId: school1Rep.id,
+          awayTeamId: school2Rep.id,
+          start: '2020-08-08T21:00:00',
+          location: 'location2'
+        });
+        
+        expect(body.ok).toBe(true);
+      })
+
+      it('accepting by assignor', async () => {
+        const { body } = await withHeader(request(server.expressApp)
+          .post(`/api/games/${gameId}/accept`), assignor.id)
+          
+          expect(body.ok).toBe(true);
+      })
+
+
+      /*
+      it('assignor rejects', () => {
+        expect(body.ok).toBe(false);
+        expect(body.gameId).toBeUndefined();
+      })
+
+      it('assignor accepting should fail', () => {
+        expect(body.ok).toBe(true);
+        expect(body.status).toBeDefined();
+        newGameId = body.gameId;
+      })*/
+    })
   })
 })

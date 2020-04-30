@@ -141,10 +141,12 @@ INSERT INTO TEAM (id, name, exportName, isLhsaa, teamKind, schoolId) VALUES
 (2,'Acadiana HomeSchool - VG','Acadiana HomeSchool',1,'vg',1),
 (3,'Acadiana HomeSchool - JVG','Acadiana HomeSchool',1,'jvb',1),
 (4,'Acadiana HomeSchool - JVB','Acadiana HomeSchool',1,'jvg',1),
+
 (5,'Adams County Christian School - VB','Adams County Christian School - VB',1,'vb',2),
 (6,'Adams County Christian School - VG','Adams County Christian School - VG',1,'vg',2),
 (7,'Adams County Christian School - JVG','Adams County Christian School',1,'jvb',2),
 (8,'Adams County Christian School - JVB','Adams County Christian School',1,'jvg',2),
+
 (9,'Airline High School - VB','Airline High School - VB',1,'vb',3),
 (10,'Airline High School - VG','Airline High School - VG',1,'vg',3),
 (11,'Airline High School - JVG','Airline High School',1,'jvb',3),
