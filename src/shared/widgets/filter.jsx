@@ -148,12 +148,15 @@ export class Filter extends React.Component {
     const levels = s.levels;
     const levelFilter = g => levels.length === 0? g: levels.indexOf(g.homeTeam.teamKind) >= 0;
 
-    console.log(s.status);
-    const statusFilter = g => s.status.reduce((ok, status) => {
-      if (ok) return true;
-      
-      return g.status.indexOf(status) >= 0;
-    }, false);
+    const statusFilter = s.status.length
+      ? (
+        g => s.status.reduce((ok, status) => {
+          if (ok) return true;
+          
+          return g.status.indexOf(status) >= 0;
+        }, false)
+      )
+      : g => g;
 
     const filterFn_ = filters => g => filters.reduce((ok, filter) => ok && filter(g),  true);
 
