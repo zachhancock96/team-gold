@@ -58,23 +58,20 @@ export class School extends React.Component {
     const m = this.props;
     const schools = this.state.schools;
 
-    console.log(m.routing.localSegment);
-    console.log(m.routing.childSegment);
-
     const isDetail = isDetailPage(m.routing);
 
-    const activeSchoolId = getSchoolDetailId(m.routing);
-    
+    const activeSchoolId = getSchoolDetailId(m.routing);    
 
     const list = <ListView
       schools={schools}
       activeSchoolId={activeSchoolId}
       onSchoolClick={this.handleSchoolClick} />;
-
+      
     const detail = isDetail
       ? (
         <SchoolDetail
           actions={m.actions}
+          user={m.state.user}
           schoolDetailId={activeSchoolId} />
       ): null;
 
@@ -133,11 +130,12 @@ const DesktopLayout = ({ children }) => {
       flexDirection: 'row'
     }}>
       <div style={{
-        width: '400px',
+        width: '350px',
         backgroundColor: 'white',
         overflowY: 'auto',
         overflowX: 'hidden',
-        height: '750px',
+        height: '100%',
+        maxHeight: '800px',
         marginTop: '15px',
         borderRadius: '8px',
         boxShadow: '0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2)'
@@ -150,11 +148,11 @@ const DesktopLayout = ({ children }) => {
         flex: 1,
         backgroundColor: 'white',
         overflowY: 'auto',
-        height: '750px',
+        height: '100%',
+        maxHeight: '800px',
         marginTop: '15px',
         borderRadius: '8px',
         boxShadow: '0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2)'
-
       }}>
         {right}
       </div>

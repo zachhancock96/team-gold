@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import { Button, ButtonRed, CurvedButton } from 'shared/widgets';
 import { brownBorder } from 'shared/color';
 import { Table } from '../../shared/ui';
@@ -17,6 +17,7 @@ const Header = ({ children }) => (
     style={{
       fontSize: '1.25rem',
       fontWeight: 'bold',
+      padding: '16px 0px 16px 0px'
     }}>
     {children}
   </h3>
@@ -32,11 +33,11 @@ const jsonLog = user => {
   "id": 1,
   "teamKind": "vb" (i formatted this way in controller.jsx line 66)
 */
-
-export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onSubscribe, onDelete }) => {
+export const View = ({ canEditSchoolRep, canEditSchoolAdmin, schoolDetail, schoolReps, schoolAdmins, onAccept, onReject, onEdit, onSubscribe, onDelete }) => {
   if (!schoolDetail) return <div className='school-detail-empty'></div>;
-  
-  const admins = createAdminView({
+
+  const admins = createSchoolAdminView({
+    canEditSchoolAdmin,
     schoolId: schoolDetail.id,
     schoolAdmins,
     onAccept,
@@ -45,6 +46,7 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
   });
 
   const reps = createRepView({
+    canEditSchoolRep,
     schoolId: schoolDetail.id,
     schoolTeams: schoolDetail.teams,
     schoolReps,
@@ -57,7 +59,7 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
   const district = checkDistrict(schoolDetail.district);
   const assignor = checkAssignor(schoolDetail.assignor);
   const teams = checkTeams(schoolDetail.teams);
-  
+
   return (
     <div className='game-detail'>
       <div style={{
@@ -65,33 +67,28 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
         marginBottom: '8px',
         display: 'flex'
       }}>
-        <div style={{ flex: 1 }}>
-          <CurvedButton
-                  style={{ paddingLeft: '5px', paddingRight: '5px', margin: '8px', float: 'right'}}
-                  onClick={null}>Subscribe</CurvedButton>
           <Header>{schoolDetail.name}</Header>
-        </div>
       </div>
       <div>
-        <p className='game-detail-header'>General</p>
+        <p><span className='brown-header'>General</span></p>
         <p className='school-detail-comp'>{district}</p>
         <p>{assignor}</p>
         <hr />
       </div>
       <div>
-        <p className='game-detail-header'>Teams</p>
-        <p className='school-detail-comp'>{teams}</p>
+        <p><span className='brown-header'>Teams</span></p>
+        <div className='school-detail-comp'>{teams}</div>
         <hr />
       </div>
       <div>
-        <p className='game-detail-header'>School Admin</p>
-        <p className='school-detail-comp'>{admins}</p>
+        <p><span className='brown-header'>School Admin</span></p>
+        <div className='school-detail-comp'>{admins}</div>
         <hr />
       </div>
       <div style={{
         marginBottom: '8px',
       }}>
-        <p className='game-detail-header'>Users</p>
+        <p><span className='brown-header'>Coaches</span></p>
         <div style={{ marginBottom: '5px' }}>{reps}</div>
       </div>
     </div>
@@ -99,12 +96,12 @@ export const View = ({ schoolDetail, schoolReps, schoolAdmins, onAccept, onRejec
 
 }
 
-class RepRow extends Component {
+class EditableRepRow extends Component {
   state = {
     isEditing: false,
     options: [],
     selected: [],
-    canConfirm: false    
+    canConfirm: false
   }
 
   cancelEditing = () => {
@@ -122,23 +119,23 @@ class RepRow extends Component {
     if (!canConfirm) return;
 
     const { selected } = this.state;
-    const { schoolId, user  } = this.props;
+    const { schoolId, user } = this.props;
 
     const teamIds = [...selected];
     const repId = user.id;
-    
+
     this.props.onEdit(schoolId, repId, teamIds);
     this.cancelEditing();
   }
 
   changeTeamSelected = selected => {
     const canConfirm = selected.length > 0;
-    this.setState({selected, canConfirm});
+    this.setState({ selected, canConfirm });
   }
 
   startEditing = () => {
     const m = this.props;
-    const options = m.schoolTeams.map(t => ({label: t.teamKind, value: t.id}));
+    const options = m.schoolTeams.map(t => ({ label: t.teamKind, value: t.id }));
     const selected = m.teams.map(t => t.id);
 
     this.setState({
@@ -155,7 +152,8 @@ class RepRow extends Component {
 
     const teams_ = teams.map(t => t.abbrevName).join(' , ');
 
-    if (user.status === 'pending'){
+    if (user.status === 'pending') {
+
       return (<tr className='user-pending'>
         <td>{user.name}</td>
         <td>{user.email}</td>
@@ -165,22 +163,22 @@ class RepRow extends Component {
           <button onClick={() => m.onReject(schoolId, user.id, user.role)}>Reject</button>
         </td>
       </tr>);
-    }
-    else {
-      const { options, selected, canConfirm } = this.state;
-      const teamsRow = this.state.isEditing?  <div style={{width: '175px'}}><MultiSelect onSelectedChanged={this.changeTeamSelected} itemType='team' options={options} selected={selected} /></div>: teams_;
+    } else {
 
-      const buttons = this.state.isEditing? (
+      const { options, selected, canConfirm } = this.state;
+      const teamsRow = this.state.isEditing ? <div style={{ width: '175px' }}><MultiSelect onSelectedChanged={this.changeTeamSelected} itemType='team' options={options} selected={selected} /></div> : teams_;
+
+      const buttons = this.state.isEditing ? (
         <>
-          <button disabled={!canConfirm} onClick={this.confirmEditing}>Confirm</button>  
+          <button disabled={!canConfirm} onClick={this.confirmEditing}>Confirm</button>
           <button onClick={this.cancelEditing}>Cancel</button>
         </>
-      ): (
-        <>
-        <button onClick={this.startEditing}>Edit</button>  
-        <button onClick={() => m.onDelete(schoolId, user.id, user.role)}>Delete</button>  
-        </>
-      )
+      ) : (
+          <>
+            <button onClick={this.startEditing}>Edit</button>
+            <button onClick={() => m.onDelete(schoolId, user.id, user.role)}>Delete</button>
+          </>
+        )
       return (<tr className='user-accepted'>
         <td>{user.name}</td>
         <td>{user.email}</td>
@@ -193,7 +191,24 @@ class RepRow extends Component {
   }
 }
 
+const ViewOnlyRepRow = ({ user, teams }) => {
+  const teams_ = teams.map(t => t.abbrevName).join(' , ');
+
+  const cname = user.status === 'pending'
+    ? 'user-pending'
+    : 'user-accepted';
+
+  return (<tr className={cname}>
+    <td>{user.name}</td>
+    <td>{user.email}</td>
+    <td>{teams_}</td>
+  </tr>);
+}
+
+const NoSchoolRepView = () => <p style={{padding: '16px 0px 16px 0px', fontWeight: 'bold'}}>No school coaches assigned</p>;
+
 const createRepView = ({
+  canEditSchoolRep,
   schoolId,
   schoolTeams,
   schoolReps,
@@ -202,20 +217,25 @@ const createRepView = ({
   onDelete,
   onEdit,
 }) => {
-    
-  const header = ['Name', 'Email', 'Teams', 'Options'];
-  return (
+
+  const header = canEditSchoolRep
+    ? ['Name', 'Email', 'Teams', 'Options']
+    : ['Name', 'Email', 'Teams'];
+
+  const tableView = (
     <Table>
       <thead>
         <tr>
-          {header.map((title) => (
-            <th>{title}</th>
+          {header.map((title, i) => (
+            <th key={i}>{title}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {schoolReps.map(r =>{
-            return <RepRow
+        {schoolReps.map(r => {
+          return canEditSchoolRep
+          ? <EditableRepRow
+              key={r.id}
               user={r}
               teams={r.teams}
               schoolTeams={schoolTeams}
@@ -224,12 +244,22 @@ const createRepView = ({
               onReject={onReject}
               onEdit={onEdit}
               onDelete={onDelete} />
-          })}
+          : <ViewOnlyRepRow
+              key={r.id}
+              user={r}
+              teams={r.teams} />
+        })}
       </tbody>
-    </Table>);  
+    </Table>);
+
+  const emptyView = <NoSchoolRepView />
+
+  return schoolReps.length
+    ? tableView
+    : emptyView;
 }
 
-class AdminRow extends Component {
+class EditableSchoolAdminRow extends Component {
   static defaultProps = {
     user: {
       id: -1,
@@ -238,17 +268,17 @@ class AdminRow extends Component {
       role: '',
       status: ''
     },
-    onAccept: (() => {}),
-    onReject: (() => {}),
-    onDelete: (() => {}),
-    schoolId: -1 
+    onAccept: (() => { }),
+    onReject: (() => { }),
+    onDelete: (() => { }),
+    schoolId: -1
   };
 
   render() {
     const { schoolId, user } = this.props;
     const m = this.props;
 
-    if (user.status === 'pending'){
+    if (user.status === 'pending') {
       return (<tr className='user-pending'>
         <td>{user.name}</td>
         <td>{user.email}</td>
@@ -270,55 +300,80 @@ class AdminRow extends Component {
   }
 }
 
-const createAdminView = ({schoolId, schoolAdmins, onAccept, onReject, onDelete}) => {
-  const header = ['Name', 'Email', 'Options'];
-  return (
+const ViewOnlySchoolAdminRow = ({ user }) => {
+  const cname = user.status === 'pending'
+    ? 'user-pending'
+    : 'user-accepted';
+
+  return (<tr className={cname}>
+    <td>{user.name}</td>
+    <td>{user.email}</td>
+  </tr>);
+}
+
+const NoSchoolAdminView = () => <p style={{padding: '16px 0px 16px 0px', fontWeight: 'bold'}}>No school admins assigned</p>;
+
+const createSchoolAdminView = ({ canEditSchoolAdmin, schoolId, schoolAdmins, onAccept, onReject, onDelete }) => {
+  const header = canEditSchoolAdmin
+    ? ['Name', 'Email', 'Options']
+    : ['Name', 'Email'];
+
+  const tableView = (
     <Table>
       <thead>
         <tr>
-          {header.map((title) => (
-            <th>{title}</th>
+          {header.map((title, i) => (
+            <th key={i}>{title}</th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {schoolAdmins.map(user =>{
-            return <AdminRow
-            user={user}
-            onAccept={onAccept}
-            onReject={onReject}
-            onDelete={onDelete}
-            schoolId={schoolId} />
-          })}
+        {schoolAdmins.map(user => {
+          return canEditSchoolAdmin
+            ? <EditableSchoolAdminRow
+                key={user.id}
+                user={user}
+                onAccept={onAccept}
+                onReject={onReject}
+                onDelete={onDelete}
+                schoolId={schoolId} />
+            : <ViewOnlySchoolAdminRow
+                key={user.id}
+                user={user} />
+        })}
       </tbody>
     </Table>);
-} 
+  
+  const emptyView = <NoSchoolAdminView />;
+
+  return schoolAdmins.length? tableView: emptyView;
+}
 
 const checkDistrict = district => {
-  if (!district){
-    return <p>---District Not Assigned---</p>
+  if (!district) {
+    return <span>---District Not Assigned---</span>
   }
-  else{
-    return <p>- District: {district.name}</p>
+  else {
+    return <span>- District: {district.name}</span>
   }
 }
 
 const checkAssignor = assignor => {
-  if (!assignor){
-    return <p>---Assignor Not Assigned---</p>
+  if (!assignor) {
+    return <span>---Assignor Not Assigned---</span>
   }
-  else{
-    return <p>- Assignor: {assignor.name}</p>
+  else {
+    return <span>- Assignor: {assignor.name}</span>
   }
 }
 
-const checkTeams = teams =>{
-  if (!teams){
+const checkTeams = teams => {
+  if (!teams) {
     return <p>---Teams Not Assigned--- </p>
   }
-  else{
-    let teamList = teams.map(e => {
-    return <p style={{marginBottom:'5px'}}>- {e.name}</p>
+  else {
+    let teamList = teams.map((e, i) => {
+      return <p key={i} style={{ marginBottom: '5px' }}>- {e.name}</p>
     });
 
     return teamList;

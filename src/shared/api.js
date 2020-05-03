@@ -326,7 +326,6 @@ const [authGet, authPost] = (function() {
   function authGet(url, queryObject) {
     queryObject = queryObject || {};
     const sessionId = getToken();
-    console.log(`calling authGet with sessionid header: ${sessionId}`)
   
     return new Promise(function (resolve, reject) {
       $.ajax({

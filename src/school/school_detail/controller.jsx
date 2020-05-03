@@ -3,34 +3,6 @@ import PropTypes from 'prop-types';
 import { View } from './view';
 import { api } from 'shared';
 
-/*
-    interface School {
-      id: number;
-      name: string;
-      isLhsaa: boolean;
-      schoolReps: {
-        id: number,
-        name: string
-      }[];
-      teams: {
-        id: number;
-        name: string;
-        teamKind: TeamKind;
-      }[];
-      schoolAdmin: {
-        id: number,
-        name: string
-      } | null;
-      district: {
-        id: number,
-        name: string
-      } | null;
-      assignor: {
-        id: number,
-        name: string
-      } | null;
-    }
-*/
 const load = async schoolDetailid => {
   const school = await api.getSchool(schoolDetailid);
   const schoolAdmins = await api.getSchoolAdminsOfSchool(schoolDetailid);
@@ -63,14 +35,19 @@ const load = async schoolDetailid => {
   };
 }
 
+const isBoss = user => user.role === 'assignor' || user.role === 'admin';
+
 //following props are recieved:
 //schoolDetailId: number
-//actions e.g. actions.showLoading
+//actions e.g. actions.showLoading,
+//user
 export class SchoolDetail extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      canEditSchoolRep: false,
+      canEditSchoolAdmin: false,
       schoolAdmins: [],
       schoolReps: [],
       school: null,
@@ -79,14 +56,24 @@ export class SchoolDetail extends Component {
   }
 
   async componentDidMount() {
-    //TODO: do this on component update and when schoolId is different
     this._load(this.props.schoolDetailId);
   }
 
   _load = async (schoolDetailId) => {
-    //TODO: show loading
     const { schoolAdmins, schoolReps, school } = await load(schoolDetailId);
+    const { user } = this.props;
+
+    const canEditSchoolRep = isBoss(user)
+      ? true
+      : user.role === 'school_admin'
+      ? user.schoolId === schoolDetailId
+      : false;
+
+    const canEditSchoolAdmin = isBoss(user)
+
     this.setState({
+      canEditSchoolRep,
+      canEditSchoolAdmin,
       schoolAdmins,
       schoolReps,
       school,
@@ -129,7 +116,7 @@ export class SchoolDetail extends Component {
     actions.showSuccess(s);
   }
 
-  success = s => {
+  error = s => {
     const { actions } = this.props;
     actions.showError(s);
   }  
@@ -186,10 +173,12 @@ export class SchoolDetail extends Component {
   }
 
   render() {
-    const { ready, school, schoolAdmins, schoolReps } = this.state;
+    const { canEditSchoolRep, canEditSchoolAdmin, ready, school, schoolAdmins, schoolReps } = this.state;
     
     return ready ?
       (<View
+          canEditSchoolRep={canEditSchoolRep}
+          canEditSchoolAdmin={canEditSchoolAdmin}
           schoolAdmins={schoolAdmins}
           schoolReps={schoolReps}
           schoolDetail={school}
