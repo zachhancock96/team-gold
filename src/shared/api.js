@@ -29,6 +29,7 @@ const API_URLS = {
   CREATE_CSV_EXPORT: `${BASE_URL}/csv-export`,
   GET_CSV_EXPORTS: `${BASE_URL}/csv-export`,
   GET_CSV_EXPORT: id => `${BASE_URL}/csv-export/${id}`,
+  REMOVE_CSV_EXPORT: id => `${BASE_URL}/csv-export/${id}/remove`,
   EDIT_CSV_EXPORT_NOTE: id => `${BASE_URL}/csv-export/${id}/note`,
   
   LOGIN: () => `${BASE_URL}/login`,
@@ -126,6 +127,10 @@ export function getArbiterExport(id) {
 
 export function editArbiterExportNote(id, note) {
   return authPost(API_URLS.EDIT_CSV_EXPORT_NOTE(id), {note: note || null});
+}
+
+export function removeArbiterExport(id) {
+  return authPost(API_URLS.REMOVE_CSV_EXPORT(id));
 }
 
 export function getUsers() {
