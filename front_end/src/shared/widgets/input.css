@@ -1,0 +1,138 @@
+.form-control {
+  border-color: #8492a6;
+  color: #47525e;
+}
+
+.form-control::placeholder {
+  color: #8190a5;
+}
+
+.form-control:focus {
+  color: #47525e;
+  border-color: #8492a6;
+  box-shadow: inset 0 0 4px 0px black;
+}
+
+/*Switch Styles
+
+  toggle styles copied and modified from https://codepen.io/mallendeo/pen/eLIiG
+  by Mauricio Allende (https://mallendeo.com/)
+ */
+.sh-toggle-btn {
+  box-sizing: initial;
+  display: inline-block;
+  outline: 0;
+  width: 3em; /**bloop**/
+  height: 1.5em; /**bloop**/
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  background: #fbfbfb;
+  border-radius: 1.5em; /**bloop**/
+  padding: 4px;
+  transition: all 0.4s ease;
+  border: 1px solid #e8eae9;
+}
+.sh-toggle-input:focus + .sh-toggle-btn::after,
+.sh-toggle-btn:active::after {
+  box-sizing: initial;
+}
+.sh-toggle-btn::after {
+  left: 0;
+  position: relative;
+  display: block;
+  content: "";
+  width: 50%;
+  height: 100%;
+  border-radius: 1.5em; /**bloop**/
+  background: #fbfbfb;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1), 0 4px 0 rgba(0, 0, 0, 0.08);
+}
+.sh-toggle-btn.sh-toggle-btn-on::after {
+  left: 50%;
+}
+.sh-toggle-btn.sh-toggle-btn-on {
+  background: #00d69e;
+}
+.sh-toggle-input {
+  /* visually hidden but still accessible */
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+/*Time picker style
+*/
+
+.react-time-picker__wrapper,
+.react-date-picker__wrapper {
+  padding: .375rem .75rem;
+  border-radius: .25rem;
+  background-color: white;
+  border-color: #8492a6;
+}
+.react-time-picker__wrapper input,
+.react-time-picker__wrapper select {
+  color: #47525e;
+}
+
+.react-date-picker__wrapper:focus,
+.react-date-picker__wrapper:focus-within,
+.react-time-picker__wrapper:focus,
+.react-time-picker__wrapper:focus-within {
+  border-color: #8492a6;
+  box-shadow: inset 0 0 2px 0px black;
+}
+
+.react-date-picker__inputGroup__input:invalid {
+  background: none;
+}
+
+
+.multi-select input {
+  color: #47525e !important;
+  border-color: #8492a6 !important;
+}
+
+.multi-select input:focus {
+  box-shadow: inset 0 0 4px 0px black;
+}
+
+.multi-select .dropdown-heading {
+  border-color: #8492a6 !important;
+}
+
+.multi-select .dropdown-heading-value {
+  color: #47525e !important;
+}
+
+.multi-select .dropdown-heading-value span {
+  line-height: 2;/*NOTE: this is quite hacky and very particular to our current application*/
+}
+
+/*TODO: this doesn't seem to change the color of the arrow*/
+.multi-select .dropdown-heading-dropdown-arrow span {
+  color: #47525e !important;
+}
+
+
+.multi-select .dropdown[aria-expanded="true"] .dropdown-heading {
+  box-shadow: inset 0 0 4px 0px black;
+}
+
+.m-react-select .css-yk16xz-control {
+  border-color: #8492a6;
+  color: #47525e;
+}
+.m-react-select .css-1pahdxg-control {
+  color: #47525e;
+  border-color: #8492a6;
+  box-shadow: inset 0 0 4px 0px black;
+}

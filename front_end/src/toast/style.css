@@ -1,0 +1,29 @@
+.my-toast {
+  padding: 20px;
+  font-weight: bold;
+  background-color: rgb(65, 43, 25);
+  color: white;
+  margin-bottom: 8px;
+  
+}
+
+.my-toast.error {
+  box-shadow: inset 0 0 16px 0px #F95F62;
+}
+.my-toast.error .fa {
+  color: #F95F62;
+}
+
+.my-toast.success {
+  box-shadow: inset 0 0 16px 0px #00d69e;
+}
+.my-toast.success .fa {
+  color: #00d69e;
+}
+
+.my-toast.info {
+  box-shadow: inset 0 0 16px 0px #636b72;
+}
+.my-toast.info .fa {
+  color: #636b72;
+}

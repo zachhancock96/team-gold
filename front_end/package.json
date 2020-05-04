@@ -1,0 +1,51 @@
+{
+  "name": "mithril-practise",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-solid-svg-icons": "^5.13.0",
+    "@fortawesome/react-fontawesome": "^0.1.9",
+    "@khanacademy/react-multi-select": "^0.3.3",
+    "codemirror": "^5.53.2",
+    "eslint": "^6.8.0",
+    "feather-route-matcher": "^3.1.0",
+    "jquery": "^3.5.0",
+    "meiosis-routing": "^2.0.1",
+    "meiosis-setup": "^4.0.2",
+    "mergerino": "^0.4.0",
+    "mithril": "^2.0.4",
+    "moment-timezone": "^0.5.28",
+    "react": "^16.13.1",
+    "react-bootstrap": "^1.0.0",
+    "react-calendar": "^3.0.1",
+    "react-collapse": "^5.0.1",
+    "react-date-picker": "^8.0.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "^3.4.1",
+    "react-select": "^3.1.0",
+    "react-time-picker": "^4.0.1"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

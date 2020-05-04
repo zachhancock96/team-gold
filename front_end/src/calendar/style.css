@@ -1,0 +1,293 @@
+.dots {
+  margin-top: 10px;
+  font-size: 0px;
+  overflow-wrap: normal;
+}
+.dots span {
+  display: inline-block;
+  border: 4px solid;
+  border-radius: 4px;
+  margin-left: 2px;
+}
+.dots span.green {
+  border-color: #06d6a0;
+}
+.dots span.yellow {
+  border-color: #ffd166;
+}
+.dots span.red {
+  border-color: #ef476f;
+}
+
+.main-calendar .react-calendar {
+  height: 100%;
+  width: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.125em;
+  padding: 15px;
+  background: #fff;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transition: all 0.4s ease-in-out 0s;
+  transition: all 0.4s ease-in-out 0s;
+  box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+}
+.main-calendar .react-calendar--doubleView {
+  width: 100%;
+}
+.main-calendar .react-calendar--doubleView .react-calendar__viewContainer {
+  display: flex;
+  margin: -0.5em;
+}
+.main-calendar .react-calendar--doubleView .react-calendar__viewContainer > * {
+  width: 50%;
+  margin: .5em;
+}
+.main-calendar .react-calendar,
+.main-calendar .react-calendar *,
+.main-calendar .react-calendar *:before,
+.main-calendar .react-calendar *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.main-calendar .react-calendar button {
+  margin: 0;
+  border: 0;
+  outline: none;
+}
+.main-calendar .react-calendar button:enabled:hover {
+  cursor: pointer;
+}
+.main-calendar .react-calendar__navigation {
+  height: 44px;
+  margin-bottom: 1em;
+}
+.main-calendar .react-calendar__navigation button {
+  min-width: 44px;
+  background: none;
+  font-size: 25px;
+}
+.main-calendar .react-calendar__navigation button.filter {
+  min-width: 30px;
+}
+.main-calendar .react-calendar__navigation button:enabled:hover,
+.main-calendar .react-calendar__navigation button:enabled:focus {
+  background-color: #e6e6e6;
+}
+.main-calendar .react-calendar__navigation button[disabled] {
+  background-color: #f0f0f0;
+}
+.main-calendar .react-calendar__month-view__weekdays {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: .75em;
+}
+.main-calendar .react-calendar__month-view__weekdays__weekday {
+  padding: .5em;
+}
+.main-calendar .react-calendar__month-view__days__day--weekend {
+  color: #d10000;
+}
+.main-calendar .react-calendar__month-view__days__day--neighboringMonth {
+  color: #757575;
+}
+.main-calendar .react-calendar__year-view .react-calendar__tile,
+.main-calendar .react-calendar__decade-view .react-calendar__tile,
+.main-calendar .react-calendar__century-view .react-calendar__tile {
+  padding: 2em .5em;
+}
+.main-calendar .react-calendar__tile {
+  max-width: 100%;
+  text-align: center;
+  background: none;
+  height: 100px;
+}
+.main-calendar .react-calendar__tile:disabled {
+  background-color: #f0f0f0;
+}
+.main-calendar .react-calendar__tile:enabled:hover,
+.main-calendar .react-calendar__tile:enabled:focus {
+  background-color: #e6e6e6;
+}
+.main-calendar .react-calendar__tile--now {
+  background: #ffff074a;
+}
+.main-calendar .react-calendar__tile--now:enabled:hover,
+.main-calendar .react-calendar__tile--now:enabled:focus {
+  background: #ffffa9;
+}
+.main-calendar .react-calendar__tile--hasActive:enabled:focus,
+.main-calendar .react-calendar__tile--hasActive:enabled:hover,
+.main-calendar .react-calendar__tile--hasActive,
+.main-calendar .react-calendar__tile--active {
+  background: #462c2cc7;
+  color: white;
+}
+.main-calendar .react-calendar__tile--active:enabled:focus {
+  background: #462c2cc7;
+}
+.main-calendar .react-calendar--selectRange .react-calendar__tile--hover {
+  background-color: #e6e6e6;
+}
+
+
+
+
+.cal-list, .cal-list * {
+  font-family: 'Rubik', sans-serif;
+}
+
+.cal-list {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0,0.23);
+  height: 100%;
+  width: 350px;
+  background: #fffffe;
+}
+
+.mobile .cal-list {
+  margin-top: 20px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cal-list .items {
+  border-top: 10px solid #462c2cc7;
+}
+
+.cal-list .items-head p.date{
+  color: #462c2cc7;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.cal-list .items-head > div {
+  padding: 5px 20px;
+  margin: 10px;
+}
+
+.cal-list .items-head hr {
+  width: 80%;
+  margin: 0px 30px;
+  border: 1px solid #462c2cc7;
+}
+
+.cal-list .items-body {
+  padding: 10px;
+  margin: 10px;
+  display: grid;
+  grid-gap: 10px;
+  max-height: 700px;
+  overflow: auto;
+}
+
+.mobile .items-body {
+  height: 100%;
+  max-height: none;
+}
+
+.cal-list .items-body-content {
+  padding: 10px 10px 10px 4px;
+  padding-right: 0px;
+  display: grid;
+  grid-template-columns: 10fr 1fr;
+  font-size: 15px;
+  grid-gap: 10px;
+  border: 1px solid transparent;
+}
+
+.cal-list .horny-tamer {
+  position: relative;
+}
+
+.cal-list .horny-download {
+  position: absolute;
+  right: 18px;
+  top: 4px;
+  color: #462c2cc7;  
+  width: 20px;
+}
+
+.cal-list .horny-download:hover {
+  cursor: pointer;
+}
+
+.cal-list .horny-download-red {
+  right: 60px;
+  color: red;
+}
+
+.cal-list .border {
+  padding: 4px;
+  margin-right: 4px;
+}
+.cal-list .border.green {
+  background-color: #06d6a0;  
+}
+.cal-list .border.yellow {
+  background-color: #ffd166;  
+}
+.cal-list .border.red {
+  background-color: #ef476f;  
+}
+
+
+
+/*
+
+<div class="cal-list">
+  <div class="items">
+    <div class="items-head">
+       <div class="horny-tamer">
+        <p class="date">March 24/March 26</p>
+        <p class="games">14 games</p>
+         <span class="horny-download"><i class="fa fa-download" aria-hidden="true"></i></span>
+         
+      </div>
+      <hr>
+    </div>
+    
+    <div class="items-body">
+
+      <div class="items-body-content">
+        <div class="d-flex">
+          <div class="border green"></div>
+          <div class="flex-1">
+            <div>Acadiana HomeSchool - VB</div>
+            <div>Acadiana HomeSchool - VB</div>
+            <div>@ WMHS</div>
+          </div>                  
+        </div>
+      </div>
+      
+      
+       <div class="items-body-content">
+        <div class="d-flex">
+          <div class="border yellow"></div>
+          <div class="flex-1">
+            <div>Acadiana HomeSchool - VB</div>
+            <div>Acadiana HomeSchool - VB</div>
+            <div>@ WMHS</div>
+          </div>                  
+        </div>
+      </div>
+      
+            <div class="items-body-content">
+        <div class="d-flex">
+          <div class="border red"></div>
+          <div class="flex-1">
+            <div>Acadiana HomeSchool - VB</div>
+            <div>Acadiana HomeSchool - VB</div>
+            <div>@ WMHS</div>
+          </div>                  
+        </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+*/
