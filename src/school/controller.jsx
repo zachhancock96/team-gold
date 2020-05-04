@@ -79,7 +79,6 @@ export class School extends React.Component {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        marginTop: '20px',
         height: '100%',
       }}>
         {

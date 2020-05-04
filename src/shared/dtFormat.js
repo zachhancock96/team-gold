@@ -24,6 +24,6 @@ export function dtFormat(startTime) {
       return hour + ':' + min + ' ' + section;
     };
   
-    return gameDate(dateSlice) + ' at ' + gameTime(timeSlice);
+    return gameDate(dateSlice) + ' @ ' + gameTime(timeSlice);
 }
   

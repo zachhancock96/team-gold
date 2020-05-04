@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonRed, CurvedButton } from 'shared/widgets';
+import { Button, ButtonRed, CurvedButton, CurvedOutlineButton, CurvedOutlineButtonRed } from 'shared/widgets';
 import { brownBorder } from 'shared/color';
 import { dtFormat } from 'shared/dtFormat';
 
@@ -25,7 +25,7 @@ const Header = ({ children }) => (
   </h3>
 );
 
-export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
+export const View = ({ canSubscribe, gameDetail, onEdit, onReject, onAccept, onSubscribe, onUnsubscribe }) => {
   if (!gameDetail) return <div className='game-detail-empty'></div>;
 
   const history = prettyHistory(gameDetail);
@@ -33,6 +33,16 @@ export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
   const gameHistory = displayHistory(history);
 
   const status = formatStatus(gameDetail.game.status)
+
+  const editButton = gameDetail.actions.indexOf('edit') >= 0
+    ? <CurvedButton
+      style={{ paddingLeft: '20px', paddingRight: '20px', margin: '8px' }}
+      onClick={e => onEdit(gameDetail.game.id)}>Edit</CurvedButton>
+    : null;
+
+  const subscribeButton = canSubscribe
+    ? <CurvedOutlineButton onClick={() => { onSubscribe(gameDetail.game.id) }}>Subscribe</CurvedOutlineButton>
+    : <CurvedOutlineButtonRed onClick={() => { onUnsubscribe(gameDetail.subscription.id)}}>Unsubscribe</CurvedOutlineButtonRed>
 
   return (
     <div className='game-detail'>
@@ -43,21 +53,17 @@ export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
       }}>
         <div style={{ flex: 1 }}>
           <Header>{title(gameDetail.game)}</Header>
+          <Header>{level(gameDetail.game)}</Header>
           <Header>{dtFormat(gameDetail.game.start)}</Header>
-          <Header>{gameDetail.game.location}</Header>
+          <Header>@ {gameDetail.game.location}</Header>
         </div>
         <div>
-          {
-            gameDetail.actions.indexOf('edit') >= 0
-              ? <CurvedButton
-                style={{ paddingLeft: '20px', paddingRight: '20px', margin: '8px' }}
-                onClick={e => onEdit(gameDetail.game.id)}>Edit</CurvedButton>
-              : null
-          }
+          {subscribeButton}
+          {editButton}
         </div>
       </div>
       <div>
-        <p className='game-detail-header'>Status</p>
+        <p><span className='brown-header'>Status</span></p>
         <p style={{ paddingTop: '15px', paddingBottom: '10px' }}>{status}</p>
         <hr />
       </div>
@@ -65,7 +71,7 @@ export const View = ({ gameDetail, onEdit, onReject, onAccept }) => {
         borderBottom: brownBorder,
         marginBottom: '8px',
       }}>
-        <p className='game-detail-header'>Game History</p>
+        <p><span className='brown-header'>Game History</span></p>
         <div className='game-history-box'>{gameHistory}</div>
       </div>
       <div>
@@ -126,11 +132,14 @@ const prettyHistory = gameDetail => {
 }
 
 const title = game => {
-  const hTeamKind = formatTeamKind(game.homeTeam.teamKind)
-  const aTeamKind = formatTeamKind(game.awayTeam.teamKind)
+  const homeName = game.homeTeam.school.name;
+  const awayName = game.awayTeam.school.name;
 
-  return game.homeTeam.school.name + ' ' + hTeamKind + ' vs '
-    + game.awayTeam.school.name + ' ' + aTeamKind;
+  return homeName + ' vs ' + awayName;
+}
+
+const level = game => {
+  return formatTeamKind(game.homeTeam.teamKind);
 }
 
 const displayHistory = history => {
@@ -164,7 +173,7 @@ const displayHistory = history => {
   return historyList;
 }
 
-const formatStatus = status =>{
+const formatStatus = status => {
   if (status === 'pending_away_team'){
     return <span style={{fontWeight:'bold'}}>Pending (Away Team)</span>
   }
@@ -180,17 +189,16 @@ const formatStatus = status =>{
   else if (status === 'rejected'){
     return <span style={{color:'red', fontWeight:'bold'}}>Rejected</span>
   }
-
 }
 
-const formatTeamKind = TeamK =>{
-  if(TeamK == 'vg'){
+const formatTeamKind = k =>{
+  if(k == 'vg'){
     return 'Varsity Girls'
   }
-  else if(TeamK == 'vb'){
+  else if(k == 'vb'){
     return 'Varsity Boys'
   }
-  else if(TeamK == 'jvg'){
+  else if(k == 'jvg'){
     return 'JV Girls'
   }
   else{

@@ -23,6 +23,9 @@ const API_URLS = {
   REJECT_GAME: gameId => `${BASE_URL}/games/${gameId}/reject`,
   ACCEPT_GAME: gameId => `${BASE_URL}/games/${gameId}/accept`,
   EDIT_GAME: gameId => `${BASE_URL}/games/${gameId}/edit`,
+  GET_GAME_UPDATE_SUBSCRIPTIONS: `${BASE_URL}/subscriptions/game-update`,
+  SUBSCRIBE_GAME_UPDATE: `${BASE_URL}/subscriptions/game-update/subscribe`,
+  UNSUBSCRIBE_GAME_UPDATE: subscriptionId => `${BASE_URL}/subscriptions/${subscriptionId}/unsubscribe`,
 
   EXECUTE_SQL: `${BASE_URL}/sql-execute`,
 
@@ -191,7 +194,7 @@ export function getMyGames() {
   GET /games/id/actions
   GET /games/id/history
 */
-export const loadGameAndActionAndHistory = async (gameId) => {
+export const loadGameAndActionAndHistoryAndSubscription = async (gameId) => {
   gameId = parseInt(gameId);
 
   const game = await authGet(API_URLS.GET_GAME(gameId))
@@ -200,12 +203,27 @@ export const loadGameAndActionAndHistory = async (gameId) => {
     .then(o => o.actions);
   const history = await authGet(API_URLS.GET_GAME_HISTORY(gameId))
     .then(o => o.history);
+
+  const subscription = await authGet(API_URLS.GET_GAME_UPDATE_SUBSCRIPTIONS)
+    .then(o => {
+      return o.subscriptions.find(s => s.gameId === gameId) || null;
+    });
   
   return {
     game,
     actions,
-    history
+    history,
+    subscription
   }
+}
+
+export const subscribeGameUpdate = async gameId => {
+  return authPost(API_URLS.SUBSCRIBE_GAME_UPDATE, {gameId})
+    .then(o => o.subscriptionId);
+}
+
+export const unsubscribeGameUpdate = async subscriptionId => {
+  return authPost(API_URLS.UNSUBSCRIBE_GAME_UPDATE(subscriptionId));
 }
 
 export function addGame(game) {

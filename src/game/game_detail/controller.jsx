@@ -22,7 +22,7 @@ export class GameDetail extends Component {
     const m = this.props;
 
     m.actions.showLoading('GameDetail');
-    api.loadGameAndActionAndHistory(gameId)
+    api.loadGameAndActionAndHistoryAndSubscription(gameId)
       .then(gameDetail => {
         this.setState({gameDetail});
       })
@@ -38,6 +38,29 @@ export class GameDetail extends Component {
     if (newGameId != prevGameId) {
       this._loadGame(newGameId);
     }
+  }
+
+  subscribe = () => {
+    const { actions, gameId } = this.props;
+
+    api.subscribeGameUpdate(gameId)
+      .then(() => {
+        actions.showSuccess('You will recieve email notification for any changes to the game');
+        this._loadGame(gameId);
+      })
+      .catch(err => actions.showError(err.message || err));
+  }
+
+  unsubscribe = () => {
+    const { actions, gameId } = this.props;
+    const subscriptionId = this.state.gameDetail.subscription.subscriptionId;
+
+    api.unsubscribeGameUpdate(subscriptionId)
+      .then(() => {
+        actions.showSuccess('Unsubscribed from email notifications');
+        this._loadGame(gameId);
+      })
+      .catch(err => actions.showError(err.message || err));
   }
 
   handleEdit = id => {
@@ -62,11 +85,16 @@ export class GameDetail extends Component {
   render() {
     const { gameDetail } = this.state;
     
-    return (<View
-        gameDetail={gameDetail}
-        onEdit={this.handleEdit}
-        onReject={this.handleReject}
-        onAccept={this.handleAccept} />);
+    return gameDetail?
+      (<View
+          gameDetail={gameDetail}
+          canSubscribe={!gameDetail.subscription}
+          onSubscribe={this.subscribe}
+          onUnsubscribe={this.unsubscribe}
+          onEdit={this.handleEdit}
+          onReject={this.handleReject}
+          onAccept={this.handleAccept} />)
+      : null;
   }
 }
 
