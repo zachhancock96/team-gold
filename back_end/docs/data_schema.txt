@@ -1,0 +1,70 @@
+User
+        id
+        name
+        email
+        password
+        role
+
+Admin
+        id
+        userId
+
+School Admin
+        id
+        userId
+        schoolId
+
+Assignor
+        id
+        userId
+        districtId
+
+School Rep
+        id
+        userId
+        schoolId
+
+Team
+        id
+        type
+        name
+        abbrevName
+        schoolId
+
+SchoolRepTeamAssn
+        id
+        schoolRepId
+        teamId
+
+School
+        id
+        name
+        abbrevName
+
+District
+        id
+        name
+
+SchoolDistrictAssn
+        id
+        schoolId
+        districtId
+
+Game
+        id
+        homeTeamId
+        awayTeamId
+        location
+        start
+        bufferBeforeStart
+        bufferAfterStart
+        status
+
+Game Update History
+        id
+        modifiedBy
+        location
+        start
+        bufferBeforeStart
+        bufferAfterStart
+        status

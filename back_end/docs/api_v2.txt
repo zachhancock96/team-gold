@@ -1,0 +1,198 @@
+GET /api/games
+@query {
+  
+  //start date
+  //any games that start at time `t` such that `t` >= `start_date`
+  start_date: Date (e.g. 2020-01-01),
+
+  //end date
+  //any games that start at time `t` such that `t` <= `end_date`
+  //note if end_date were 2020-02-01 and a game was scheduled at 2020-02-01T08:00 then
+  //the that game is still included by the filer, however the game 2020-02-02T08:00 is not
+  //included by the filter
+  end_date: Date (e.g. 2020-02-01),
+
+  //team
+  team: string (e.g. neville+jv),
+
+  //home team name
+  home_team: string (e.g. neville+jv),
+
+  //away team name
+  away_team: string (e.g. grenich+vb),
+
+  //school team name
+  school: string (e.g. neville+high+school)
+}
+@possible query combinations  [
+
+  //(1) any games
+  /api/games,
+
+  //(2) any games within following interval
+  /api/games?start_date=xx&end_date=xx,
+
+  //(3) any games that start at time `t` such that `t` >= `start_date`
+  /api/games?start_date=xx,
+
+  //(4) any games that start at time =`t` such that `t` <= `end_date`
+  /api/games?end_date=xx,
+  
+  //(5) games that have `home_team` team as home team
+  /api/games?home_team=xx,
+
+  //(6) games that have `away_team` team as away team
+  /api/games?away_team=xx,
+
+  //(7) `home_team` vs `away_team` games; basically searches for games with `home_team` AND `away_team`
+  /api/games?home_team=xx&away_team=xx,
+
+  //(8) games played by `team` as either home or away
+  /api/games?team=xx  
+
+  //(9) any games that `school` participates
+  /api/games?school=xx
+]
+@query notes `
+  (2), (3), (4) could be combined with (5), (6), (7), (8) and (9)
+  for e.g. here is the list of possible variations of (5)
+
+  /api/games?home_team=xx,  
+  /api/games?home_team=xx&start_date=xx&end_date=xx,
+  /api/games?home_team=xx&start_date=xx&home_team=xx,
+  /api/games?home_team=xx&end_date=xx&home_team=xx
+
+
+  (5), (6), (7), (8) and (9) could not be combined among each other
+  for e.g. here are some of illegal queries
+
+  /api/games?home_team=xx&away_team=xx&school=xx,
+  /api/games?school=xx&team=xx,
+  /api/games?away_team=xx&team=xx,
+  /api/games?home_team=xx&school=xx
+  ..etc.
+
+
+  start_date query parameter must be <= end_date
+
+
+  query parameters are case insensitive; that means
+  /api/games?team=Neville+JV is same as
+  /api/games?team=neville+jv
+
+  
+  team, home_team, away_team, school query paramters
+  match against full name not abbreviated name
+
+  Number of games per response is limited to some hard limit like 200
+`
+@response {
+  ok: true,
+  games: [
+    {
+        id: int,
+        homeTeam: {
+          id: int,
+          name: string,
+          abbrevName: string
+        },
+        awayTeam: {
+          id: int,
+          name: string,
+          abbrevName: string
+        },
+        start: DateTime (e.g. "2020-03-17T08:00:00-05:00"),
+        location: string
+    }
+  ]
+}
+
+
+GET /api/teams/names
+@query {
+
+  match: string (e.g. neville)
+}
+@query examples [
+
+  //matches neville JV, heville VB, etc.
+  /api/teams/names?match=ville
+]
+@query notes`
+  `match` parameter is case insensitive; that is
+  ?match=ville is same as ?match=ViLlE
+
+  if `match` paramter were missing response would be empty list of teams
+
+  `match` matches against full team name and NOT abbreviated name
+
+  Number of names per response is limited to some hard limit like 10
+`
+@response {
+  ok: true,
+  teams: [
+    {
+      id: int,
+      name: string,
+      abbrevName: string
+    }
+  ]
+}
+
+
+GET /api/schools/names
+@query {
+
+  match: string (e.g. neville)
+}
+@query examples [
+
+  //matches neville high school, heville public high school, etc.
+  /api/teams/names?match=ville
+]
+@query notes`
+  `match` parameter is case insensitive; that is
+  ?match=ville is same as ?match=ViLlE
+
+  if `match` paramter were missing response would be empty list of schools
+
+  `match` matches against full school name and NOT abbreviated name
+
+  Number of names per response is limited to some hard limit like 10
+`
+@response {
+  ok: true,
+  schools: [
+    {
+      id: int,
+      name: string,
+      abbrevName: string
+    }
+  ]
+}
+
+POST /api/games
+@body {
+  homeTeamId: int,
+  awayTeamId: int,
+  start: DateTime (e.g. "2020-03-17T08:00:00-05:00"),
+  location: string
+}
+@response {
+  ok: true
+  gameId: int
+}
+
+NOTE:
+all the api routes will have following response schema
+if the ok paramter is false
+@response {
+  ok: false,
+  reason: string
+}
+
+Every DateTime type should have following format 'YYYY-MM-DDTHH:mm:ssZ'
+for e.g. 2020-03-17T08:00:00-05:00
+
+Every Date type should have following format 'YYYY-MM-DD'
+for e.g. 2020-01-01
