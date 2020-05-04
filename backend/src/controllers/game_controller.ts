@@ -254,12 +254,13 @@ export default class GameController {
     this._gameUpdate$.next(historyId);
   }
 
-  _checkConflict = async (homeTeamId: number, awayTeamId: number, start: string | moment.Moment) => {
+  //ignoreGameId is used for edit checks
+  _checkConflict = async (homeTeamId: number, awayTeamId: number, start: string | moment.Moment, ignoreGameId?: number) => {
     const repo = this.repository;
     let games  = await repo.getGames();
 
-    const fn = (g: Game) => g.homeTeam.id === homeTeamId || g.homeTeam.id === awayTeamId
-      || g.awayTeam.id === homeTeamId || g.awayTeam.id === awayTeamId;
+    const fn = (g: Game) => g.id !== ignoreGameId && (g.homeTeam.id === homeTeamId || g.homeTeam.id === awayTeamId
+      || g.awayTeam.id === homeTeamId || g.awayTeam.id === awayTeamId);
     
     games = games
       .filter(fn)
@@ -414,7 +415,7 @@ export default class GameController {
 
     const updaterType = await getUpdaterType(repo, user, game!);
 
-    const message = await this._checkConflict(game.homeTeam.id, game.awayTeam.id, body.start);
+    const message = await this._checkConflict(game.homeTeam.id, game.awayTeam.id, body.start, gameId);
     if (message) {
       res.send({ok: false, reason: message});
       return;

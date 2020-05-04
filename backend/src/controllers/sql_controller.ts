@@ -41,7 +41,8 @@ export default class SqlController {
 
     fs.writeFileSync(sqlSourceFilePath, sql);
     const { ok, result } = sqlExecutor();
-    console.log(result);
+    
+    await this.repository.refresh();
 
     res.send({ok: true, sqlResult: { ok, result } });
   }
