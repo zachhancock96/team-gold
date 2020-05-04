@@ -402,19 +402,6 @@ describe('Game should work', () => {
           
           expect(body.ok).toBe(true);
       })
-
-
-      /*
-      it('assignor rejects', () => {
-        expect(body.ok).toBe(false);
-        expect(body.gameId).toBeUndefined();
-      })
-
-      it('assignor accepting should fail', () => {
-        expect(body.ok).toBe(true);
-        expect(body.status).toBeDefined();
-        newGameId = body.gameId;
-      })*/
     })
   })
 })
