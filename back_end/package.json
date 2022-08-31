@@ -23,7 +23,7 @@
     "express": "^4.13.0",
     "jasmine": "^3.5.0",
     "mailgun-js": "^0.22.0",
-    "moment-timezone": "^0.5.27",
+    "moment-timezone": "^0.5.35",
     "morgan": "^1.6.0",
     "mysql": "^2.7.0",
     "nodemon": "^2.0.2",
